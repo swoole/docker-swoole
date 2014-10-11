@@ -1,13 +1,36 @@
 docker-swoole
 =============
 
-A docker-swoole image base on centos:6, all configured. help you easy play with Swoole, enjoy.
+A docker-swoole image base on centos:6, help you easy play with swoole, enjoy.
+
+
+Install Docker
+
+centos 7
+```shell
+yum install docker
+```
+
+centos 6.5
+```shell
+rpm -ivh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+yum install epel-release
+yum install docker-io
+```
+
+Run Docker Service
+```shell
+service docker start
+chkconfig docker on
+
+docker pull betashpherd/docker-swoole
+docker images
+```
+
+Run docker-swoole image
 
 ```shell
 docker run -i -t betashepherd/docker-swoole:1.0 /bin/bash
-
-#then you can see shell cmd
 bash-4.1# php -r "echo SWOOLE_VERSION;"
-
 ```
 
