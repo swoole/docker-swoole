@@ -1,7 +1,7 @@
 docker-swoole
 =============
 
-A docker-swoole image base on centos:6, help you easy play with swoole, enjoy.
+A docker-swoole image base on centos:6, help you easy play with [swoole](https://github.com/swoole), enjoy.
 
 *Install Docker*
 
