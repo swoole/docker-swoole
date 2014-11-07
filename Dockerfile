@@ -1,16 +1,17 @@
-FROM centos:6
-ENV WORK_HOME /home/swoole
-ENV WORK_USER  swoole
-ENV WORK_GROUP swoole
-RUN rpm -ivh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
-RUN yum -y install git-core git axel tar libjpeg libjpeg-turbo libjpeg-turbo-devel libjpeg-devel wget pcre-devel pcre patch make cmake gcc gcc-c++ gcc-g77 flex bison file libtool libtool-libs autoconf kernel-devel libjpeg libjpeg-devel libpng libpng-devel libpng10 libpng10-devel gd gd-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glib2 glib2-devel bzip2 bzip2-devel libevent libevent-devel ncurses ncurses-devel curl curl-devel libcurl libcurl-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel libidn libidn-devel openssl openssl-devel vim-minimal nano fonts-chinese gettext gettext-devel ncurses-devel gmp-devel pspell-devel unzip libcap htop vim git autoconf automake gcc libtasn1-devel zlib zlib-devel trousers trousers-devel gmp-devel gmp xz texinfo libnl-devel libnl tcp_wrappers-libs tcp_wrappers-devel tcp_wrappers dbus dbus-devel ncurses-devel pam-devel readline-devel bison bison-devel flex
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh 
-RUN rm -rf   /tmp/php-soft && mkdir -p /tmp/php-soft
-RUN cd /tmp/php-soft && axel -n 10 -a http://soft.vpser.net/web/libiconv/libiconv-1.14.tar.gz && axel -n 10 -a  http://soft.vpser.net/web/libmcrypt/libmcrypt-2.5.8.tar.gz && axel -n 10 -a http://soft.vpser.net/web/mhash/mhash-0.9.9.9.tar.gz && axel -n 10 -a http://soft.vpser.net/web/mcrypt/mcrypt-2.6.8.tar.gz
-RUN touch /etc/ld.so.conf && echo "/lib" >> /etc/ld.so.conf && echo "/usr/lib" >> /etc/ld.so.conf && echo "/usr/lib64" >> /etc/ld.so.conf && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig && cd /tmp/php-soft && tar xf libiconv-1.14.tar.gz && cd libiconv-1.14 && ./configure && make -j2 && make install && ldconfig && cd /tmp/php-soft && tar xf libmcrypt-2.5.8.tar.gz && cd libmcrypt-2.5.8 && ./configure && make -j2 && make install && ldconfig && cd /tmp/php-soft/libmcrypt-2.5.8/libltdl/ && ./configure --enable-ltdl-install && make -j2 && make install && ldconfig && cd /tmp/php-soft && tar zxvf mhash-0.9.9.9.tar.gz && cd mhash-0.9.9.9/ && ./configure && make -j2 && make install 
-RUN ln -s /usr/local/lib/libmcrypt.la /usr/lib/libmcrypt.la && ln -s /usr/local/lib/libmcrypt.so /usr/lib/libmcrypt.so && ln -s /usr/local/lib/libmcrypt.so.4 /usr/lib/libmcrypt.so.4 && ln -s /usr/local/lib/libmcrypt.so.4.4.8 /usr/lib/libmcrypt.so.4.4.8 && ln -s /usr/local/lib/libmhash.a /usr/lib/libmhash.a && ln -s /usr/local/lib/libmhash.la /usr/lib/libmhash.la && ln -s /usr/local/lib/libmhash.so /usr/lib/libmhash.so && ln -s /usr/local/lib/libmhash.so.2 /usr/lib/libmhash.so.2 && ln -s /usr/local/lib/libmhash.so.2.0.1 /usr/lib/libmhash.so.2.0.1 && ldconfig && cd /tmp/php-soft && tar zxvf mcrypt-2.6.8.tar.gz && cd mcrypt-2.6.8/ && ./configure && make -j2 && make install 
-RUN ln -s /usr/lib64/libpng.* /usr/lib/ && ln -s /usr/lib64/libjpeg.* /usr/lib/ && ulimit -v unlimited && ldconfig
-RUN cd /tmp/php-soft && wget -c http://jp2.php.net/distributions/php-5.5.16.tar.gz && rm -rf ${WORK_HOME}/* && mkdir -p ${WORK_HOME} && tar zxvf php-5.5.16.tar.gz && cd php-5.5.16 && ./configure --prefix=${WORK_HOME}/php --with-config-file-path=${WORK_HOME}/php/etc --enable-fpm --with-fpm-user=${WORK_USER} --with-fpm-group=${WORK_GROUP} --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv-dir --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl --enable-mbregex --enable-mbstring --with-mcrypt --enable-ftp --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --with-pear --with-gettext --enable-opcache && make -j4 ZEND_EXTRA_LIBS='-liconv' && make install && cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && chmod +x /etc/init.d/php-fpm && cp php.ini-production ${WORK_HOME}/php/etc/php.ini && cp ${WORK_HOME}/php/etc/php-fpm.conf.default ${WORK_HOME}/php/etc/php-fpm.conf && ln -s ${WORK_HOME}/php/bin/php /usr/bin/php
-RUN cd /tmp/php-soft && git clone https://github.com/swoole/swoole-src.git && cd swoole-src && ${WORK_HOME}/php/bin/phpize && ./configure --with-php-config=${WORK_HOME}/php/bin/php-config --enable-async-mysql --enable-ringbuffer --enable-sockets && make -j2 && make install && echo "extension=swoole.so" >> ${WORK_HOME}/php/etc/php.ini && rm -rf /tmp/php-soft && groupadd ${WORK_GROUP} && useradd -g ${WORK_GROUP} ${WORK_USER} -d ${WORK_HOME} -s /bin/bash
+FROM ubuntu:14.04
 
+#disable debian interactive
+ENV DEBIAN_FRONTEND noninteractive
 
+#update debian
+RUN apt-get update
+
+#insatll php
+RUN apt-get install -qy php5-dev php5-fpm libghc-pcre-light-dev
+
+RUN pecl install swoole
+
+#add swoole.ini
+RUN echo 'extension=swoole.so' > /etc/php5/mods-available/swoole.ini
+
+RUN php5enmod swoole
