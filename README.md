@@ -22,17 +22,18 @@ yum install docker-io
 [Visit Docker-Doc](https://docs.docker.com/)
 
 
-**Run Docker Service**
+**Start Docker**
 ```shell
 service docker start
 chkconfig docker on
+```
 
-docker pull betashpherd/docker-swoole
-docker images
+**Get docker-swoole**
+```shell
+docker pull betashepherd/docker-swoole
 ```
 
 **Run docker-swoole image**
-
 ```shell
 docker run -i -t betashepherd/docker-swoole:1.0 /bin/bash
 bash-4.1# php -r "echo SWOOLE_VERSION;"
