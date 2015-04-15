@@ -35,6 +35,6 @@ docker pull betashepherd/docker-swoole
 
 **Run docker-swoole image**
 ```shell
-docker run -i -t betashepherd/docker-swoole:1.0 /bin/bash
+docker run -i -t betashepherd/docker-swoole:1.7.15-stable /bin/bash
 bash-4.1# php -r "echo SWOOLE_VERSION;"
 ```
