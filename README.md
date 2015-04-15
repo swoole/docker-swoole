@@ -10,12 +10,12 @@ A docker-swoole image base on centos:6, help you easy play with [swoole](https:/
 **Start Docker**
 ```shell
 service docker start
-chkconfig docker on
 ```
 
 **Get docker-swoole**
 ```shell
 docker pull betashepherd/docker-swoole
+docker images
 ```
 
 **Run docker-swoole image**
