@@ -15,5 +15,9 @@ docker images
 **Run docker-swoole image**
 ```shell
 docker run -i -t betashepherd/docker-swoole:1.7.15-stable /bin/bash
-bash-4.1# php -r "echo SWOOLE_VERSION;"
+bash-4.1# su swoole 
+bash-4.1$ cd ~
+bash-4.1$ pwd
+/home/swoole
+bash-4.1$ php -r "echo SWOOLE_VERSION;"
 ```
