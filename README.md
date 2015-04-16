@@ -6,13 +6,7 @@ A docker-swoole image base on centos:6, help you easy play with [swoole](https:/
 *Install Docker*
 [Visit Docker-Doc](https://docs.docker.com/)
 
-
-**Start Docker**
-```shell
-service docker start
-```
-
-**Get docker-swoole**
+**Get Docker Swoole Image**
 ```shell
 docker pull betashepherd/docker-swoole
 docker images
