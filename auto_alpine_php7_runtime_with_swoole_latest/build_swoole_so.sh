@@ -15,4 +15,5 @@ phpize
 make && make install
 apk del libaio-dev php7-dev git autoconf build-base linux-headers
 rm -rf /var/cache/apk/*
+rm -rf /root/swoole-src/
 rm -rf /tmp/*
