@@ -1,0 +1,5 @@
+_del/
+_logs/
+_tmp/
+*.tmp
+*.log
