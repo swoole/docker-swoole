@@ -8,4 +8,4 @@ RUN sh /root/build_swoole_so.sh
 
 ADD php.ini /etc/php7/
 
-RUN php -m
+RUN php -i && php -m

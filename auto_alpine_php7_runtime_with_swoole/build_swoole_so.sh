@@ -20,7 +20,7 @@ libaio-dev \
 php7-dev \
 php7-pear \
 autoconf build-base linux-headers \
-&& rm -rf /var/cache/* && rm -rf /tmp/*
+&& rm -rf /var/cache/apk && mkdir /var/cache/apk/ && rm -rf /tmp/*
 
 ## && cp /usr/lib/php7/modules/swoole.so /root/swoole.so \
 ## mv /root/swoole.so /usr/lib/php7/modules/swoole.so
