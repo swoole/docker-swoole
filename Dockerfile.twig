@@ -1,0 +1,55 @@
+FROM {{ image_name }}:{{ php_version }}-cli
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM            xterm-color
+
+# @see https://www.nginx.com/resources/wiki/start/topics/tutorials/install/
+RUN \
+    apt-get update              && \
+    apt-get install -y             \
+        apt-transport-https        \
+        dirmngr                    \
+        gnupg                      \
+        software-properties-common \
+        supervisor                 \
+        unzip                      \
+        --no-install-recommends && \
+    apt-key adv --no-tty --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62  && \
+    echo "deb http://nginx.org/packages/ubuntu/ bionic nginx" > /etc/apt/sources.list.d/nginx.list              && \
+    apt-get update              && \
+    apt-get install -y             \
+        nginx={{ nginx }}          \
+        --no-install-recommends && \
+    {% if extensions is not empty %}
+        pecl update-channels && \
+        {% for name, data in extensions %}
+            pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
+        {% endfor %}
+        {% for name, data in extensions %}
+            {% if data.enabled %}
+                docker-php-ext-enable {{ name }} && \
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    curl                      \
+        -sfL                  \
+        --connect-timeout 5   \
+        --max-time         15 \
+        --retry            5  \
+        --retry-delay      2  \
+        --retry-max-time   60 \
+        http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
+    chmod +x "/usr/bin/composer"                                                               && \
+    composer self-update {{ composer.version }}                                                && \
+    mkdir -p /var/log/supervisor                 && \
+    rm -r /var/lib/apt/lists/*                   && \
+    mkdir -p /etc/nginx                          && \
+    ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
+COPY ./rootfilesystem/ /
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
+
+WORKDIR "/var/www/"

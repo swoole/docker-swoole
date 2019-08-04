@@ -1,0 +1,30 @@
+# A sample configuration file for generating Dockerfiles. You may find configuration files under folder images/config/.
+
+# Base name of the configuration file must be of a specific version of image swoole/swoole, e.g.,
+#   * 4.3.5
+#   * 4.4.0
+
+# Options for field "status": "under development", "released", "end-of-life".
+#   * "under development":
+#     Still under development. Please DO NOT use it in production.
+#   * "released":
+#     Released and can be used in production. The tag is frozen and won't be updated any more.
+#   * "end-of-life":
+#     There are new releases out and this tag should no longer being used in production.
+status: "under development"
+php: # List of PHP versions to build for.
+  - 7.1.29
+  - 7.2.19
+  - 7.3.6
+image:
+  # To find out available versions of Nginx, please run commands like
+  #   docker run --rm php:7.3.6-cli bash -c "apt-get update && apt-cache policy nginx"
+  #   or,
+  #   docker run --rm php:7.3.6-cli bash -c "apt-get update && apt-cache showpkg nginx"
+  nginx: "1.10.3-1+deb9u2"
+  composer:
+    version: 1.8.6 # Composer version.
+  extensions: # List of PECL extensions to be installed.
+    zip: # An extension name.
+      version: 1.15.4 # Optional.
+      enabled: true # Enable the extension or not. By default it's disabled.
