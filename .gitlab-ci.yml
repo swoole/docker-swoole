@@ -1,0 +1,17 @@
+language: php
+
+php:
+  - 7.3
+
+services:
+  - docker
+
+env:
+  - ARCHITECURE="amd64"
+  - ARCHITECURE="arm64v8"
+
+if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+
+script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - ./bin/build.sh ${ARCHITECURE}
