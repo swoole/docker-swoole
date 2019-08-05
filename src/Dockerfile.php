@@ -238,8 +238,9 @@ class Dockerfile
         return array_merge(
             $this->getConfig()['image'],
             [
-                'image_name'  => self::BASE_IMAGES[$architecture],
-                'php_version' => $phpVersion,
+                'image_name'     => self::BASE_IMAGES[$architecture],
+                'php_version'    => $phpVersion,
+                'swoole_version' => $this->getSwooleVersion(),
             ]
         );
     }

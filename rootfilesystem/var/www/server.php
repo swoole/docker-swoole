@@ -1,17 +1,23 @@
 #!/usr/bin/env php
 <?php
 
-use Co\Socket;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
+use Swoole\Http\Server;
 
-$socket = new Socket(AF_INET, SOCK_STREAM, 0);
-$socket->bind("0.0.0.0", 9501);
-$socket->listen(128);
-go(function () use ($socket) {
-    while (true) {
-        $client = $socket->accept();
-        go(function() use ($client) {
-            $client->send("Hello, World!\n");
-            $client->close();
-        });
+$http = new Server("0.0.0.0", 9501);
+
+$http->on(
+    "start",
+    function (Server $http) {
+        echo "Swoole HTTP server is started.\n";
     }
-});
+);
+$http->on(
+    "request",
+    function (Request $request, Response $response) {
+        $response->end("Hello, World!\n");
+    }
+);
+
+$http->start();

@@ -31,6 +31,8 @@ RUN \
             {% endif %}
         {% endfor %}
     {% endif %}
+    pecl install swoole-{{ swoole_version }} && \
+    docker-php-ext-enable swoole             && \
     curl                      \
         -sfL                  \
         --connect-timeout 5   \
