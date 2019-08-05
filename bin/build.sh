@@ -24,7 +24,7 @@ if [[ -z "${IMAGE_NAME}" ]] ; then
     if [[ ! -z "${TRAVIS_REPO_SLUG}" ]] ; then
         # If you don't pass in an image name, we assume your Docker ID is the same as your GitLab ID, and use it in
         # the image name. The image name should look like "your-github-id/swoole".
-        IMAGE_NAME=${CI_COMMIT_REF_NAME%%/*}/swoole
+        IMAGE_NAME=${TRAVIS_REPO_SLUG%%/*}/swoole
     else
         echo "Error: Docker image name is empty."
         exit 1
