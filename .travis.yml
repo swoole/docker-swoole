@@ -8,7 +8,6 @@ services:
 
 env:
   - ARCHITECURE="amd64"
-  - ARCHITECURE="arm64v8"
 
 if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
 
