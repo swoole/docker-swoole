@@ -12,6 +12,9 @@ env:
 
 if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
 
+before_install:
+  - composer update -n
+
 script:
   - ./bin/generate-docker-files.php ${TRAVIS_BRANCH%%-*}
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
