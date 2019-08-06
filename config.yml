@@ -17,11 +17,6 @@ php: # List of PHP versions to build for.
   - 7.2.19
   - 7.3.6
 image:
-  # To find out available versions of Nginx, please run commands like
-  #   docker run --rm php:7.3.6-cli bash -c "apt-get update && apt-cache policy nginx"
-  #   or,
-  #   docker run --rm php:7.3.6-cli bash -c "apt-get update && apt-cache showpkg nginx"
-  nginx: "1.10.3-1+deb9u2"
   composer:
     version: 1.8.6 # Composer version.
   extensions: # List of PECL extensions to be installed.
