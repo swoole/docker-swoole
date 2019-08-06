@@ -7,7 +7,12 @@ services:
   - docker
 
 env:
-  - ARCHITECURE="amd64"
+  - PHP_VERSION=7.1 ARCHITECURE=amd64
+  - PHP_VERSION=7.2 ARCHITECURE=amd64
+  - PHP_VERSION=7.3 ARCHITECURE=amd64
+  - PHP_VERSION=7.1 ARCHITECURE=arm64v8
+  - PHP_VERSION=7.2 ARCHITECURE=arm64v8
+  - PHP_VERSION=7.3 ARCHITECURE=arm64v8
 
 if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
 
@@ -17,4 +22,4 @@ before_install:
 script:
   - ./bin/generate-docker-files.php ${TRAVIS_BRANCH%%-*}
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - ./bin/build.sh ${ARCHITECURE}
+  - ./bin/build.sh
