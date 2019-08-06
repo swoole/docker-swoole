@@ -6,10 +6,6 @@ ENV TERM            xterm-color
 RUN \
     apt-get update              && \
     apt-get install -y             \
-        apt-transport-https        \
-        dirmngr                    \
-        gnupg                      \
-        software-properties-common \
         supervisor                 \
         unzip                      \
         --no-install-recommends && \
