@@ -56,6 +56,7 @@ function download()
 #
 # @param Swoole package name.
 # @param Version #.
+# @param Rest parameters are the configure options.
 function install()
 {
     download $1 $2
@@ -68,17 +69,14 @@ function install()
 # Install given Swoole extension if its version # is specified.
 #
 # @param Swoole extension name. e.g., async, orm, postgresql, serialize, zookeeper, etc.
+# @param Rest parameters are the configure options.
 function installExt()
 {
     EXT_VERSION="${1^^}_VERSION"
     EXT_VERSION=${!EXT_VERSION}
     if [ ! -z "${EXT_VERSION}" ] ; then
         echo "Installing Swoole extension ${1} ${EXT_VERSION}..."
-        download ext-$1 $EXT_VERSION
-        phpize
-        ./configure
-        make
-        make install
+        install ext-$1 $EXT_VERSION "${@:2}"
         cd ..
     else
         echo "Swoole extension ${1} will not be installed."
