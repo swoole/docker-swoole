@@ -13,28 +13,28 @@ RUN \
         supervisor                 \
         unzip                      \
         --no-install-recommends && \
-    {% if php_extensions is not empty %}
-        pecl update-channels && \
-        {% for name, data in php_extensions %}
-            pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
-        {% endfor %}
-        {% for name, data in php_extensions %}
-            {% if data.enabled %}
-                docker-php-ext-enable {{ name }} && \
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+{%~ if php_extensions is not empty %}
+    pecl update-channels && \
+    {%~ for name, data in php_extensions %}
+    pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
+    {%~ endfor %}
+    {%~ for name, data in php_extensions %}
+        {%~ if data.enabled %}
+    docker-php-ext-enable {{ name }} && \
+        {%~ endif %}
+    {%~ endfor %}
+{%~ endif %}
     SWOOLE_VERSION={{ swoole_version }} \
-    {% for name, data in swoole_extensions %}
-        {{ name|upper }}_VERSION={% if data.version is not empty %}{{ data.version }}{%  else %}master{% endif %} \
-    {% endfor %}
-    install-swoole.sh && \
+{%~ for name, data in swoole_extensions %}
+    {{ name|upper }}_VERSION={% if data.version is not empty %}{{ data.version }}{%  else %}master{% endif %} \
+{%~ endfor %}
+        install-swoole.sh && \
     docker-php-ext-enable swoole && \
-    {% for name, data in swoole_extensions %}
-        {% if data.enabled %}
-            docker-php-ext-enable swoole_{{ name }} && \
-        {% endif %}
-    {% endfor %}
+{%~ for name, data in swoole_extensions %}
+    {%~ if data.enabled %}
+    docker-php-ext-enable swoole_{{ name }} && \
+    {%~ endif %}
+{%~ endfor %}
     curl                      \
         -sfL                  \
         --connect-timeout 5   \
