@@ -60,7 +60,7 @@ function install()
 {
     download $1 $2
     phpize
-    ./configure
+    ./configure "${@:3}"
     make
     make install
 }
@@ -85,7 +85,9 @@ function installExt()
     fi
 }
 
-install swoole-src ${SWOOLE_VERSION}
+docker-php-ext-install sockets
+install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets
+
 for extension_name in async orm postgresql serialize zookeeper ; do
     installExt $extension_name
 done

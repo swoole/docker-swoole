@@ -8,6 +8,8 @@ COPY ./rootfilesystem/ /
 RUN \
     apt-get update              && \
     apt-get install -y             \
+        libpq-dev                  \
+        libssl-dev                 \
         supervisor                 \
         unzip                      \
         --no-install-recommends && \
