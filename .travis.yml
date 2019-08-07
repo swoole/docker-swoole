@@ -17,7 +17,9 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: ARCHITECTURE=arm64v8
+    - env: PHP_VERSION=7.1 ARCHITECTURE=arm64v8
+    - env: PHP_VERSION=7.2 ARCHITECTURE=arm64v8
+    - env: PHP_VERSION=7.3 ARCHITECTURE=arm64v8
 
 if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
 
