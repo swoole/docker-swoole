@@ -2,9 +2,9 @@
 <?php
 /**
  * How to use the script:
- *    ./bin/generate-docker-files.php swoole-version
+ *    ./bin/generate-dockerfiles.php swoole-version
  *    e.g.,
- *    ./bin/generate-docker-files.php 4.3.5
+ *    ./bin/generate-dockerfiles.php 4.3.5
  * Above command will have dockerfiles created for Swoole 4.3.5 under folder images/dockerfiles/.
  */
 

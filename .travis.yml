@@ -27,6 +27,6 @@ before_install:
   - composer update -n
 
 script:
-  - ./bin/generate-docker-files.php ${TRAVIS_BRANCH%%-*}
+  - ./bin/generate-dockerfiles.php ${TRAVIS_BRANCH%%-*}
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - ./bin/build.sh
