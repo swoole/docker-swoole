@@ -3,6 +3,8 @@ FROM {{ image_name }}:{{ php_version }}-cli
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
 
+COPY ./rootfilesystem/ /
+
 RUN \
     apt-get update              && \
     apt-get install -y             \
@@ -20,8 +22,21 @@ RUN \
             {% endif %}
         {% endfor %}
     {% endif %}
-    pecl install swoole-{{ swoole_version }} && \
-    docker-php-ext-enable swoole             && \
+    SWOOLE_VERSION={{ swoole_version }} \
+    {% if swoole_extensions is not empty %}
+        {% for name, data in swoole_extensions %}
+            {{ name|upper }}_VERSION={% if data.version is not empty %}{{ data.version }}{%  else %}master{% endif %} \
+        {% endfor %}
+    {% endif %}
+    install-swoole.sh && \
+    docker-php-ext-enable swoole && \
+    {% if swoole_extensions is not empty %}
+        {% for name, data in swoole_extensions %}
+            {% if data.enabled %}
+                docker-php-ext-enable swoole_{{ name }} && \
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     curl                      \
         -sfL                  \
         --connect-timeout 5   \
@@ -34,8 +49,6 @@ RUN \
     composer self-update {{ composer.version }}                                                && \
     mkdir -p /var/log/supervisor && \
     rm -r /var/lib/apt/lists/*
-
-COPY ./rootfilesystem/ /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
