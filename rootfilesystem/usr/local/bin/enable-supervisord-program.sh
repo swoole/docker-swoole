@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # To enable an available program in Supervisord. List of available program can be found under folder
-#   images/php-fpm/rootfilesystem/etc/supervisor/available.d/.
+#   rootfilesystem/etc/supervisor/available.d/.
 #
 
 set -e

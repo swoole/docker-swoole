@@ -6,9 +6,9 @@
 #     1. The environment variable can not contain character "#" in it.
 #
 # Usage:
-#     ./bin/update_token.sh ENVIRONMENT_VARIABLE_NAME [FOLDER]...
+#     update-token.sh ENVIRONMENT_VARIABLE_NAME [FOLDER]...
 #     e.g.,
-#     ./bin/update_token.sh PHP_VERSION /usr/local/etc/nginx /usr/local/etc/php
+#     update-token.sh PHP_VERSION /usr/local/etc/nginx /usr/local/etc/php
 #
 
 set -e
