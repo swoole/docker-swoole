@@ -14,5 +14,6 @@ image:
       version: master
       enabled: true
     orm:
+    postgresql:
     serialize:
       enabled: true
