@@ -28,10 +28,10 @@ before_install:
 
 jobs:
   include:
-    - stage: build_version_based_images
+    - stage: test
       if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
       script: ./bin/build.sh
-    - stage: build_latest_image
+    - stage: test
       if: branch = master
       script: ./bin/build.sh
       env: PHP_VERSION=7.3 ARCHITECTURE=amd64
