@@ -21,12 +21,17 @@ matrix:
     - env: PHP_VERSION=7.2 ARCHITECTURE=arm64v8
     - env: PHP_VERSION=7.3 ARCHITECTURE=arm64v8
 
-if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-
 before_install:
   - composer update -n
-
-script:
-  - ./bin/generate-dockerfiles.php ${TRAVIS_BRANCH%%-*}
+  - ./bin/generate-dockerfiles.php ${TRAVIS_BRANCH%%-*} || true
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - ./bin/build.sh
+
+jobs:
+  include:
+    - stage: build_version_based_images
+      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      script: ./bin/build.sh
+    - stage: build_latest_image
+      if: branch = master
+      script: ./bin/build.sh
+      env: PHP_VERSION=7.3 ARCHITECTURE=amd64

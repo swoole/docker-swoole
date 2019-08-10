@@ -20,6 +20,9 @@ class Dockerfile
     const ARCH_ARM64V8 = 'arm64v8';
     const ARCH_DEFAULT = self::ARCH_AMD64;
 
+    const VERSION_BASED = 0;
+    const BRANCH_BASED  = 1;
+
     // @see https://github.com/docker-library/official-images#architectures-other-than-amd64
     const BASE_IMAGES = [
         // architecture    => base image,
@@ -41,6 +44,11 @@ class Dockerfile
      * @var array
      */
     protected $config;
+
+    /**
+     * @var int
+     */
+    protected $type;
 
     /**
      * Dockerfile constructor.
@@ -92,15 +100,8 @@ class Dockerfile
             if (!file_exists($dockerFileDir)) {
                 mkdir($dockerFileDir, 0777, true);
             }
-            file_put_contents(
-                sprintf(
-                    '%s/%s-php%s.Dockerfile',
-                    $dockerFileDir,
-                    $this->getSwooleVersion(),
-                    $this->getPhpMajorVersion($phpVersion)
-                ),
-                $dockerFile
-            );
+
+            file_put_contents($this->getDockerFilePath($phpVersion, $dockerFileDir), $dockerFile);
         }
 
         return $dockerFile;
@@ -141,23 +142,12 @@ class Dockerfile
     /**
      * @param string $swooleVersion
      * @return Dockerfile
-     * @throws Exception
      */
     public function setSwooleVersion(string $swooleVersion): self
     {
-        if (!$this->isValidSwooleVersion($swooleVersion)) {
-            throw new Exception(
-                "Swoole version must be in the format of 'X.Y.Z'."
-            );
-        }
-
         $this->swooleVersion = $swooleVersion;
 
-        if (!is_file($this->getConfigFilePath()) || !is_readable($this->getConfigFilePath())) {
-            throw new Exception("Config file unreadable for Swoole version '{$swooleVersion}'.");
-        }
-
-        return $this;
+        return $this->setType();
     }
 
     /**
@@ -175,6 +165,24 @@ class Dockerfile
     public function setConfig(array $config): self
     {
         $this->config = $config;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return Dockerfile
+     */
+    public function setType(): self
+    {
+        $this->type = $this->isValidSwooleVersion($this->getSwooleVersion()) ? self::VERSION_BASED : self::BRANCH_BASED;
 
         return $this;
     }
@@ -199,10 +207,27 @@ class Dockerfile
 
     /**
      * @return string
+     * @throws Exception
      */
     protected function getConfigFilePath(): string
     {
-        return $this->getConfigFilePathBySwooleVersion($this->getSwooleVersion());
+        switch ($this->getType()) {
+            case self::VERSION_BASED:
+                $file = $this->getConfigFilePathBySwooleVersion($this->getSwooleVersion());
+                break;
+            case self::BRANCH_BASED:
+                $file = $this->getConfigFilePathBySwooleVersion('latest');
+                break;
+            default:
+                throw new Exception("The image should be built from a stable version of Swoole or a branch of Swoole.");
+                break;
+        }
+
+        if (!is_file($file) || !is_readable($file)) {
+            throw new Exception("Unable to load configuration file '{$file}'.");
+        }
+
+        return $file;
     }
 
     /**
@@ -243,5 +268,32 @@ class Dockerfile
                 'swoole_version' => $this->getSwooleVersion(),
             ]
         );
+    }
+
+    /**
+     * @param string $phpVersion
+     * @param string $dockerFileDir
+     * @return string
+     * @throws Exception
+     */
+    protected function getDockerFilePath(string $phpVersion, string $dockerFileDir = ''): string
+    {
+        switch ($this->getType()) {
+            case self::VERSION_BASED:
+                $filename = sprintf(
+                    '%s-php%s.Dockerfile',
+                    $this->getSwooleVersion(),
+                    $this->getPhpMajorVersion($phpVersion)
+                );
+                break;
+            case self::BRANCH_BASED:
+                $filename = 'latest.Dockerfile';
+                break;
+            default:
+                throw new Exception("The image should be built from a stable version of Swoole or a branch of Swoole.");
+                break;
+        }
+
+        return ($dockerFileDir ? ("{$dockerFileDir}" . DIRECTORY_SEPARATOR) : "") . $filename;
     }
 }
