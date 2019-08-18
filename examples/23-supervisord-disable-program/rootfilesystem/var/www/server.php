@@ -9,8 +9,10 @@ $http->on(
             <<<EOT
                 <pre>
                 In this example we have the built-in Supervisord program "swoole" disabled. There is no program
-                listening at port 9501 in the Docker image, so when you hit URL http://127.0.0.1, you get "Connection
-                refused".
+                listening at port 9501 in the Docker image, so when you hit URL http://127.0.0.1:9501, you get
+                "Connection refused".
+
+                This response is returned from a second Swoole program launched to listen port {$http->port}.
                 </pre>
             EOT
         );

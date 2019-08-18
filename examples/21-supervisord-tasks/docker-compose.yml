@@ -1,6 +1,0 @@
-version: '3'
-
-services:
-  app:
-    build: .
-    command: bash -c "sleep 2; curl -sv http://127.0.0.1:9501; curl -sv -o /dev/null http://127.0.0.1:9502"
