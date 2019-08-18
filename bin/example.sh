@@ -6,7 +6,7 @@
 #     ./bin/example.sh restart 01
 #
 
-set -ex
+set -e
 
 # Switch to directory where this shell script sits.
 pushd `dirname $0` > /dev/null
