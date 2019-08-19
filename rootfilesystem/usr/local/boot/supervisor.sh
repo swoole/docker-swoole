@@ -6,10 +6,6 @@
 
 set -e
 
-if [[ "${AUTORELOAD}" == "true" ]] ; then
-    cp /etc/supervisor/available.d/autoreload.conf /etc/supervisor/service.d/.
-fi
-
 case "${BOOT_MODE}" in
     "SERVICE")
         echo "INFO: Supervisord configuration files copied from folder '/etc/supervisor/${BOOT_MODE,,}.d/'."
