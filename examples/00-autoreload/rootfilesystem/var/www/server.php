@@ -8,9 +8,8 @@ $http->on(
         $response->end(
             <<<EOT
                 <pre>
-                Once the Swoole web server is started and you can see this message from http://127.0.0.1,
-                please update this message manually in the PHP script then refresh the URL. The response
-                from the URL should have been changed.
+                You can update this message manually in the PHP script and refresh URL
+                http://127.0.0.1 to see the changes.
                 </pre>
             EOT
         );
