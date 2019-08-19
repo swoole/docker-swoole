@@ -5,6 +5,7 @@ Git repository to help developers to get familiar with the image and _Swoole_.
 
 # Feature List
 
+* Support auto-reloading for local development.
 * Built-in scripts to manage _Swoole_ extensions and _Supervisord_ programs.
 * Easy to manage booting scripts in Docker.
 * Allow running PHP scripts and other commands directly in different environments (including ECS).
