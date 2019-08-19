@@ -3,7 +3,7 @@
   "description": "Official Docker image packing for Swoole.",
   "homepage": "https://www.swoole.com",
   "license": "Apache-2.0",
-  "require": {
+  "require-dev": {
     "php": ">=7.1",
     "crowdstar/reflection": "~1.0.0",
     "overtrue/phplint": "~1.1.0",
@@ -13,7 +13,7 @@
     "symfony/yaml": "~4.3.0",
     "twig/twig": "~2.11.0"
   },
-  "autoload": {
+  "autoload-dev": {
     "psr-4": {
       "Swoole\\Docker\\": "src/"
     }
