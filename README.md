@@ -46,6 +46,13 @@ Here is a list of the examples under folder "_examples/_":
     * **22-supervisord-enable-program**: to show how to enable program(s) in Supervisord program.
     * **23-supervisord-disable-program**: to show how to disable Supervisord program(s).
 
+# TODOs
+
+* Add more examples.
+* Allow to stop the container gracefully.
+* Support more architectures (e.g., i386).
+* Add Alpine image if needed.
+
 # Credits
 
 Current implementation borrows ideas from [Demin](https://deminy.in)'s work at [Glu Mobile](https://glu.com).
