@@ -35,11 +35,11 @@ Here is a list of the examples under folder "_examples/_":
     * **03-nginx**: to use Swoole behind an Nginx server.
     * **04-entrypoint**: to use a self-defined entrypoint script in the Docker image built.
     * **05-boot**: to update content in the Docker container through a booting script.
-    * **06-php.ini**: how to overwrite/customize PHP options.
-    * **07-update-token**: to show how to update server configurations with built-in script _update-token.sh_.
-* Manage PHP configurations:
+    * **06-update-token**: to show how to update server configurations with built-in script _update-token.sh_.
+* Manage PHP extensions and configurations:
     * **10-install-php-extension**: how to install/enable PHP extensions.
     * **11-customize-extension-options**: how to overwrite/customize PHP extension options.
+    * **12-php.ini**: how to overwrite/customize PHP options.
 * Manage Supervisord programs:
     * **20-supervisord-services**: to show how to run Supervisord program(s) in Docker.
     * **21-supervisord-tasks**: to show how to run Supervisord program(s) when launching a one-off command with Docker. Please check the [README](examples/21-supervisord-tasks/README.md) file included to see how to run the example.
