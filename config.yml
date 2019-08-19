@@ -19,6 +19,7 @@ php: # List of PHP versions to build for.
 image:
   composer:
     version: 1.8.6 # Composer version.
+  inotify: false # Install package inotify-tools or not. By default it's not installed.
   php_extensions: # List of PECL extensions to be installed.
     zip: # An extension name.
       version: 1.15.4 # Optional.

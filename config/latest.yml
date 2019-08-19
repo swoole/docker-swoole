@@ -7,6 +7,7 @@ php:
 image:
   composer:
     version: 1.9.0
+  inotify: true
   swoole_extensions:
     async:
       enabled: true

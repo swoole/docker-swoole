@@ -30,6 +30,7 @@ To run another example, just replace the last command line parameter _01_ with a
 Here is a list of the examples under folder "_examples/_":
 
 * Basic examples:
+    * **00-autoload**: Restart the Swoole web server automatically if file changes detected under web root.
     * **01-basic**: print out "Hello, World!" using Swoole as backend HTTP server.
     * **02-www**: to use some customized PHP script(s) in the Docker image built.
     * **03-nginx**: to use Swoole behind an Nginx server.

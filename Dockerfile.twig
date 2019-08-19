@@ -8,6 +8,9 @@ COPY ./rootfilesystem/ /
 RUN \
     apt-get update              && \
     apt-get install -y             \
+{%~ if inotify == true %}
+        inotify-tools              \
+{%~ endif %}
         libpq-dev                  \
         libssl-dev                 \
         supervisor                 \
