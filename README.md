@@ -52,7 +52,7 @@ Here is a list of the examples under folder "_examples/_":
 
 * Add more examples.
 * Allow to stop the container gracefully.
-* Support more architectures (e.g., i386).
+* Support more architectures.
 * Add Alpine image if needed.
 
 # Credits

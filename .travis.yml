@@ -8,11 +8,6 @@ services:
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - env: PHP_VERSION=7.1 ARCHITECTURE=arm64v8
-    - env: PHP_VERSION=7.2 ARCHITECTURE=arm64v8
-    - env: PHP_VERSION=7.3 ARCHITECTURE=arm64v8
-    - stage: build_latest_image
 
 before_install:
   - composer update -n
@@ -24,27 +19,7 @@ jobs:
     - stage: test
       if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
       script: ./bin/build.sh
-      env: PHP_VERSION=7.1 ARCHITECTURE=amd64
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.2 ARCHITECTURE=amd64
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.3 ARCHITECTURE=amd64
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.1 ARCHITECTURE=arm64v8
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.2 ARCHITECTURE=arm64v8
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.3 ARCHITECTURE=arm64v8
+      env: ARCHITECTURE=amd64
     - stage: build_latest_image
       if: branch = master
       script: ./bin/build.sh

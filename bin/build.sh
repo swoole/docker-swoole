@@ -93,7 +93,7 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
     for ARCHITECTURE in "${ARCHITECTURES[@]}" ; do
         if [[ -z "${IMAGE_TAGS}" ]] ; then
             if [[ -z "${PHP_VERSION}" ]] ; then
-                IMAGE_TAGS=(`ls temp/dockerfiles/${ARCHITECTURE}/*.Dockerfile | xargs -n 1 basename -s .Dockerfile`)
+                IMAGE_TAGS=(`ls temp/dockerfiles/${ARCHITECTURE}/${SWOOLE_VERSION}-*.Dockerfile | xargs -n 1 basename -s .Dockerfile`)
             else
                 IMAGE_TAGS=("${SWOOLE_VERSION}-php${PHP_VERSION}")
             fi
