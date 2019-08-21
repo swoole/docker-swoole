@@ -1,29 +1,60 @@
-docker-swoole
-=============
+# Docker Image for Swoole
 
-Collection of different swoole-docker solution for you reference.
+This image is built for general-purpose, including production deployment. We have different examples included in this
+Git repository to help developers to get familiar with the image and _Swoole_.
 
-## [betashepherd/] (./betashepherd/)
+# Feature List
 
-from betashepherd/docker-swoole
+* Support auto-reloading for local development.
+* Built-in scripts to manage _Swoole_ extensions and _Supervisord_ programs.
+* Easy to manage booting scripts in Docker.
+* Allow running PHP scripts and other commands directly in different environments (including ECS).
+* Use one root filesystem for simplicity (one Docker `COPY` command only in dockerfiles).
+* _Composer_ included.
+* Built for different architectures (for now only amd64 and arm64v8 images are built).
 
-## [deprecated] [alpine_php7_runtime_with_swoole/](./auto_alpine_php7_runtime_with_swoole/)
+# Examples
 
-php7-runtime +swoole based on alpine-edge.  Build from PECL, and some patches needed to finish compile.
-As building from source directly is tested (see below), so this folder is deprected while kept only for reference.
+Examples are under folder "_examples/_", and they are numerically ordered. Each example has a _docker-compose.yml_
+file included, along with some other files. To run an example, please start Docker containers using the
+_docker-compose.yml_ file included, then check HTTP output from URL http://127.0.0.1 unless otherwise noted. You may
+use the following commands to start/stop/restart Docker containers:
 
-## [alpine_php7_runtime_with_swoole_latest/](./auto_alpine_php7_runtime_with_swoole_latest/)
+```bash
+./bin/example.sh start   01 # To start container(s) of the first example.
+./bin/example.sh stop    01 # To stop container(s) of the first example.
+./bin/example.sh restart 01 # To restart container(s) of the first example.
+```
 
-php7(latest)-runtime +swoole based on alpine-edge, which build from [swoole-src](https://github.com/swoole/swoole-src/) directly.
+To run another example, just replace the last command line parameter _01_ with an example number (e.g., _05_).
 
-## [ php docker app server ](./auto_cmp_php_docker_server/)
+Here is a list of the examples under folder "_examples/_":
 
-Base on auto_alpine_php7_runtime_with_swoole_latest, more latest7 extension, ready for app server
+* Basic examples:
+    * **00-autoload**: Restart the Swoole web server automatically if file changes detected under web root.
+    * **01-basic**: print out "Hello, World!" using Swoole as backend HTTP server.
+    * **02-www**: to use some customized PHP script(s) in the Docker image built.
+    * **03-nginx**: to use Swoole behind an Nginx server.
+    * **04-entrypoint**: to use a self-defined entrypoint script in the Docker image built.
+    * **05-boot**: to update content in the Docker container through a booting script.
+    * **06-update-token**: to show how to update server configurations with built-in script _update-token.sh_.
+* Manage PHP extensions and configurations:
+    * **10-install-php-extension**: how to install/enable PHP extensions.
+    * **11-customize-extension-options**: how to overwrite/customize PHP extension options.
+    * **12-php.ini**: how to overwrite/customize PHP options.
+* Manage Supervisord programs:
+    * **20-supervisord-services**: to show how to run Supervisord program(s) in Docker.
+    * **21-supervisord-tasks**: to show how to run Supervisord program(s) when launching a one-off command with Docker. Please check the [README](examples/21-supervisord-tasks/README.md) file included to see how to run the example.
+    * **22-supervisord-enable-program**: to show how to enable program(s) in Supervisord program.
+    * **23-supervisord-disable-program**: to show how to disable Supervisord program(s).
 
-## LINKS
+# TODOs
 
-* Install Docker*
-[Visit Docker-Doc](https://docs.docker.com/)
+* Add more examples.
+* Allow to stop the container gracefully.
+* Support more architectures.
+* Add Alpine image if needed.
 
-* app server example (swoole+phpfpm)
-(https://github.com/cmptech/cmp_app_server)
+# Credits
+
+Current implementation borrows ideas from [Demin](https://deminy.in)'s work at [Glu Mobile](https://glu.com).

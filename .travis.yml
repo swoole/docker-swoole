@@ -1,0 +1,34 @@
+language: php
+
+php:
+  - 7.3
+
+services:
+  - docker
+
+matrix:
+  fast_finish: true
+
+before_install:
+  - composer update -n
+  - ./bin/generate-dockerfiles.php ${TRAVIS_BRANCH%%-*} || true
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+jobs:
+  include:
+    - stage: test
+      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      script: ./bin/build.sh
+      env: PHP_VERSION=7.1 ARCHITECTURE=amd64
+    - stage: test
+      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      script: ./bin/build.sh
+      env: PHP_VERSION=7.2 ARCHITECTURE=amd64
+    - stage: test
+      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      script: ./bin/build.sh
+      env: PHP_VERSION=7.3 ARCHITECTURE=amd64
+    - stage: build_latest_image
+      if: branch = master
+      script: ./bin/build.sh
+      env: PHP_VERSION=7.3 ARCHITECTURE=amd64

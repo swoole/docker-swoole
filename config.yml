@@ -1,0 +1,30 @@
+# A sample configuration file for generating Dockerfiles. You may find configuration files under folder images/config/.
+
+# Base name of the configuration file must be of a specific version of image swoole/swoole, e.g.,
+#   * 4.3.5
+#   * 4.4.0
+
+# Options for field "status": "under development", "released", "end-of-life".
+#   * "under development":
+#     Still under development. Please DO NOT use it in production.
+#   * "released":
+#     Released and can be used in production. The tag is frozen and won't be updated any more.
+#   * "end-of-life":
+#     There are new releases out and this tag should no longer being used in production.
+status: "under development"
+php: # List of PHP versions to build for.
+  - 7.1.29
+  - 7.2.19
+  - 7.3.6
+image:
+  composer:
+    version: 1.8.6 # Composer version.
+  inotify: false # Install package inotify-tools or not. By default it's not installed.
+  php_extensions: # List of PECL extensions to be installed.
+    zip: # An extension name.
+      version: 1.15.4 # Optional.
+      enabled: true # Enable the extension or not. By default it's disabled.
+  swoole_extensions: # List of Swoole extensions.
+    async: # A Swoole extension name.
+      version: master # Point to the master branch by default.
+      enabled: false # Enable the extension or not. By default it's disabled.
