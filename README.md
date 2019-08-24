@@ -1,7 +1,12 @@
+[![Build Status](https://travis-ci.org/swoole/docker-swoole.svg?branch=master)](https://travis-ci.org/swoole/docker-swoole)
+[![License](https://poser.pugx.org/swoole/docker-swoole/license.svg)](https://github.com/swoole/docker-swoole/blob/master/LICENSE)
+
 # Docker Image for Swoole
 
 This image is built for general-purpose, including production deployment. We have different examples included in this
 Git repository to help developers to get familiar with the image and _Swoole_.
+
+You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # Feature List
 
