@@ -2,29 +2,29 @@
 #
 # How to run this script:
 #     To build Swoole 4.3.5 images for PHP 7.1, 7.2, 7.3 under all supported architectures (including amd64 and arm64v8):
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh
 #
 #     To build Swoole 4.3.5 images for PHP 7.1, 7.2, 7.3 under amd64:
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh default
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh default
 #     or,
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh amd64
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh amd64
 #
 #     To build Swoole 4.3.5 images for PHP 7.1, 7.2, 7.3 under arm64v8:
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh arm64v8
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh arm64v8
 #
 #     To build Swoole 4.3.5 images for PHP 7.3 under all supported architectures (including amd64 and arm64v8):
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh
 #
-#     To build image "swoole/swoole:4.3.5-php7.3":
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh default
+#     To build image "phpswoole/swoole:4.3.5-php7.3":
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh default
 #     or,
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh amd64
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh amd64
 #
-#     To build image "swoole/swoole:4.3.5-php7.3-arm64v8":
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh arm64v8
+#     To build image "phpswoole/swoole:4.3.5-php7.3-arm64v8":
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh arm64v8
 #
-#     To build image "swoole/swoole":
-#     IMAGE_NAME=swoole/swoole SWOOLE_VERSION=master ./bin/build.sh
+#     To build image "phpswoole/swoole":
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=master ./bin/build.sh
 #
 
 set -ex
@@ -36,10 +36,14 @@ CURRENT_SCRIPT_PATH=`pwd -P`
 popd > /dev/null
 
 if [[ -z "${IMAGE_NAME}" ]] ; then
-    if [[ ! -z "${TRAVIS_REPO_SLUG}" ]] ; then
-        # If you don't pass in an image name, we assume your Docker ID is the same as your GitLab ID, and use it in
-        # the image name. The image name should look like "your-github-id/swoole".
-        IMAGE_NAME=${TRAVIS_REPO_SLUG%%/*}/swoole
+    DOCKER_REPO=swoole
+    if [[ ! -z "${DOCKER_NAMESPACE}" ]] ; then
+        IMAGE_NAME=${DOCKER_NAMESPACE}/${DOCKER_REPO}
+    elif [[ ! -z "${DOCKER_ID}" ]] ; then
+        IMAGE_NAME=${DOCKER_ID}/${DOCKER_REPO}
+    elif [[ ! -z "${TRAVIS_REPO_SLUG}" ]] ; then
+        # If we couldn't figure out an image name to be used, we use "your-github-id/swoole" as the image name.
+        IMAGE_NAME=${TRAVIS_REPO_SLUG%%/*}/${DOCKER_REPO}
     else
         echo "Error: Docker image name is empty."
         exit 1

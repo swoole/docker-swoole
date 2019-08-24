@@ -2,7 +2,7 @@ Under this folder are files included by the _Supervisor_ configuration file "/et
 running under service mode, where the Docker container is to start some long-running webservices like Nginx. e.g.,
 
 ```bash
-docker run --rm --name=app -p 80:80 swoole/swoole:4.3.5
+docker run --rm --name=app -p 80:80 phpswoole/swoole
 ```
 
 In this case, the list of programs defined under this folder (along with those already under folder _../conf.d/_) will

@@ -20,10 +20,17 @@ You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # Examples
 
-Examples are under folder "_examples/_", and they are numerically ordered. Each example has a _docker-compose.yml_
-file included, along with some other files. To run an example, please start Docker containers using the
-_docker-compose.yml_ file included, then check HTTP output from URL http://127.0.0.1 unless otherwise noted. You may
-use the following commands to start/stop/restart Docker containers:
+You may use the image to serve an HTTP/WebSocket server, or run some one-off command with it. e.g.,
+
+```bash
+docker run --rm phpswoole/swoole "php -m"
+docker run --rm phpswoole/swoole "php --re swoole"
+```
+
+We have various examples included under folder "_examples/_" to help developers better use the image. These examples are
+numerically ordered. Each example has a _docker-compose.yml_ file included, along with some other files. To run an
+example, please start Docker containers using the _docker-compose.yml_ file included, then check HTTP output from URL
+http://127.0.0.1 unless otherwise noted. You may use the following commands to start/stop/restart Docker containers:
 
 ```bash
 ./bin/example.sh start   01 # To start container(s) of the first example.

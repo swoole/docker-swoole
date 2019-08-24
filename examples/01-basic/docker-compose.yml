@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: deminy/swoole:4.4.3-php7.3
+    image: phpswoole/swoole
     environment:
       SWOOLE_EXT_ASYNC: enabled
       SWOOLE_EXT_ORM: disabled

@@ -25,12 +25,12 @@ fi
 if [[ ! -z "$@" ]] ; then
     if [[ "${1}" =~ ^(ba|)sh$ ]] ; then
         # To support Docker commands like following:
-        # docker run --rm swoole/swoole:4.3.5 bash -c "composer --version"
-        # docker run --rm swoole/swoole:4.3.5   sh -c "composer --version"
+        # docker run --rm phpswoole/swoole bash -c "composer --version"
+        # docker run --rm phpswoole/swoole   sh -c "composer --version"
         exec "$@"
     else
         # To support Docker commands invoked in ECS (via command "aws ecs run-task"), kind of like following:
-        # docker run --rm swoole/swoole:4.3.5 "composer --version"
+        # docker run --rm phpswoole/swoole "composer --version"
         exec $@
     fi
 fi

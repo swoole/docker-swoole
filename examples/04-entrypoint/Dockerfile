@@ -1,4 +1,4 @@
-FROM deminy/swoole:4.4.3-php7.3
+FROM phpswoole/swoole
 
 COPY ./rootfilesystem/ /
 

@@ -1,6 +1,6 @@
 # A sample configuration file for generating Dockerfiles. You may find configuration files under folder images/config/.
 
-# Base name of the configuration file must be of a specific version of image swoole/swoole, e.g.,
+# Base name of the configuration file must be of a specific version of image phpswoole/swoole, e.g.,
 #   * 4.3.5
 #   * 4.4.0
 

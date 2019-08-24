@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: deminy/swoole
+    image: phpswoole/swoole
     environment:
       AUTORELOAD: "true"
     ports:
