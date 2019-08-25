@@ -28,6 +28,10 @@ jobs:
       if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
       script: ./bin/build.sh
       env: PHP_VERSION=7.3 ARCHITECTURE=amd64
+    - script: ./vendor/bin/phpcs --standard=PSR12 bin/generate-dockerfiles.php src tests
+      if: branch = master
+    - script: ./vendor/bin/phpunit
+      if: branch = master
     - stage: build_latest_image
       if: branch = master
       script: ./bin/build.sh
