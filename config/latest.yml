@@ -10,10 +10,12 @@ image:
   inotify: true
   swoole_extensions:
     # async:
+    #   version: "8030b9550f64ebb64ce64b6a5f8a0f19dcdc4960"
     #   enabled: true
     orm:
       enabled: true
     # postgresql:
+    #   version: "aaf984b75da3a34aac62d931b517c6d2055f7881"
     #   enabled: true
     serialize:
       enabled: true
