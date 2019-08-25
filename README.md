@@ -24,7 +24,8 @@ You may use the image to serve an HTTP/WebSocket server, or run some one-off com
 
 ```bash
 docker run --rm phpswoole/swoole "php -m"
-docker run --rm phpswoole/swoole "php --re swoole"
+docker run --rm phpswoole/swoole "php --ri swoole"
+docker run --rm phpswoole/swoole "composer --version"
 ```
 
 We have various examples included under folder "_examples/_" to help developers better use the image. These examples are
