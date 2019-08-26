@@ -34,12 +34,12 @@ example, please start Docker containers using the _docker-compose.yml_ file incl
 http://127.0.0.1 unless otherwise noted. You may use the following commands to start/stop/restart Docker containers:
 
 ```bash
-./bin/example.sh start   01 # To start container(s) of the first example.
-./bin/example.sh stop    01 # To stop container(s) of the first example.
-./bin/example.sh restart 01 # To restart container(s) of the first example.
+./bin/example.sh start   00 # To start container(s) of the first example.
+./bin/example.sh stop    00 # To stop container(s) of the first example.
+./bin/example.sh restart 00 # To restart container(s) of the first example.
 ```
 
-To run another example, just replace the last command line parameter _01_ with an example number (e.g., _05_).
+To run another example, just replace the last command line parameter _00_ with an example number (e.g., _05_).
 
 Here is a list of the examples under folder "_examples/_":
 
