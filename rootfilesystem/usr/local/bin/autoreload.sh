@@ -11,7 +11,7 @@ if [[ ! -d "${ROOT_DIR}" ]] ; then
 fi
 
 while true ; do
-    inotifywait -r -q -e close_write,create,delete,modify,move /var/www/
+    inotifywait -r -q -e close_write,create,delete,modify,move "${ROOT_DIR}"
     supervisorctl signal TERM swoole
     sleep 2
 done
