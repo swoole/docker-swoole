@@ -65,7 +65,7 @@ class DockerfileTest extends TestCase
         return [
             [
                 true,
-                '4.3.5',
+                '4.3.6',
                 'a typical semantic version #',
             ],
             [
@@ -96,47 +96,47 @@ class DockerfileTest extends TestCase
             ],
             [
                 false,
-                ' 4.3.5',
+                ' 4.3.6',
                 'leading space found',
             ],
             [
                 false,
-                '4.3.5 ',
+                '4.3.6 ',
                 'trailing space found',
             ],
             [
                 false,
-                ' 4.3.5 ',
+                ' 4.3.6 ',
                 'spaces around',
             ],
             [
                 false,
-                ' 4.3.5a',
+                ' 4.3.6a',
                 'letter(s) found',
             ],
             [
                 false,
-                '4.3.5-',
+                '4.3.6-',
                 'no image revision included',
             ],
             [
                 false,
-                '4.3.5-@',
+                '4.3.6-@',
                 'invalid character(s) in the revision part',
             ],
             [
                 false,
-                '04.3.5',
+                '04.3.6',
                 'leading zero(s) found in major version',
             ],
             [
                 false,
-                '4.03.5',
+                '4.03.6',
                 'leading zero(s) found in minor version',
             ],
             [
                 false,
-                '4.3.05',
+                '4.3.06',
                 'leading zero(s) found in the patch part',
             ],
         ];

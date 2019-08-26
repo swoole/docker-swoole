@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 #
 # How to run this script:
-#     To build Swoole 4.3.5 images for PHP 7.1, 7.2, 7.3 under all supported architectures (including amd64 and arm64v8):
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh
+#     To build Swoole 4.3.6 images for PHP 7.1, 7.2, 7.3 under all supported architectures (including amd64 and arm64v8):
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 ./bin/build.sh
 #
-#     To build Swoole 4.3.5 images for PHP 7.1, 7.2, 7.3 under amd64:
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh default
+#     To build Swoole 4.3.6 images for PHP 7.1, 7.2, 7.3 under amd64:
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 ./bin/build.sh default
 #     or,
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh amd64
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 ./bin/build.sh amd64
 #
-#     To build Swoole 4.3.5 images for PHP 7.1, 7.2, 7.3 under arm64v8:
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 ./bin/build.sh arm64v8
+#     To build Swoole 4.3.6 images for PHP 7.1, 7.2, 7.3 under arm64v8:
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 ./bin/build.sh arm64v8
 #
-#     To build Swoole 4.3.5 images for PHP 7.3 under all supported architectures (including amd64 and arm64v8):
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh
+#     To build Swoole 4.3.6 images for PHP 7.3 under all supported architectures (including amd64 and arm64v8):
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 PHP_VERSION=7.3 ./bin/build.sh
 #
-#     To build image "phpswoole/swoole:4.3.5-php7.3":
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh default
+#     To build image "phpswoole/swoole:4.3.6-php7.3":
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 PHP_VERSION=7.3 ./bin/build.sh default
 #     or,
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh amd64
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 PHP_VERSION=7.3 ./bin/build.sh amd64
 #
-#     To build image "phpswoole/swoole:4.3.5-php7.3-arm64v8":
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.5 PHP_VERSION=7.3 ./bin/build.sh arm64v8
+#     To build image "phpswoole/swoole:4.3.6-php7.3-arm64v8":
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 PHP_VERSION=7.3 ./bin/build.sh arm64v8
 #
 #     To build image "phpswoole/swoole":
 #     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=master ./bin/build.sh
@@ -52,8 +52,8 @@ fi
 if [[ -z "${SWOOLE_VERSION}" ]] ; then
     if [[ ! -z "${TRAVIS_BRANCH}" ]] ; then
         # If you don't pass in a Swoole version, we will try to extract it from current branch name. e.g.,
-        # 1. if current branch name is "4.3.5", we assume Swoole version is "4.3.5";
-        # 2. if current branch name is "4.4.2-1", we assume Swoole version is "4.4.2".
+        # 1. if current branch name is "4.3.6", we assume Swoole version is "4.3.6";
+        # 2. if current branch name is "4.4.4-1", we assume Swoole version is "4.4.4".
         SWOOLE_VERSION=${TRAVIS_BRANCH%%-*}
     else
         echo "Error: Swoole version is empty."
