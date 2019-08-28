@@ -14,7 +14,7 @@
 # Here is an example command to install Swoole and its extension async, orm, postgresql and serialize:
 #
 #     SWOOLE_VERSION=4.4.3                                   \
-#     ASYNC_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
+#     ASYNC_VERSION=4a2b4b69a0d208de25406b39f602f32409ecba63 \
 #     ORM_VERSION=master                                     \
 #     POSTGRESQL_VERSION=1.01                                \
 #     SERIALIZE_VERSION=master                               \
@@ -23,14 +23,14 @@
 # Here is another example command to install Swoole and its extension async only:
 #
 #     SWOOLE_VERSION=4.4.3                                   \
-#     ASYNC_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
+#     ASYNC_VERSION=4a2b4b69a0d208de25406b39f602f32409ecba63 \
 #     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
 #
 # You can specify other predefined variables if needed. For example, on macOS Mojave you may need to specify LDFLAGS,
 # CFLAGS and CPPFLAGS like following:
 #
 #     SWOOLE_VERSION=4.4.3                                   \
-#     ASYNC_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
+#     ASYNC_VERSION=4a2b4b69a0d208de25406b39f602f32409ecba63 \
 #     LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/expat/lib"               \
 #     CFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include"   \
 #     CPPFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include" \
