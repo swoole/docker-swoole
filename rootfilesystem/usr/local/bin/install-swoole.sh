@@ -1,4 +1,43 @@
 #!/usr/bin/env bash
+# This script is used to install Swoole and its extensions in the official Swoole image.
+#
+# You may also use the script locally. To do that, set environment variables "{$EXT_NAME}_VERSION" when running the
+# script, where EXT_NAME should be "SWOOLE" or name of a Swoole extension (in uppercase), and the value should be a
+# branch name, a tag or a Git commit number. For example,
+#
+#     SWOOLE_VERSION=alpine # To install Swoole with latest code from branch "alpine".
+#     ASYNC_VERSION=16d9c484d7abde7dbd47d1f8f411fae80611ee1f # To install Swoole extension "async" with code from a Git commit.
+#     ORM_VERSION=1.01 # To install version 1.01 of Swoole extension "orm".
+#     POSTGRESQL_VERSION=1ccd2ffbdc6e6d1f7b067509817f4bf93fe1982a # To install Swoole extension "postgresql" with code from a Git commit.
+#     SERIALIZE_VERSION=master# To install Swoole extension "serialize" with latest code from branch "master".
+#
+# Here is an example command to install Swoole and its extension async, orm, postgresql and serialize:
+#
+#     SWOOLE_VERSION=4.4.3                                   \
+#     ASYNC_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
+#     ORM_VERSION=master                                     \
+#     POSTGRESQL_VERSION=1.01                                \
+#     SERIALIZE_VERSION=master                               \
+#     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
+#
+# Here is another example command to install Swoole and its extension async only:
+#
+#     SWOOLE_VERSION=4.4.3                                   \
+#     ASYNC_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
+#     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
+#
+# You can specify other predefined variables if needed. For example, on macOS Mojave you may need to specify LDFLAGS,
+# CFLAGS and CPPFLAGS like following:
+#
+#     SWOOLE_VERSION=4.4.3                                   \
+#     ASYNC_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
+#     LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/expat/lib"               \
+#     CFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include"   \
+#     CPPFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include" \
+#     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
+#
+# Before using this script, you should have PHP extension sockets installed, and have packages like openssl installed
+# already.
 
 set -ex
 
@@ -83,7 +122,15 @@ function installExt()
     fi
 }
 
-docker-php-ext-install sockets
+# Get PHP extension sockets installed if needed.
+if ! php -m | grep -q sockets ; then
+    if hash docker-php-ext-install 2>/dev/null ; then
+        docker-php-ext-install sockets
+    else
+        echo Error: PHP extension sockets not installed. Please have it installed first.
+        exit 1
+    fi
+fi
 install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets
 
 for extension_name in async orm postgresql serialize zookeeper ; do
