@@ -9,9 +9,9 @@ image:
     version: 1.9.0
   inotify: true
   swoole_extensions:
-    async:
+    # async:
       # version: "8030b9550f64ebb64ce64b6a5f8a0f19dcdc4960"
-      enabled: true
+      # enabled: true
     orm:
       enabled: true
     postgresql:
