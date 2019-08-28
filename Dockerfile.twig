@@ -15,6 +15,7 @@ RUN \
         libssl-dev                 \
         supervisor                 \
         unzip                      \
+        zlib1g-dev                 \
         --no-install-recommends && \
 {%~ if php_extensions is not empty %}
     pecl update-channels && \
