@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/swoole/docker-swoole.svg?branch=master)](https://travis-ci.org/swoole/docker-swoole)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/swoole/docker-swoole/blob/master/LICENSE)
-
 # Docker Image for Swoole
 
 This image is built for general-purpose, including production deployment. We have different examples included in this
