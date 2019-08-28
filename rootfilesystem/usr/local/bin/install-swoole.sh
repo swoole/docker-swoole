@@ -80,7 +80,10 @@ function download()
         rm -rf "${project_name}"
     fi
 
-    curl -sfL "${downlaod_url}" -o temp.zip
+    if ! curl -sfL "${downlaod_url}" -o temp.zip ; then
+        echo Error: failed to download from URL ${downlaod_url}
+        exit 1
+    fi
     unzip temp.zip
     if [[ ! -d "${unzipped_dir}" ]] ; then
         echo "Error: top directory in the zip file downloaded from URL '${downlaod_url}' is not '${unzipped_dir}'."
