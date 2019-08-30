@@ -6,7 +6,7 @@
 
 set -e
 
-return # stop executing following sample scripts.
+exit # stop executing following sample scripts.
 
 if [[ "${BOOT_MODE}" == "SERVICE" ]] ; then
     echo "Docker container is running in SERVICE mode."
