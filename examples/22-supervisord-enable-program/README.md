@@ -1,17 +1,18 @@
 # Manage Available Programs in Supervisord
 
-In this example, we launch a second HTTP server at port 81 using following command while booting Docker containers:
+In this example, we launch a second HTTP server at port 9502 using following command while booting the Docker container:
 
 ```bash
-enable-supervisord-program.sh swoole3
+enable-supervisord-program.sh swoole2
 ```
 
-Parameter _http81_ references to a _Supervisord_ configuration file _http81.conf_ under folder _/etc/supervisor/available.d_.
+Parameter _swoole2_ references to a _Supervisord_ configuration file _swoole2.conf_ under folder _/etc/supervisor/available.d_.
 
-You may use following commands to check if both web server work as should:
+You may use following commands to check if both web servers work as should:
 
 ```bash
-docker exec -t $(docker ps -qf "name=app") bash -c "curl -i http://127.0.0.1"
-docker exec -t $(docker ps -qf "name=app") bash -c "curl -i http://127.0.0.1:09502"
-docker exec -t $(docker ps -qf "name=app") bash -c "curl -i http://127.0.0.1:09503"
+curl -i http://127.0.0.1
+curl -i http://127.0.0.1:9502
 ```
+
+You may check example "20-supervisord-services" to see how we launch a second Supervisord program in a different way.
