@@ -3,6 +3,9 @@ FROM {{ image_name }}:{{ php_version }}-cli
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
 
+ARG DEV_MODE
+ENV DEV_MODE $DEV_MODE
+
 COPY ./rootfilesystem/ /
 
 RUN \

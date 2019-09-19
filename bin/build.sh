@@ -26,6 +26,9 @@
 #     To build image "phpswoole/swoole":
 #     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=master ./bin/build.sh
 #
+#     To build image "phpswoole/swoole:latest-dev" for local development and debugging purpose:
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=master DEV_MODE=true ./bin/build.sh
+#
 
 set -ex
 
@@ -111,9 +114,16 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
                 else
                     IMAGE_TAG_POSTFIX="-${ARCHITECTURE}"
                 fi
+                if [[ "${DEV_MODE}" == "true" ]] ; then
+                    IMAGE_TAG_POSTFIX="${IMAGE_TAG_POSTFIX}-dev"
+                fi
 
                 IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}${IMAGE_TAG_POSTFIX}"
-                docker build -t "${IMAGE_FULL_NAME}" -f "${DOCKERFILE}" "${CURRENT_SCRIPT_PATH}/.."
+                docker build                         \
+                    --build-arg DEV_MODE=${DEV_MODE} \
+                    -t "${IMAGE_FULL_NAME}"          \
+                    -f "${DOCKERFILE}"               \
+                    "${CURRENT_SCRIPT_PATH}/.."
 
                 # Push the image built only when running in Travis CI.
                 if [[ "${TRAVIS}" == "true" ]] ; then

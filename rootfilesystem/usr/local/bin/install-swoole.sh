@@ -106,6 +106,7 @@ function install()
     ./configure "${@:3}"
     make
     make install
+    make clean
 }
 
 # Install given Swoole extension if its version # is specified.
@@ -134,11 +135,27 @@ if ! php -m | grep -q sockets ; then
         exit 1
     fi
 fi
-install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets
+
+if [[ "true" = "${DEV_MODE}" ]] ; then
+    apt-get install -y gdb valgrind --no-install-recommends
+    DEV_OPTIONS="--enable-debug --enable-debug-log --enable-trace-log"
+else
+    DEV_OPTIONS=""
+fi
+install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets ${DEV_OPTIONS}
 
 for extension_name in async orm postgresql serialize zookeeper ; do
     installExt $extension_name
 done
 
 cd ..
-rm -rf swoole-src
+if [[ "true" = "${DEV_MODE}" ]] ; then
+    echo Swoole is installed for development purpose. A copy of the Swoole source code can be found under folder:
+    if [[ `pwd` == "/" ]] ; then
+        echo /swoole-src
+    else
+        echo `pwd`/swoole-src
+    fi
+else
+    rm -rf swoole-src
+fi

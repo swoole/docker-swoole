@@ -6,6 +6,10 @@ php:
 services:
   - docker
 
+env:
+  - DEV_MODE=false
+  - DEV_MODE=true
+
 matrix:
   fast_finish: true
 
@@ -29,9 +33,9 @@ jobs:
       script: ./bin/build.sh
       env: PHP_VERSION=7.3 ARCHITECTURE=amd64
     - script: ./vendor/bin/phpcs --standard=PSR12 bin/generate-dockerfiles.php src tests
-      if: branch = master
+      if: branch = master AND env(DEV_MODE) = false
     - script: ./vendor/bin/phpunit
-      if: branch = master
+      if: branch = master AND env(DEV_MODE) = false
     - stage: build_latest_image
       if: branch = master
       script: ./bin/build.sh

@@ -5,15 +5,39 @@ Git repository to help developers to get familiar with the image and _Swoole_.
 
 You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
+# List of Images
+
+Image _phpswoole/swoole_ is built daily using latest code from the Swoole project.
+
+Besides that, for each version of Swoole (starting from version 4.4.4), we build images with major versions of PHP (7.1,
+7.2, and 7.3) under different architectures (_amd64_ and _arm64v8_ only for now). For example, we have following
+images built for Swoole 4.4.5:
+
+* `phpswoole/swoole:4.4.5-php7.1`
+* `phpswoole/swoole:4.4.5-php7.2`
+* `phpswoole/swoole:4.4.5-php7.3`
+* `phpswoole/swoole:4.4.5-php7.1-arm64v8`
+* `phpswoole/swoole:4.4.5-php7.2-arm64v8`
+* `phpswoole/swoole:4.4.5-php7.3-arm64v8`
+
+We also build development images where packages like _gdb_ and _Valgrind_ are included for
+debugging purpose. Development images are tagged in the format of _<image name>:<image tag>-dev_ ("dev" postfix added to
+the original image tag). e.g.,
+
+* `phpswoole/swoole:latest-dev`
+* `phpswoole/swoole:4.4.5-php7.1-dev`
+* `phpswoole/swoole:4.4.5-php7.3-arm64v8-dev`
+
 # Feature List
 
-* Support auto-reloading for local development.
 * Built-in scripts to manage _Swoole_ extensions and _Supervisord_ programs.
 * Easy to manage booting scripts in Docker.
 * Allow running PHP scripts and other commands directly in different environments (including ECS).
 * Use one root filesystem for simplicity (one Docker `COPY` command only in dockerfiles).
 * _Composer_ included.
 * Built for different architectures (for now only amd64 and arm64v8 images are built).
+* Support auto-reloading for local development.
+* Support code debugging for local development.
 
 # Examples
 
