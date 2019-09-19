@@ -6,10 +6,6 @@ php:
 services:
   - docker
 
-env:
-  - DEV_MODE=false
-  - DEV_MODE=true
-
 matrix:
   fast_finish: true
 
@@ -18,25 +14,17 @@ before_install:
   - ./bin/generate-dockerfiles.php ${TRAVIS_BRANCH%%-*} || true
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
+script:
+  - ARCHITECTURE=amd64 DEV_MODE=false ./bin/build.sh
+  - ARCHITECTURE=amd64 DEV_MODE=true  ./bin/build.sh
+
 jobs:
   include:
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.1 ARCHITECTURE=amd64
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.2 ARCHITECTURE=amd64
-    - stage: test
-      if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.3 ARCHITECTURE=amd64
-    - script: ./vendor/bin/phpcs --standard=PSR12 bin/generate-dockerfiles.php src tests
-      if: branch = master AND env(DEV_MODE) = false
-    - script: ./vendor/bin/phpunit
-      if: branch = master AND env(DEV_MODE) = false
-    - stage: build_latest_image
-      if: branch = master
-      script: ./bin/build.sh
-      env: PHP_VERSION=7.3 ARCHITECTURE=amd64
+    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      env: PHP_VERSION=7.1
+    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      env: PHP_VERSION=7.2
+    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      env: PHP_VERSION=7.3
+    - if: branch = master
+      env: PHP_VERSION=7.3
