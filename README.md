@@ -81,6 +81,8 @@ Here is a list of the examples under folder "_examples/_":
     * **21-supervisord-tasks**: to show how to run Supervisord program(s) when launching a one-off command with Docker. Please check the [README](examples/21-supervisord-tasks/README.md) file included to see how to run the example.
     * **22-supervisord-enable-program**: to show how to enable program(s) in Supervisord program.
     * **23-supervisord-disable-program**: to show how to disable Supervisord program(s).
+* Debugging:
+    * **30-debug-with-gdb**: Please check the [README](examples/30-debug-with-gdb/README.md) file included to see how to debug your PHP code with _gdb_.
 
 # TODOs
 
