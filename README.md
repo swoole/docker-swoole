@@ -21,7 +21,7 @@ images built for Swoole 4.4.5:
 * `phpswoole/swoole:4.4.5-php7.3-arm64v8`
 
 We also build development images where packages like _gdb_ and _Valgrind_ are included for
-debugging purpose. Development images are tagged in the format of _<image name>:<image tag>-dev_ ("dev" postfix added to
+debugging purpose. Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ ("dev" postfix added to
 the original image tag). e.g.,
 
 * `phpswoole/swoole:latest-dev`
