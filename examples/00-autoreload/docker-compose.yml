@@ -15,7 +15,7 @@ services:
   app:
     image: phpswoole/swoole
     environment:
-      AUTORELOAD: "true"
+      AUTORELOAD_PROGRAMS: "swoole"
     ports:
       - 80:9501
     volumes:
