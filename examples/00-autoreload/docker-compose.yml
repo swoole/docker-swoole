@@ -1,8 +1,8 @@
 # NOTE: The autoloading feature works with image phpswoole/swoole:latest (or phpswoole/swoole in short)
-# only. For any other image, you need to use it as a base image and install package inotify-tools first
-# to make it work, like
+# and phpswoole/swoole:latest-dev only. For any other image, you need to use it as a base image and install package
+# inotify-tools first to make it work, like
 #
-#    FROM phpswoole/swoole:4.4.4-php7.3
+#    FROM phpswoole/swoole:4.4.6-php7.3
 #
 #    RUN \
 #        apt-get update                   && \

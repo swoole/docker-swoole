@@ -56,7 +56,7 @@ if [[ -z "${SWOOLE_VERSION}" ]] ; then
     if [[ ! -z "${TRAVIS_BRANCH}" ]] ; then
         # If you don't pass in a Swoole version, we will try to extract it from current branch name. e.g.,
         # 1. if current branch name is "4.3.6", we assume Swoole version is "4.3.6";
-        # 2. if current branch name is "4.4.4-1", we assume Swoole version is "4.4.4".
+        # 2. if current branch name is "4.4.6-1", we assume Swoole version is "4.4.6".
         SWOOLE_VERSION=${TRAVIS_BRANCH%%-*}
     else
         echo "Error: Swoole version is empty."

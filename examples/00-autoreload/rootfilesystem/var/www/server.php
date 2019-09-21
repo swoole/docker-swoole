@@ -12,12 +12,13 @@ $http->on(
                 http://127.0.0.1 to see the changes.
                 
                 NOTE: The autoloading feature works with image <strong><i>phpswoole/swoole:latest</i></strong>
-                (or <strong><i>phpswoole/swoole</i></strong> in short) only. For any other image, you need to
+                (or <strong><i>phpswoole/swoole</i></strong> in short) and
+                <strong><i>phpswoole/swoole:latest-dev</i></strong> only. For any other image, you need to
                 use it as a base image and install package <i>inotify-tools</i> first to make
                 it work, like
-                
+
                 <i>
-                FROM phpswoole/swoole:4.4.4-php7.3
+                FROM phpswoole/swoole:4.4.6-php7.3
 
                 RUN \
                     apt-get update                   && \
