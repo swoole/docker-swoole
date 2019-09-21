@@ -3,9 +3,9 @@
 #
 status: "under development"
 php:
-  - 7.1.31
-  - 7.2.21
-  - 7.3.8
+  - 7.1.32
+  - 7.2.22
+  - 7.3.9
 image:
   composer:
     version: 1.9.0

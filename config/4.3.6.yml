@@ -3,19 +3,20 @@
 #
 status: "under development"
 php:
-  - 7.1.31
-  - 7.2.21
-  - 7.3.8
+  - 7.1.32
+  - 7.2.22
+  - 7.3.9
 image:
   composer:
     version: 1.9.0
   swoole_extensions:
     async:
-      version: "e0f48077fe59e5d3194bc4215c1cafca39a093cf"
+      version: e0f48077fe59e5d3194bc4215c1cafca39a093cf
       enabled: true
     orm:
+      version: 798678607c98e3314f10f6945d190dc46fa6cdaa
     postgresql:
-      version: "09a5f8e5bbe4adb3473e7dec607962cf741873df"
+      version: 09a5f8e5bbe4adb3473e7dec607962cf741873df
     serialize:
-      version: "838cc85420cf9f5183fc912a7436a782a2f4075e"
+      version: 838cc85420cf9f5183fc912a7436a782a2f4075e
       enabled: true
