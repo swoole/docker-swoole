@@ -1,7 +1,7 @@
 <?php
 
-for ($i = 1; $i <= 2000; $i++) {
+for ($i = 1; $i <= 3; $i++) {
     go(function () {
-        co::sleep(1);
+        co::sleep(0.01);
     });
 }
