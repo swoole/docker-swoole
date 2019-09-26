@@ -36,10 +36,10 @@ fi
 case "${1}" in
     "restart")
         docker-compose -f "${dir}/docker-compose.yml" stop
-        docker-compose -f "${dir}/docker-compose.yml" up --build -d
+        docker-compose -f "${dir}/docker-compose.yml" up --build --force-recreate -d
         ;;
     "start")
-        docker-compose -f "${dir}/docker-compose.yml" up --build -d
+        docker-compose -f "${dir}/docker-compose.yml" up --build --force-recreate -d
         ;;
     "stop")
         docker-compose -f "${dir}/docker-compose.yml" stop
