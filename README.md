@@ -20,13 +20,21 @@ images built for Swoole 4.4.5:
 * `phpswoole/swoole:4.4.5-php7.2-arm64v8`
 * `phpswoole/swoole:4.4.5-php7.3-arm64v8`
 
-We also build development images where packages like _gdb_, _strace_, _tcpdump_, and _Valgrind_ are included for
-debugging purpose. Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ ("dev"
-postfix added to the original image tag). e.g.,
+We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
+Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the
+original image tag). e.g.,
 
 * `phpswoole/swoole:latest-dev`
 * `phpswoole/swoole:4.4.5-php7.1-dev`
 * `phpswoole/swoole:4.4.5-php7.3-arm64v8-dev`
+
+Here is the list of commands and tools available in development images:
+
+* [gdb](https://www.gnu.org/s/gdb)
+* lsof
+* [strace](https://strace.io)
+* [tcpdump](https://www.tcpdump.org)
+* [Valgrind](http://www.valgrind.org)
 
 # Feature List
 
@@ -83,7 +91,7 @@ Here is a list of the examples under folder "_examples/_":
     * **23-supervisord-disable-program**: to show how to disable Supervisord program(s).
 * Debugging:
     * **30-debug-with-gdb**: Please check the [README](examples/30-debug-with-gdb/README.md) file included to see how to debug your PHP code with _gdb_.
-    * **33-debug-with-valgrind**: Please check the [README](examples/33-debug-with-valgrind/README.md) file included to see how to debug your PHP code with _Valgrind_.
+    * **31-debug-with-valgrind**: Please check the [README](examples/31-debug-with-valgrind/README.md) file included to see how to debug your PHP code with _Valgrind_.
 
 # TODOs
 
