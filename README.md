@@ -83,10 +83,10 @@ Here is a list of the examples under folder "_examples/_":
     * **23-supervisord-disable-program**: to show how to disable Supervisord program(s).
 * Debugging:
     * **30-debug-with-gdb**: Please check the [README](examples/30-debug-with-gdb/README.md) file included to see how to debug your PHP code with _gdb_.
+    * **33-debug-with-valgrind**: Please check the [README](examples/33-debug-with-valgrind/README.md) file included to see how to debug your PHP code with _Valgrind_.
 
 # TODOs
 
-* Add more examples.
 * Allow to stop the container gracefully.
 * Support more architectures.
 * Add Alpine image if needed.
