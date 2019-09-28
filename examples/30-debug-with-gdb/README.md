@@ -12,7 +12,7 @@ script _test.php_ included. Any time when prompted with a question, please type 
 continue.
 
 ```text
-(gdb) source /usr/src/swoole/gdbinit # Swoole source code is under folder /swoole-src.
+(gdb) source /usr/src/swoole/gdbinit # Swoole source code is under folder /usr/src/swoole.
 (gdb) b zif_swoole_coroutine_create  # Add a breakpoint.
 (gdb) r test.php                     # Run the PHP script test.php.
 (gdb) co_list                        # Show list of coroutines.
