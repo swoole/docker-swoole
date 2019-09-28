@@ -150,12 +150,23 @@ done
 
 cd ..
 if [[ "true" = "${DEV_MODE}" ]] ; then
-    echo Swoole is installed for development purpose. A copy of the Swoole source code can be found under folder:
+    echo "Swoole is installed for development purpose with source code included:"
+    # if hash docker-php-source 2>/dev/null ; then
+    #     docker-php-source extract
+    #     echo "    * PHP source code can be found under folder /usr/src/php."
+    # fi
+
     if [[ `pwd` == "/" ]] ; then
-        echo /swoole-src
+        if [[ -d /usr/src ]] && [[ ! -d /usr/src/swoole ]] ; then
+            mv /swoole-src /usr/src/swoole
+            swoole_src_dir=/usr/src/swoole
+        else
+            swoole_src_dir=/swoole-src
+        fi
     else
-        echo `pwd`/swoole-src
+        swoole_src_dir="`pwd`/swoole-src"
     fi
+    echo "    * Swoole source code can be found under folder ${swoole_src_dir}."
 else
     rm -rf swoole-src
 fi
