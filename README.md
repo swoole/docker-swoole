@@ -1,5 +1,8 @@
 # Docker Image for Swoole
 
+[![Build Status](https://travis-ci.org/swoole/docker-swoole.svg?branch=master)](https://travis-ci.org/swoole/docker-swoole)
+[![License](https://poser.pugx.org/swoole/docker-swoole/license)](LICENSE)
+
 This image is built for general-purpose, including production deployment. We have different examples included in this
 Git repository to help developers to get familiar with the image and _Swoole_.
 
@@ -19,6 +22,14 @@ images built for Swoole 4.4.5:
 * `phpswoole/swoole:4.4.5-php7.1-arm64v8`
 * `phpswoole/swoole:4.4.5-php7.2-arm64v8`
 * `phpswoole/swoole:4.4.5-php7.3-arm64v8`
+
+Most images have following Swoole extensions installed, although only few of enable are enabled by default:
+
+* [async](https://github.com/swoole/ext-async): Enabled by default in most images.
+* [orm](https://github.com/swoole/ext-orm): Disabled by default in most images.
+* [postgresql](https://github.com/swoole/ext-postgresql): Disabled by default in most images.
+* [serialize](https://github.com/swoole/ext-serialize): Enabled by default in most images.
+* [zookeeper](https://github.com/swoole/ext-zookeeper): Not yet installed in most images.
 
 We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
 Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the
@@ -99,6 +110,8 @@ Here is a list of the examples under folder "_examples/_":
 
 * Allow to stop the container gracefully.
 * Support more architectures.
+* For dev images:
+    * use a PHP base image which has debug symbol added.
 * Add Alpine image if needed.
 
 # Credits
