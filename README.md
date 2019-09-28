@@ -31,10 +31,12 @@ original image tag). e.g.,
 Here is the list of commands and tools available in development images:
 
 * [gdb](https://www.gnu.org/s/gdb)
+* git
 * lsof
 * [strace](https://strace.io)
 * [tcpdump](https://www.tcpdump.org)
 * [Valgrind](http://www.valgrind.org)
+* vim
 
 # Feature List
 

@@ -137,7 +137,7 @@ if ! php -m | grep -q sockets ; then
 fi
 
 if [[ "true" = "${DEV_MODE}" ]] ; then
-    apt-get install -y gdb lsof strace tcpdump valgrind --no-install-recommends
+    apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends
     DEV_OPTIONS="--enable-debug --enable-debug-log --enable-trace-log"
 else
     DEV_OPTIONS=""
