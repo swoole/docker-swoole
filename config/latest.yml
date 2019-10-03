@@ -17,3 +17,5 @@ image:
       enabled: true
     serialize:
       enabled: true
+    zookeeper:
+      enabled: true

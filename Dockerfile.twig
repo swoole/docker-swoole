@@ -9,11 +9,23 @@ ENV DEV_MODE $DEV_MODE
 COPY ./rootfilesystem/ /
 
 RUN \
+    curl                      \
+        -sfL                  \
+        --connect-timeout 5   \
+        --max-time         15 \
+        --retry            5  \
+        --retry-delay      2  \
+        --retry-max-time   60 \
+        http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
+    chmod +x "/usr/bin/composer"                                                               && \
+    composer self-update {{ composer.version }}                                                && \
     apt-get update              && \
     apt-get install -y             \
+        cmake                      \
 {%~ if inotify == true %}
         inotify-tools              \
 {%~ endif %}
+        libargon2-0-dev libcurl4-gnutls-dev libedit-dev libncurses5-dev libxml2-dev \
         libpq-dev                  \
         libssl-dev                 \
         supervisor                 \
@@ -36,22 +48,11 @@ RUN \
     {{ name|upper }}_VERSION={% if data.version is not empty %}{{ data.version }}{%  else %}master{% endif %} \
 {%~ endfor %}
         install-swoole.sh && \
-    docker-php-ext-enable swoole && \
 {%~ for name, data in swoole_extensions %}
     {%~ if data.enabled %}
     docker-php-ext-enable swoole_{{ name }} && \
     {%~ endif %}
 {%~ endfor %}
-    curl                      \
-        -sfL                  \
-        --connect-timeout 5   \
-        --max-time         15 \
-        --retry            5  \
-        --retry-delay      2  \
-        --retry-max-time   60 \
-        http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
-    chmod +x "/usr/bin/composer"                                                               && \
-    composer self-update {{ composer.version }}                                                && \
     mkdir -p /var/log/supervisor && \
     rm -r /var/lib/apt/lists/*
 

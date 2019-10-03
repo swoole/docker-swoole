@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/swoole/docker-swoole.svg?branch=master)](https://travis-ci.org/swoole/docker-swoole)
 [![License](https://img.shields.io/badge/license-apache2-blue.svg)](LICENSE)
 
-This image is built for general-purpose, including production deployment. We have different examples included in this
-Git repository to help developers to get familiar with the image and _Swoole_.
+This image is built for general-purpose. We have different examples included in this Git repository to help developers
+to get familiar with the image and _Swoole_.
 
 You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
@@ -29,7 +29,7 @@ Most images have following Swoole extensions installed, although only few of ena
 * [orm](https://github.com/swoole/ext-orm): Disabled by default in most images.
 * [postgresql](https://github.com/swoole/ext-postgresql): Disabled by default in most images.
 * [serialize](https://github.com/swoole/ext-serialize): Enabled by default in most images.
-* [zookeeper](https://github.com/swoole/ext-zookeeper): Not yet installed in most images.
+* [zookeeper](https://github.com/swoole/ext-zookeeper): Disabled by default or not installed in most images.
 
 We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
 Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the

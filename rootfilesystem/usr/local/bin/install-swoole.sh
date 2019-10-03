@@ -126,6 +126,48 @@ function installExt()
     fi
 }
 
+# Install PHP-X.
+#
+# @param Version #.
+function installPHPX()
+{
+    download phpx $1
+
+    # Build phpx (bin)
+    ./build.sh
+
+    # Build libphpx.so
+    cmake .
+    make
+    make install
+    make clean
+    # Workaround for error loading libphpx:
+    #   error while loading shared libraries: "libphpx.so: cannot open shared object file: No such file or directory"
+    # The system already has /usr/local/lib listed in /etc/ld.so.conf.d/libc.conf, so running `ldconfig` fixes the
+    # problem (another option is to use $LD_LIBRARY_PATH).
+    ldconfig
+
+    cd ..
+}
+
+# Install given Swoole extension if its version # is specified.
+#
+# @param Swoole extension name. e.g., zookeeper.
+function installExtUsingPHPX()
+{
+    EXT_VERSION="${1^^}_VERSION"
+    EXT_VERSION=${!EXT_VERSION}
+    if [ ! -z "${EXT_VERSION}" ] ; then
+        echo "Installing Swoole extension ${1} ${EXT_VERSION}..."
+        download ext-$1 $EXT_VERSION
+        ../phpx/bin/phpx build -v -d
+        ../phpx/bin/phpx install
+        cd ..
+    else
+        echo "Swoole extension ${1} will not be installed."
+    fi
+}
+
 # Get PHP extension sockets installed if needed.
 if ! php -m | grep -q sockets ; then
     if hash docker-php-ext-install 2>/dev/null ; then
@@ -143,12 +185,24 @@ else
     DEV_OPTIONS=""
 fi
 install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets ${DEV_OPTIONS}
+if hash docker-php-ext-enable 2>/dev/null ; then
+    docker-php-ext-enable swoole
+else
+    # TODO: automatically get the Swoole extension enabled if not built using Docker.
+    echo Error: PHP extension swoole is not enabled. Please have it enabled first.
+    exit 1
+fi
+installPHPX
 
-for extension_name in async orm postgresql serialize zookeeper ; do
+for extension_name in async orm postgresql serialize ; do
     installExt $extension_name
+done
+for extension_name in zookeeper ; do
+    installExtUsingPHPX $extension_name
 done
 
 cd ..
+rm -rf swoole-src/phpx
 if [[ "true" = "${DEV_MODE}" ]] ; then
     echo "Swoole is installed for development purpose with source code included:"
     # if hash docker-php-source 2>/dev/null ; then
