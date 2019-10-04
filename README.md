@@ -23,7 +23,7 @@ images built for Swoole 4.4.5:
 * `phpswoole/swoole:4.4.5-php7.2-arm64v8`
 * `phpswoole/swoole:4.4.5-php7.3-arm64v8`
 
-Most images have following Swoole extensions installed, although only few of enable are enabled by default:
+Most images have following Swoole extensions installed, although only few of them are enabled by default:
 
 * [async](https://github.com/swoole/ext-async): Enabled by default in most images.
 * [orm](https://github.com/swoole/ext-orm): Disabled by default in most images.
