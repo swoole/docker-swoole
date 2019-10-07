@@ -38,6 +38,10 @@ CURRENT_SCRIPT_PATH=`pwd -P`
 # Switch back to current directory.
 popd > /dev/null
 
+DEFAULT_ARCHITECTURE=amd64
+DEFAULT_BRANCH=master
+DEFAULT_TAG=latest
+
 if [[ -z "${IMAGE_NAME}" ]] ; then
     DOCKER_REPO=swoole
     if [[ ! -z "${DOCKER_NAMESPACE}" ]] ; then
@@ -63,6 +67,9 @@ if [[ -z "${SWOOLE_VERSION}" ]] ; then
         exit 1
     fi
 fi
+if [[ "${SWOOLE_VERSION}" == "${DEFAULT_BRANCH}" ]] ; then
+    SWOOLE_VERSION=${DEFAULT_TAG}
+fi
 
 if [[ ! -z "${ARCHITECTURE}" ]] ; then
     ARCHITECTURES=(${ARCHITECTURE})
@@ -71,7 +78,10 @@ else
         ARCHITECTURES=(amd64 arm64v8)
     else
         case "$1" in
-            "amd64"|"default")
+            ${DEFAULT_ARCHITECTURE}|"default")
+                ARCHITECTURES=(${DEFAULT_ARCHITECTURE})
+                ;;
+            "amd64")
                 ARCHITECTURES=(amd64)
                 ;;
             "arm64v8")
@@ -85,14 +95,17 @@ else
 fi
 
 IMAGE_CONFIG_FILE="${CURRENT_SCRIPT_PATH}/../config/${SWOOLE_VERSION}.yml"
+if [[ ! -f "${IMAGE_CONFIG_FILE}" ]] || [[ "${SWOOLE_VERSION}" == "${DEFAULT_TAG}" ]]; then
+    if [[ ! -f "${IMAGE_CONFIG_FILE}" ]] ; then
+        # If a version-based configuration file is not found, it means we might want to build an image from a Swoole.
+        # branch Most time this is for development purpose so we will use that Swoole branch to build one amd64 image
+        # only.
+        echo "INFO: configuration file '${IMAGE_CONFIG_FILE}' not found."
+    fi
 
-if [[ ! -f "${IMAGE_CONFIG_FILE}" ]] ; then
-    # If a version-based configuration file is not found, it means we might want to build an image from a Swoole branch.
-    # Most time this is for development purpose so we will use that Swoole branch to build one amd64 image only.
-    echo "INFO: configuration file '${IMAGE_CONFIG_FILE}' not found."
     IMAGE_CONFIG_FILE="${CURRENT_SCRIPT_PATH}/../config/latest.yml"
-    ARCHITECTURES=(amd64)
-    IMAGE_TAGS=(latest)
+    ARCHITECTURES=(${DEFAULT_ARCHITECTURE})
+    IMAGE_TAGS=(${DEFAULT_TAG})
     echo "      Will build image '${IMAGE_NAME}' based on configuration file '${IMAGE_CONFIG_FILE}'."
 fi
 
@@ -100,16 +113,21 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
     for ARCHITECTURE in "${ARCHITECTURES[@]}" ; do
         if [[ -z "${IMAGE_TAGS}" ]] ; then
             if [[ -z "${PHP_VERSION}" ]] ; then
-                IMAGE_TAGS=(`ls temp/dockerfiles/${ARCHITECTURE}/${SWOOLE_VERSION}-*.Dockerfile | xargs -n 1 basename -s .Dockerfile`)
+                IMAGE_TAGS=(`ls -d1 dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/*/ | cut -f4 -d'/' | xargs  -L1 -I '%' echo ${SWOOLE_VERSION}-php'$'`)
             else
                 IMAGE_TAGS=("${SWOOLE_VERSION}-php${PHP_VERSION}")
             fi
         fi
 
         for IMAGE_TAG in "${IMAGE_TAGS[@]}" ; do
-            DOCKERFILE="temp/dockerfiles/${ARCHITECTURE}/${IMAGE_TAG}.Dockerfile"
+            if [[ "${IMAGE_TAG}" == ${DEFAULT_TAG} ]] ; then
+                DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/Dockerfile"
+            else
+                DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/${IMAGE_TAG:(-3)}/Dockerfile"
+            fi
+
             if [[ -f "${DOCKERFILE}" ]] ; then
-                if [[ "${ARCHITECTURE}" == "amd64" ]] ; then
+                if [[ "${ARCHITECTURE}" == "${DEFAULT_ARCHITECTURE}" ]] ; then
                     IMAGE_TAG_POSTFIX=
                 else
                     IMAGE_TAG_POSTFIX="-${ARCHITECTURE}"
@@ -119,6 +137,7 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
                 fi
 
                 IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}${IMAGE_TAG_POSTFIX}"
+                echo "INFO: Building Docker image ${IMAGE_FULL_NAME}."
                 docker build                         \
                     --build-arg DEV_MODE=${DEV_MODE} \
                     -t "${IMAGE_FULL_NAME}"          \

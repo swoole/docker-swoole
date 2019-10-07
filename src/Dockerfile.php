@@ -74,7 +74,7 @@ class Dockerfile
     {
         foreach ($this->getConfig()['php'] as $phpVersion) {
             foreach (array_keys(self::BASE_IMAGES) as $architecture) {
-                $this->renderByArchitecture($phpVersion, $architecture, true);
+                $this->generateDockerFile($phpVersion, $architecture, true);
             }
         }
     }
@@ -89,19 +89,19 @@ class Dockerfile
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function renderByArchitecture(string $phpVersion, string $architecture, bool $save = false): string
+    public function generateDockerFile(string $phpVersion, string $architecture, bool $save = false): string
     {
         $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath())))
             ->load('Dockerfile.twig')
             ->render($this->getContext($phpVersion, $architecture));
 
         if ($save) {
-            $dockerFileDir = $this->getDockerFileDir($architecture);
+            $dockerFileDir = $this->getDockerFileDir($architecture, $phpVersion);
             if (!file_exists($dockerFileDir)) {
                 mkdir($dockerFileDir, 0777, true);
             }
 
-            file_put_contents($this->getDockerFilePath($phpVersion, $dockerFileDir), $dockerFile);
+            file_put_contents("{$dockerFileDir}/Dockerfile", $dockerFile);
         }
 
         return $dockerFile;
@@ -198,11 +198,29 @@ class Dockerfile
 
     /**
      * @param string $architecture
+     * @param string $phpVersion Needed only when creating Dockerfiles for a released version of Swoole.
      * @return string
      */
-    protected function getDockerFileDir(string $architecture): string
+    protected function getDockerFileDir(string $architecture, string $phpVersion): string
     {
-        return "{$this->getBasePath()}/temp/dockerfiles/{$architecture}";
+        switch ($this->getType()) {
+            case self::VERSION_BASED:
+                return sprintf(
+                    "%s/dockerfiles/%s/%s/%s",
+                    $this->getBasePath(),
+                    $this->getSwooleVersion(),
+                    $architecture,
+                    $this->getPhpMajorVersion($phpVersion)
+                );
+            case self::BRANCH_BASED:
+                if ("master" == $this->getSwooleVersion()) {
+                    return "{$this->getBasePath()}/dockerfiles/latest/{$architecture}";
+                } else {
+                    return "{$this->getBasePath()}/dockerfiles/{$this->getSwooleVersion()}/{$architecture}";
+                }
+            default:
+                throw new Exception("The image should be built from a stable version of Swoole or a branch of Swoole.");
+        }
     }
 
     /**
@@ -268,32 +286,5 @@ class Dockerfile
                 'swoole_version' => $this->getSwooleVersion(),
             ]
         );
-    }
-
-    /**
-     * @param string $phpVersion
-     * @param string $dockerFileDir
-     * @return string
-     * @throws Exception
-     */
-    protected function getDockerFilePath(string $phpVersion, string $dockerFileDir = ''): string
-    {
-        switch ($this->getType()) {
-            case self::VERSION_BASED:
-                $filename = sprintf(
-                    '%s-php%s.Dockerfile',
-                    $this->getSwooleVersion(),
-                    $this->getPhpMajorVersion($phpVersion)
-                );
-                break;
-            case self::BRANCH_BASED:
-                $filename = 'latest.Dockerfile';
-                break;
-            default:
-                throw new Exception("The image should be built from a stable version of Swoole or a branch of Swoole.");
-                break;
-        }
-
-        return ($dockerFileDir ? ("{$dockerFileDir}" . DIRECTORY_SEPARATOR) : "") . $filename;
     }
 }
