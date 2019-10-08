@@ -18,7 +18,7 @@ continue.
 (gdb) co_list                        # Shows list of coroutines.
 (gdb) c                              # Continues code execution.
 (gdb) co_list                        # Shows list of coroutines.
-(gdb) co_bt 1                        # Prints the stack trace of current running coroutine.
+(gdb) co_bt 1                        # Prints the stack trace of coroutine #1.
 (gdb) bt                             # Prints a stack trace.
 (gdb) q                              # Quits gdb.
 ```
