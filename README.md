@@ -107,6 +107,36 @@ Here is a list of the examples under folder "_examples/_":
     * **31-debug-with-valgrind**: Please check the [README](https://github.com/swoole/docker-swoole/blob/master/examples/31-debug-with-valgrind/README.md) file included to see how to debug your PHP code with _Valgrind_.
     * **32-debug-with-strace**: Please check the [README](https://github.com/swoole/docker-swoole/blob/master/examples/32-debug-with-strace/README.md) file included to see how to debug your PHP code with _strace_.
 
+# Build Images Manually
+
+The Docker images are built and pushed out automatically through Travis. If you want to build some image manually, please
+follow these three steps.
+
+**1**. Install Composer packages. If you have command "composer" installed already, just run `composer update -n`.
+
+**2**. Use commands like following to create dockerfiles:
+
+```bash
+./bin/generate-dockerfiles.php master # Generate dockerfiles to build images from the master branch of Swoole.
+./bin/generate-dockerfiles.php 4.4.7  # Generate dockerfiles to build images for Swoole 4.4.7.
+```
+
+**3**. Build Docker images with commands like:
+
+```bash
+docker build -t phpswoole/swoole                      -f dockerfiles/latest/amd64/Dockerfile      .
+docker build -t phpswoole/swoole:4.4.7-php7.1         -f dockerfiles/4.4.7/amd64/7.1/Dockerfile   .
+docker build -t phpswoole/swoole:4.4.7-php7.3-arm64v8 -f dockerfiles/4.4.7/arm64v8/7.3/Dockerfile .
+```
+
+To build development images (where extra tools are included), add an argument _DEV_MODE_:
+
+```bash
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev               -f dockerfiles/latest/amd64/Dockerfile      .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.1-dev         -f dockerfiles/4.4.7/amd64/7.1/Dockerfile   .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.3-arm64v8-dev -f dockerfiles/4.4.7/arm64v8/7.3/Dockerfile .
+```
+
 # TODOs
 
 * Allow to stop the container gracefully.
