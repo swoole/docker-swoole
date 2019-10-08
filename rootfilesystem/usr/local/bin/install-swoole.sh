@@ -81,7 +81,7 @@ function download()
     fi
 
     if ! curl -sfL "${downlaod_url}" -o temp.zip ; then
-        echo Error: failed to download from URL ${downlaod_url}
+        echo Error: failed to download from URL "${downlaod_url}"
         exit 1
     fi
     unzip temp.zip
@@ -101,7 +101,7 @@ function download()
 # @param Rest parameters are the configure options.
 function install()
 {
-    download $1 $2
+    download "$1" "$2"
     phpize
     ./configure "${@:3}"
     make
@@ -117,9 +117,9 @@ function installExt()
 {
     EXT_VERSION="${1^^}_VERSION"
     EXT_VERSION=${!EXT_VERSION}
-    if [ ! -z "${EXT_VERSION}" ] ; then
+    if [ -n "${EXT_VERSION}" ] ; then
         echo "Installing Swoole extension ${1} ${EXT_VERSION}..."
-        install ext-$1 $EXT_VERSION "${@:2}"
+        install ext-"$1" "$EXT_VERSION" "${@:2}"
         cd ..
     else
         echo "Swoole extension ${1} will not be installed."
@@ -131,7 +131,7 @@ function installExt()
 # @param Version #.
 function installPHPX()
 {
-    download phpx $1
+    download phpx "$1"
 
     # Build phpx (bin)
     ./build.sh
@@ -157,9 +157,9 @@ function installExtUsingPHPX()
 {
     EXT_VERSION="${1^^}_VERSION"
     EXT_VERSION=${!EXT_VERSION}
-    if [ ! -z "${EXT_VERSION}" ] ; then
+    if [ -n "${EXT_VERSION}" ] ; then
         echo "Installing Swoole extension ${1} ${EXT_VERSION}..."
-        download ext-$1 $EXT_VERSION
+        download ext-"$1" "$EXT_VERSION"
         ../phpx/bin/phpx build -v -d
         ../phpx/bin/phpx install
         cd ..
@@ -192,7 +192,7 @@ else
     echo Error: PHP extension swoole is not enabled. Please have it enabled first.
     exit 1
 fi
-installPHPX
+installPHPX "master"
 
 for extension_name in async orm postgresql serialize ; do
     installExt $extension_name
@@ -210,7 +210,7 @@ if [[ "true" = "${DEV_MODE}" ]] ; then
     #     echo "    * PHP source code can be found under folder /usr/src/php."
     # fi
 
-    if [[ `pwd` == "/" ]] ; then
+    if [[ $(pwd) == "/" ]] ; then
         if [[ -d /usr/src ]] && [[ ! -d /usr/src/swoole ]] ; then
             mv /swoole-src /usr/src/swoole
             swoole_src_dir=/usr/src/swoole
@@ -218,7 +218,7 @@ if [[ "true" = "${DEV_MODE}" ]] ; then
             swoole_src_dir=/swoole-src
         fi
     else
-        swoole_src_dir="`pwd`/swoole-src"
+        swoole_src_dir="$(pwd)/swoole-src"
     fi
     echo "    * Swoole source code can be found under folder ${swoole_src_dir}."
 else
