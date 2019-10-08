@@ -124,17 +124,17 @@ follow these three steps.
 **3**. Build Docker images with commands like:
 
 ```bash
-docker build -t phpswoole/swoole                      -f dockerfiles/latest/amd64/Dockerfile      .
-docker build -t phpswoole/swoole:4.4.7-php7.1         -f dockerfiles/4.4.7/amd64/7.1/Dockerfile   .
-docker build -t phpswoole/swoole:4.4.7-php7.3-arm64v8 -f dockerfiles/4.4.7/arm64v8/7.3/Dockerfile .
+docker build -t phpswoole/swoole                      -f dockerfiles/latest/amd64/Dockerfile         .
+docker build -t phpswoole/swoole:4.4.7-php7.1         -f dockerfiles/4.4.7/amd64/php7.1/Dockerfile   .
+docker build -t phpswoole/swoole:4.4.7-php7.3-arm64v8 -f dockerfiles/4.4.7/arm64v8/php7.3/Dockerfile .
 ```
 
 To build development images (where extra tools are included), add an argument _DEV_MODE_:
 
 ```bash
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev               -f dockerfiles/latest/amd64/Dockerfile      .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.1-dev         -f dockerfiles/4.4.7/amd64/7.1/Dockerfile   .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.3-arm64v8-dev -f dockerfiles/4.4.7/arm64v8/7.3/Dockerfile .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev               -f dockerfiles/latest/amd64/Dockerfile         .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.1-dev         -f dockerfiles/4.4.7/amd64/php7.1/Dockerfile   .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.3-arm64v8-dev -f dockerfiles/4.4.7/arm64v8/php7.3/Dockerfile .
 ```
 
 # TODOs

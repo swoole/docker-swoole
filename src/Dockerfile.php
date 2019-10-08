@@ -206,7 +206,7 @@ class Dockerfile
         switch ($this->getType()) {
             case self::VERSION_BASED:
                 return sprintf(
-                    "%s/dockerfiles/%s/%s/%s",
+                    "%s/dockerfiles/%s/%s/php%s",
                     $this->getBasePath(),
                     $this->getSwooleVersion(),
                     $architecture,

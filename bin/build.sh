@@ -123,7 +123,7 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
             if [[ "${IMAGE_TAG}" == ${DEFAULT_TAG} ]] ; then
                 DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/Dockerfile"
             else
-                DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/${IMAGE_TAG:(-3)}/Dockerfile"
+                DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/${IMAGE_TAG:(-6)}/Dockerfile"
             fi
 
             if [[ -f "${DOCKERFILE}" ]] ; then
