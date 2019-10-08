@@ -104,7 +104,6 @@ if [[ ! -f "${IMAGE_CONFIG_FILE}" ]] || [[ "${SWOOLE_VERSION}" == "${DEFAULT_TAG
     fi
 
     IMAGE_CONFIG_FILE="${CURRENT_SCRIPT_PATH}/../config/latest.yml"
-    ARCHITECTURES=(${DEFAULT_ARCHITECTURE})
     IMAGE_TAGS=(${DEFAULT_TAG})
     echo "      Will build image '${IMAGE_NAME}' based on configuration file '${IMAGE_CONFIG_FILE}'."
 fi
