@@ -13,11 +13,12 @@ continue.
 
 ```text
 (gdb) source /usr/src/swoole/gdbinit # Swoole source code is under folder /usr/src/swoole.
-(gdb) b zif_swoole_coroutine_create  # Add a breakpoint.
-(gdb) r test.php                     # Run the PHP script test.php.
-(gdb) co_list                        # Show list of coroutines.
-(gdb) c                              # Continue code execution.
-(gdb) co_list                        # Show list of coroutines.
-(gdb) bt                             # Print a stack trace.
-(gdb) q                              # Quit gdb.
+(gdb) b zif_swoole_coroutine_create  # Adds a breakpoint.
+(gdb) r test.php                     # Executes the PHP script test.php.
+(gdb) co_list                        # Shows list of coroutines.
+(gdb) c                              # Continues code execution.
+(gdb) co_list                        # Shows list of coroutines.
+(gdb) co_bt 1                        # Prints the stack trace of current running coroutine.
+(gdb) bt                             # Prints a stack trace.
+(gdb) q                              # Quits gdb.
 ```
