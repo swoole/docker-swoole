@@ -25,15 +25,13 @@ done
 
 # We use option "-c" here to suppress following warning message from console output:
 #   UserWarning: Supervisord is running as root and it is searching for its configuration file in default locations...
-if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
-    if [[ "SERVICE" == "${BOOT_MODE}" ]] ; then
-        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
-    else
+if [[ "SERVICE" == "${BOOT_MODE}" ]] ; then
+    /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
+else
+    if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
         /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
     fi
-fi
 
-if [[ ! -z "$@" ]] ; then
     if [[ "${1}" =~ ^(ba|)sh$ ]] ; then
         # To support Docker commands like following:
         # docker run --rm phpswoole/swoole bash -c "composer --version"
