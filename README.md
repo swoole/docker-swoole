@@ -93,6 +93,7 @@ Here is a list of the examples under folder "_examples/_":
     * **04-entrypoint**: to use a self-defined entrypoint script in the Docker image built.
     * **05-boot**: to update content in the Docker container through a booting script.
     * **06-update-token**: to show how to update server configurations with built-in script _update-token.sh_.
+    * **07-disable-default-server**: Please check the [docker-compose.yml](https://github.com/swoole/docker-swoole/blob/master/examples/07-disable-default-server/docker-compose.yml) file included to see show how to disable the default web server created with _Swoole_.
 * Manage PHP extensions and configurations:
     * **10-install-php-extension**: how to install/enable PHP extensions.
     * **11-customize-extension-options**: how to overwrite/customize PHP extension options.
