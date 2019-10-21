@@ -142,8 +142,6 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.3-arm64v8-
 
 * Allow to stop the container gracefully.
 * Support more architectures.
-* For dev images:
-    * use a PHP base image which has debug symbol added.
 * Add Alpine image if needed.
 
 # Credits

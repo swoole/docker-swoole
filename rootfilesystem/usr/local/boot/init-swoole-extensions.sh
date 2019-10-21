@@ -3,7 +3,6 @@
 set -e
 
 for extension_name in async orm postgresql serialize zookeeper ; do
-
     status_field=swoole_ext_${extension_name}
     swoole_extension_status=${status_field^^}
     swoole_extension_status=${!swoole_extension_status}
