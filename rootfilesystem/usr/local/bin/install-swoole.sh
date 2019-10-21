@@ -104,7 +104,7 @@ function install()
     download "$1" "$2"
     phpize
     ./configure "${@:3}"
-    make
+    make -j$(nproc)
     make install
     make clean
 }
@@ -138,7 +138,7 @@ function installPHPX()
 
     # Build libphpx.so
     cmake .
-    make
+    make -j$(nproc)
     make install
     make clean
     # Workaround for error loading libphpx:
