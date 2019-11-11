@@ -3,8 +3,9 @@
 #     1. AUTORELOAD_PROGRAMS: space-separated Supervisor program(s) to be reloaded when file changes detected. e.g.,
 #            AUTORELOAD_PROGRAMS: "swoole"       # Autoreload Supervisor program "swoole" only.
 #            AUTORELOAD_PROGRAMS: "swoole nginx" # Autoreload Supervisor program "swoole" and "nginx".
-#     2. AUTORELOAD_ALL_FILES: If set to "true", "1", "yes", or "y", reload Supervisor program(s) when any file under
-#        the root directory (/var/www in this example) is changed; otherwise, reload only when PHP file(s) are changed.
+#     2. AUTORELOAD_ANY_FILES: Optional. If set to "true", "1", "yes", or "y", reload Supervisor program(s) when any
+#        files under the root directory (/var/www in this example) is changed; otherwise, reload only when PHP file(s)
+#        are changed.
 #
 # NOTE: The autoreloading feature works with image phpswoole/swoole:latest (or phpswoole/swoole in short)
 # and phpswoole/swoole:latest-dev only. For any other image, you need to use it as a base image and install package
@@ -24,7 +25,7 @@ services:
     image: phpswoole/swoole
     environment:
       AUTORELOAD_PROGRAMS: "swoole"
-      AUTORELOAD_ALL_FILES: 0
+      AUTORELOAD_ANY_FILES: 0
     ports:
       - 80:9501
     volumes:
