@@ -15,7 +15,8 @@ if [[ -z "${AUTORELOAD_PROGRAMS}" ]] ; then
 fi
 
 # If environment variable AUTORELOAD_ALL_FILES is set to "true", "1", "yes", or "y", reload Supervisor programs when
-# any file under the root directory (/var/www) is changed; otherwise, reload only when PHP file(s) are changed.
+# any file under the root directory (/var/www by default) is changed; otherwise, reload only when PHP file(s) are
+# changed.
 while true ; do
     while read file ; do
         if [[ "${AUTORELOAD_ALL_FILES,,}" =~ ^(1|true|yes|y)$ ]] || [[ "php" == "${file##*.}" ]] ; then
