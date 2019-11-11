@@ -146,4 +146,4 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.7-php7.3-arm64v8-
 
 # Credits
 
-Current implementation borrows ideas from [Demin](https://deminy.in)'s work at [Glu Mobile](https://glu.com).
+Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://glu.com).
