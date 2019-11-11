@@ -13,8 +13,16 @@ fi
 if [[ -z "${AUTORELOAD_PROGRAMS}" ]] ; then
     AUTORELOAD_PROGRAMS=all
 fi
+
+# If environment variable AUTORELOAD_ALL_FILES is set to "true", "1", "yes", or "y", reload Supervisor programs when
+# any file under the root directory (/var/www) is changed; otherwise, reload only when PHP file(s) are changed.
 while true ; do
-    inotifywait -r -q -e close_write,create,delete,modify,move "${ROOT_DIR}"
+    while read file ; do
+        if [[ "${AUTORELOAD_ALL_FILES,,}" =~ ^(1|true|yes|y)$ ]] || [[ "php" == "${file##*.}" ]] ; then
+            break
+        fi
+    done < <(inotifywait -r -q -m --format "%f" -e close_write,create,delete,modify,move "${ROOT_DIR}")
+
     supervisorctl signal TERM ${AUTORELOAD_PROGRAMS}
     sleep 2
 done
