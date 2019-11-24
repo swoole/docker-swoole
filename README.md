@@ -29,7 +29,7 @@ Most images have following Swoole extensions installed, although only few of the
 * [orm](https://github.com/swoole/ext-orm): Disabled by default in most images.
 * [postgresql](https://github.com/swoole/ext-postgresql): Disabled by default in most images.
 * [serialize](https://github.com/swoole/ext-serialize): Enabled by default in most images.
-* [zookeeper](https://github.com/swoole/ext-zookeeper): Disabled by default or not installed in most images.
+* [zookeeper](https://github.com/swoole/ext-zookeeper): Disabled by default in most images.
 
 We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
 Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the
