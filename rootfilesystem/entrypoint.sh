@@ -26,7 +26,11 @@ done
 # We use option "-c" here to suppress following warning message from console output:
 #   UserWarning: Supervisord is running as root and it is searching for its configuration file in default locations...
 if [[ "SERVICE" == "${BOOT_MODE}" ]] ; then
-    /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
+    if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
+        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
+    else
+        tail -f /dev/null
+    fi
 else
     if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
         /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
