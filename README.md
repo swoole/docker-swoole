@@ -12,8 +12,8 @@ You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 Image _phpswoole/swoole_ is built daily using latest code from the Swoole project.
 
-Besides that, for each version of Swoole (starting from version 4.4.5), we build images with major versions of PHP (7.1
-to 7.4) under different architectures (_amd64_ and _arm64v8_ only for now). For example, we have following
+Besides that, for each version of Swoole (starting from version 4.4.5), we build images with major versions of PHP (7.1,
+7.2, and 7.3) under different architectures (_amd64_ and _arm64v8_ only for now). For example, we have following
 images built for Swoole 4.4.5:
 
 * `phpswoole/swoole:4.4.5-php7.1`

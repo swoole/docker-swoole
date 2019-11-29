@@ -6,7 +6,6 @@ php:
   - 7.1.33
   - 7.2.24
   - 7.3.11
-  - 7.4.0
 image:
   composer:
     version: 1.9.1
