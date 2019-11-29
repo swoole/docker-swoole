@@ -3,7 +3,7 @@
 #
 status: "under development"
 php:
-  - 7.3
+  - 7.4
 image:
   composer:
     version: 1.9.1

@@ -1,4 +1,4 @@
-FROM arm64v8/php:7.1.33-cli
+FROM php:7.4.0-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -18,7 +18,7 @@ RUN \
         --retry-max-time   60 \
         http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
     chmod +x "/usr/bin/composer"                                                               && \
-    composer self-update 1.9.0                                                                 && \
+    composer self-update 1.9.1                                                                 && \
     apt-get update              && \
     apt-get install -y             \
         cmake                      \
@@ -29,8 +29,8 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
-    SWOOLE_VERSION=4.4.9 \
-    ASYNC_VERSION=66cd4b798e3130abda39716107ecbd9746d0369f \
+    SWOOLE_VERSION=4.4.12 \
+    ASYNC_VERSION=cacc9d24b31ceb60ddb0ca0bb65aa6c13c336f4a \
     ORM_VERSION=798678607c98e3314f10f6945d190dc46fa6cdaa \
     POSTGRESQL_VERSION=1782681d71914ba5ad66b1f91e877059f9394009 \
     SERIALIZE_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \

@@ -26,5 +26,7 @@ jobs:
       env: PHP_VERSION=7.2
     - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
       env: PHP_VERSION=7.3
+    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      env: PHP_VERSION=7.4
     - if: branch = master
-      env: PHP_VERSION=7.3
+      env: PHP_VERSION=7.4
