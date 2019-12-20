@@ -1,5 +1,6 @@
 # Docker Image for Swoole
 
+![Docker Pulls](https://img.shields.io/docker/pulls/phpswoole/swoole.svg)
 [![License](https://img.shields.io/badge/license-apache2-blue.svg)](LICENSE)
 
 This image is built for general-purpose. We have different examples included in this Git repository to help developers
