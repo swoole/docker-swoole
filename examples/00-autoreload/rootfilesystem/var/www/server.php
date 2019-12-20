@@ -19,18 +19,6 @@ $http->on(
                 2. AUTORELOAD_ANY_FILES: Optional. If set to "true", "1", "yes", or "y", reload Supervisor program(s)
                    when any files under the root directory (/var/www in this example) is changed; otherwise, reload only
                    when PHP file(s) are changed.
-
-                NOTE: The autoreloading feature works with image phpswoole/swoole:latest (or phpswoole/swoole in short)
-                and phpswoole/swoole:latest-dev only. For any other image, you need to use it as a base image and
-                install package inotify-tools first to make it work, like
-
-                <i>
-                FROM phpswoole/swoole:4.4.6-php7.3
-
-                RUN \
-                    apt-get update                   && \
-                    apt-get install -y inotify-tools && \
-                    rm -r /var/lib/apt/lists/*
                 </i>
                 </pre>
             EOT
