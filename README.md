@@ -1,6 +1,5 @@
 # Docker Image for Swoole
 
-[![Build Status](https://travis-ci.org/swoole/docker-swoole.svg?branch=master)](https://travis-ci.org/swoole/docker-swoole)
 [![License](https://img.shields.io/badge/license-apache2-blue.svg)](LICENSE)
 
 This image is built for general-purpose. We have different examples included in this Git repository to help developers
@@ -10,7 +9,7 @@ You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # List of Images
 
-Image _phpswoole/swoole_ is built daily using latest code from the Swoole project.
+Image _phpswoole/swoole_ is built using a recent commit from the master branch of the [Swoole](https://github.com/swoole/swoole-src) project.
 
 Besides that, for each version of Swoole (starting from version 4.4.5), we build images with major versions of PHP (7.1,
 7.2, and 7.3) under different architectures (_amd64_ and _arm64v8_ only for now). For example, we have following
