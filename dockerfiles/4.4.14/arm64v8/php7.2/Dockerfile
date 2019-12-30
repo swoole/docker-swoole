@@ -30,9 +30,9 @@ RUN \
         zlib1g-dev                 \
         --no-install-recommends && \
     SWOOLE_VERSION=4.4.14 \
-    ASYNC_VERSION=a075f28d7aba2cc1cfd5a22e1e5440c05c108cf3 \
+    ASYNC_VERSION=4.4.14 \
     ORM_VERSION=877667f36a0ed2ddaf4bec8f3ca86550766cf119 \
-    POSTGRESQL_VERSION=bdac440cbb9f011cc84e037a36ca7d2cf56253f4 \
+    POSTGRESQL_VERSION=4.4.14 \
     SERIALIZE_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
     ZOOKEEPER_VERSION=4ae5cdf2aa630dfd590fa63f1779eb2a8a8d2950 \
         install-swoole.sh && \
