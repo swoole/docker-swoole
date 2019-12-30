@@ -107,6 +107,7 @@ Here is a list of the examples under folder "_examples/_":
     * **30-debug-with-gdb**: Please check the [README](https://github.com/swoole/docker-swoole/blob/master/examples/30-debug-with-gdb/README.md) file included to see how to debug your PHP code with _gdb_.
     * **31-debug-with-valgrind**: Please check the [README](https://github.com/swoole/docker-swoole/blob/master/examples/31-debug-with-valgrind/README.md) file included to see how to debug your PHP code with _Valgrind_.
     * **32-debug-with-strace**: Please check the [README](https://github.com/swoole/docker-swoole/blob/master/examples/32-debug-with-strace/README.md) file included to see how to debug your PHP code with _strace_.
+    * **33-debug-with-blackfire**: Please check the [README](https://github.com/swoole/docker-swoole/blob/master/examples/33-debug-with-blackfire/README.md) file included to see how to debug your PHP code with [Blackfire](https://blackfire.io).
 
 # Build Images Manually
 
