@@ -3,14 +3,17 @@ Table of Contents
 
    * [Published Images](#published-images)
       * [Latest](#latest)
+      * [4.4.14](#4414)
+         * [Added](#added)
+      * [4.4.13](#4413)
          * [Changed](#changed)
       * [4.4.12](#4412)
          * [Changed](#changed-1)
       * [4.4.8](#448)
-         * [Added](#added)
+         * [Added](#added-1)
          * [Changed](#changed-2)
       * [4.4.7](#447)
-         * [Added](#added-1)
+         * [Added](#added-2)
          * [Changed](#changed-3)
       * [4.4.6](#446)
          * [Changed](#changed-4)
@@ -22,8 +25,17 @@ Table of Contents
 
 ## Latest
 
+## 4.4.14
+
+### Added
+- Support integration with _Blackfire_.
+- Add new example on debugging PHP code with _Blackfire_.
+
+## 4.4.13
+
 ### Changed
 - Allow to autoreload on PHP file changes only.
+- Upgrade _Composer_ from 1.9.0 to 1.9.1.
 
 ## 4.4.12
 
