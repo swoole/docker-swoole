@@ -92,6 +92,14 @@ function download()
     mv "${unzipped_dir}" "${project_name}"
     rm -f temp.zip
     cd "${project_name}"
+
+    # Temporary hacks to bypass Swoole version checks.
+    if [[ -f ./php_swoole_async.h ]] ; then
+        sed -i.bak 's/define[[:space:]]\{1,\}PHP_SWOOLE_EXT_ASYNC_VERSION_ID[[:space:]]\{1,\}[[:digit:]]\{1,\}/define PHP_SWOOLE_EXT_ASYNC_VERSION_ID 40414/g' ./php_swoole_async.h
+    fi
+    if [[ -f ./swoole_postgresql_coro.h ]] ; then
+        sed -i.bak 's/define[[:space:]]\{1,\}PHP_SWOOLE_EXT_POSTGRESQL_VERSION_ID[[:space:]]\{1,\}[[:digit:]]\{1,\}/define PHP_SWOOLE_EXT_POSTGRESQL_VERSION_ID 40414/g' ./swoole_postgresql_coro.h
+    fi
 }
 
 # Install a Swoole package from source code.
