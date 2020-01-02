@@ -3,38 +3,39 @@ This example shows how to use [Blackfire](https://blackfire.io) and Composer pac
 _Blackfire_ is not included in the images by default, but you can easily get it installed using the built-in script
 _install-blackfire.sh_.
 
-This feature is supported for 4.4.14+ only.
-
 How to run this example?
 
-# 1. Start a Docker Container
+# 1. Set Blackfire Environment Variables
 
-Replace `Your_Blackfire_Server_ID` and `Your_Blackfire_Server_Token` with your Blackfire server ID and server token in
-the following command, then execute it to start a container:
-
-```bash
-docker run --rm --name app \
-    -p 80:9501 \
-    -e BLACKFIRE_SERVER_ID=Your_Blackfire_Server_ID \
-    -e BLACKFIRE_SERVER_TOKEN=Your_Blackfire_Server_Token \
-    -t $(docker build -q .)
-```
-
-# 2. Profile a URL via curl
-
-Execute following command from the Docker host to profile a web URL:
+Get Blackfire credentials from the official website and set these environment variables:
 
 ```bash
-blackfire curl http://127.0.0.1
+export BLACKFIRE_SERVER_ID=
+export BLACKFIRE_SERVER_TOKEN=
+export BLACKFIRE_CLIENT_ID=
+export BLACKFIRE_CLIENT_TOKEN=
 ```
 
-Before running the command, you need to have Blackfire installed on the Docker host, and have Blackfire client ID and
-client token configured properly with command `blackfire config` first.
+From now on, we assume that these environment variables are set up properly.
 
-# 3. Stop the Container
+# 2. Start the Docker Containers
 
-Once done, you can run following command to stop the container:
+Start the Docker containers with one of following two commands:
+
+* `./bin/example.sh start 33` if under root directory of the repository.
+* `docker-compose up --build -d` if under same directory of this file.
+
+# 3. Profile URLs
+
+Execute following command to profile a web URL:
 
 ```bash
-docker stop app
+docker exec -t $(docker ps -qf "label=name=blackfire") blackfire curl http://app:9501
 ```
+
+# 4. Stop the Docker Containers
+
+Once done, you can run one of following two commands to stop the containers:
+
+* `./bin/example.sh stop 33` if under root directory of the repository.
+* `docker-compose stop` if under same directory of this file.

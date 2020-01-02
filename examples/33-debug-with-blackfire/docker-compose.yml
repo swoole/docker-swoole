@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    environment:
+      - BLACKFIRE_SERVER_ID
+      - BLACKFIRE_SERVER_TOKEN
+  blackfire:
+    image: blackfire/blackfire
+    labels:
+      - "name=blackfire"
+    environment:
+      - BLACKFIRE_CLIENT_ID
+      - BLACKFIRE_CLIENT_TOKEN
+    command: tail -f /dev/null
+    links:
+      - app
