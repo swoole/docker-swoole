@@ -3,19 +3,8 @@
 #
 status: "under development"
 php:
-  - 7.3
+  - 7.4
 image:
   composer:
     version: 1.9.1
   inotify: true
-  swoole_extensions:
-    async:
-      enabled: true
-    orm:
-      enabled: true
-    postgresql:
-      enabled: true
-    serialize:
-      enabled: true
-    zookeeper:
-      enabled: true
