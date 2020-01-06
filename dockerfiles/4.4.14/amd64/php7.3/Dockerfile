@@ -29,15 +29,7 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
-    SWOOLE_VERSION=4.4.14 \
-    ASYNC_VERSION=4.4.14 \
-    ORM_VERSION=877667f36a0ed2ddaf4bec8f3ca86550766cf119 \
-    POSTGRESQL_VERSION=4.4.14 \
-    SERIALIZE_VERSION=84982d6f6c68e000c1dbbae3bc46d3630ffef798 \
-    ZOOKEEPER_VERSION=4ae5cdf2aa630dfd590fa63f1779eb2a8a8d2950 \
-        install-swoole.sh && \
-    docker-php-ext-enable swoole_async && \
-    docker-php-ext-enable swoole_serialize && \
+    install-swoole.sh 4.4.14 && \
     mkdir -p /var/log/supervisor && \
     rm -r /var/lib/apt/lists/*
 

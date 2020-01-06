@@ -1,4 +1,4 @@
-FROM arm64v8/php:7.3.13-cli
+FROM arm64v8/php:7.4.1-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
