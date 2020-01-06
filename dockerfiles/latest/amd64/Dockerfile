@@ -30,18 +30,7 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
-    SWOOLE_VERSION=master \
-    ASYNC_VERSION=master \
-    ORM_VERSION=master \
-    POSTGRESQL_VERSION=master \
-    SERIALIZE_VERSION=master \
-    ZOOKEEPER_VERSION=master \
-        install-swoole.sh && \
-    docker-php-ext-enable swoole_async && \
-    docker-php-ext-enable swoole_orm && \
-    docker-php-ext-enable swoole_postgresql && \
-    docker-php-ext-enable swoole_serialize && \
-    docker-php-ext-enable swoole_zookeeper && \
+    install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \
     rm -r /var/lib/apt/lists/*
 

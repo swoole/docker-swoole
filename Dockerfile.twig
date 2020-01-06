@@ -43,16 +43,7 @@ RUN \
         {%~ endif %}
     {%~ endfor %}
 {%~ endif %}
-    SWOOLE_VERSION={{ swoole_version }} \
-{%~ for name, data in swoole_extensions %}
-    {{ name|upper }}_VERSION={% if data.version is not empty %}{{ data.version }}{%  else %}master{% endif %} \
-{%~ endfor %}
-        install-swoole.sh && \
-{%~ for name, data in swoole_extensions %}
-    {%~ if data.enabled %}
-    docker-php-ext-enable swoole_{{ name }} && \
-    {%~ endif %}
-{%~ endfor %}
+    install-swoole.sh {{ swoole_version }} && \
     mkdir -p /var/log/supervisor && \
     rm -r /var/lib/apt/lists/*
 

@@ -24,7 +24,3 @@ image:
     zip: # An extension name.
       version: 1.15.4 # Optional.
       enabled: true # Enable the extension or not. By default it's disabled.
-  swoole_extensions: # List of Swoole extensions.
-    async: # A Swoole extension name.
-      version: master # Point to the master branch by default.
-      enabled: false # Enable the extension or not. By default it's disabled.

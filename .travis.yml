@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - 7.3
+  - 7.4
 
 services:
   - docker
@@ -26,5 +26,7 @@ jobs:
       env: PHP_VERSION=7.2
     - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
       env: PHP_VERSION=7.3
-    # - if: branch = master
-    #   env: PHP_VERSION=7.3
+    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
+      env: PHP_VERSION=7.4
+    - if: branch = master
+      env: PHP_VERSION=7.4
