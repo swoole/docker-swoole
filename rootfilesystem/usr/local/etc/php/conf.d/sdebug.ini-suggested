@@ -1,0 +1,7 @@
+[sdebug]
+zend_extension=xdebug.so
+xdebug.remote_enable=1
+clear_env=no
+error_reporting=E_ALL
+display_startup_errors=On
+display_errors=On
