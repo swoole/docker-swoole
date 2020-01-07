@@ -11,6 +11,8 @@ set -ex
 [[ -z "${SWOOLE_FUNCTIONS_LOADED}" ]] && . functions.sh
 
 if [[ ! -x "${SWOOLE_SRC_DIR}/phpx/bin/phpx" ]] ; then
+    # Here we shouldn't install PHP-X automatically since we want the developer to decide which version of PHP-X to be
+    # used and installed.
     echo "Error: please install PHPX first before intalling a PHPX based extension."
     exit 1
 fi

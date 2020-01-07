@@ -12,9 +12,8 @@ You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 Image _phpswoole/swoole_ is built using a recent commit from the master branch of the [Swoole](https://github.com/swoole/swoole-src) project.
 
-Besides that, for each version of Swoole (starting from version 4.4.5), we build images with major versions of PHP (7.1,
-7.2, and 7.3) under different architectures (_amd64_ and _arm64v8_ only for now). For example, we have following
-images built for Swoole 4.4.5:
+Besides that, we build images with major versions of PHP (7.1 to 7.4) under different architectures (_amd64_ and
+_arm64v8_ only for now). For example, we have following images built for Swoole 4.4.5:
 
 * `phpswoole/swoole:4.4.5-php7.1`
 * `phpswoole/swoole:4.4.5-php7.2`
@@ -22,14 +21,6 @@ images built for Swoole 4.4.5:
 * `phpswoole/swoole:4.4.5-php7.1-arm64v8`
 * `phpswoole/swoole:4.4.5-php7.2-arm64v8`
 * `phpswoole/swoole:4.4.5-php7.3-arm64v8`
-
-Most images have following Swoole extensions installed, although only few of them are enabled by default:
-
-* [async](https://github.com/swoole/ext-async): Enabled by default in most images.
-* [orm](https://github.com/swoole/ext-orm): Disabled by default in most images.
-* [postgresql](https://github.com/swoole/ext-postgresql): Disabled by default in most images.
-* [serialize](https://github.com/swoole/ext-serialize): Enabled by default in most images.
-* [zookeeper](https://github.com/swoole/ext-zookeeper): Disabled by default in most images.
 
 We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
 Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the
@@ -48,6 +39,9 @@ Here is the list of commands and tools available in development images:
 * [tcpdump](https://www.tcpdump.org)
 * [Valgrind](http://www.valgrind.org)
 * vim
+
+[PHP-X](https://github.com/swoole/phpx) and Swoole extensions are not installed by default. Please check section
+"Examples" below to see how to install them manually.
 
 # Feature List
 
@@ -98,6 +92,9 @@ Here is a list of the examples under folder "_examples/_":
     * **10-install-php-extension**: how to install/enable PHP extensions.
     * **11-customize-extension-options**: how to overwrite/customize PHP extension options.
     * **12-php.ini**: how to overwrite/customize PHP options.
+    * **13-install-swoole-extension**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/13-install-swoole-extension) file included to see how to install Swoole extensions like [async](https://github.com/swoole/ext-async), [orm](https://github.com/swoole/ext-orm), [postgresql](https://github.com/swoole/ext-postgresql), and [serialize](https://github.com/swoole/ext-serialize).
+    * **14-install-phpx**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/14-install-phpx) file included to see how to install [PHP-X](https://github.com/swoole/phpx).
+    * **15-install-phpx-extension**: how to install [PHP-X](https://github.com/swoole/phpx) based extensions like [zookeeper](https://github.com/swoole/ext-zookeeper).
 * Manage Supervisord programs:
     * **20-supervisord-services**: to show how to run Supervisord program(s) in Docker.
     * **21-supervisord-tasks**: to show how to run Supervisord program(s) when launching a one-off command with Docker. Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/21-supervisord-tasks) file included to see how to run the example.

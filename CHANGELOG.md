@@ -28,8 +28,15 @@ Table of Contents
 ## 4.4.14
 
 ### Added
+- Support PHP 7.4; latest image is built using PHP 7.4.
+- Add new example on how to install [PHP-X](https://github.com/swoole/phpx).
+- Add new examples on how to install Swoole extensions.
 - Support integration with _Blackfire_.
 - Add new example on debugging PHP code with _Blackfire_.
+
+### Changed
+- Don't install [PHP-X](https://github.com/swoole/phpx) by default.
+- Don't install Swoole extensions by default.
 
 ## 4.4.13
 
