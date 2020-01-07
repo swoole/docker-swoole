@@ -29,7 +29,7 @@ if [[ ! -z "${2}" ]] ; then
     fi
 else
     echo "Error: example name missing."
-    echo $"Usage: $0 [example-name] [restart|start|stop]"
+    echo $"Usage: $0 [restart|start|stop] [example-name]"
     exit 1
 fi
 
@@ -46,7 +46,7 @@ case "${1}" in
         ;;
     *)
         echo "Invalid command ${1}"
-        echo $"Usage: $0 [example-name] [restart|start|stop]"
+        echo $"Usage: $0 [restart|start|stop] [example-name]"
         exit 1
         ;;
 esac
