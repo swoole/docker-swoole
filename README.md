@@ -95,7 +95,7 @@ Here is a list of the examples under folder "_examples/_":
     * **12-php.ini**: how to overwrite/customize PHP options.
     * **13-install-swoole-extension**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/13-install-swoole-extension) file included to see how to install Swoole extensions like [async](https://github.com/swoole/ext-async), [orm](https://github.com/swoole/ext-orm), [postgresql](https://github.com/swoole/ext-postgresql), and [serialize](https://github.com/swoole/ext-serialize).
     * **14-install-phpx**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/14-install-phpx) file included to see how to install [PHP-X](https://github.com/swoole/phpx).
-    * **15-install-phpx-extension**: how to install [PHP-X](https://github.com/swoole/phpx) based extensions like [zookeeper](https://github.com/swoole/ext-zookeeper).
+    * **15-install-phpx-extension**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/15-install-phpx-extension) file included to see how to install [PHP-X](https://github.com/swoole/phpx) based extensions like [zookeeper](https://github.com/swoole/ext-zookeeper).
 * Manage Supervisord programs:
     * **20-supervisord-services**: to show how to run Supervisord program(s) in Docker.
     * **21-supervisord-tasks**: to show how to run Supervisord program(s) when launching a one-off command with Docker. Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/21-supervisord-tasks) file included to see how to run the example.
@@ -106,6 +106,7 @@ Here is a list of the examples under folder "_examples/_":
     * **31-debug-with-valgrind**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/31-debug-with-valgrind) file included to see how to debug your PHP code with _Valgrind_.
     * **32-debug-with-strace**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/32-debug-with-strace) file included to see how to debug your PHP code with _strace_.
     * **33-debug-with-blackfire**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/33-debug-with-blackfire) file included to see how to debug your PHP code with [Blackfire](https://blackfire.io).
+    * **34-debug-with-sdebug**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/34-debug-with-sdebug) file included to see how to debug your PHP code in different ways with [sdebug](https://github.com/mabu233/sdebug) (forked from Xdebug to work with Swoole).
 
 # Build Images Manually
 

@@ -33,6 +33,8 @@ Table of Contents
 - Add new examples on how to install Swoole extensions.
 - Support integration with _Blackfire_.
 - Add new example on debugging PHP code with _Blackfire_.
+- Support integration with _Sdebug_ (a fork of Xdebug).
+- Add new example on debugging PHP code with _Sdebug_.
 
 ### Changed
 - Don't install [PHP-X](https://github.com/swoole/phpx) by default.
