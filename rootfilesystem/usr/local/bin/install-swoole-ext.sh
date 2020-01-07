@@ -19,4 +19,16 @@ if [[ ! -d "${SWOOLE_SRC_DIR}" ]] ; then
     download swoole-src "${SWOOLE_VERSION}"
 fi
 
+case "${1}" in
+    "postgresql")
+        if ! dpkg -s libpq-dev >/dev/null 2>&1 ; then
+            apt-get update
+            apt-get install -y libpq-dev --no-install-recommends
+            rm -r /var/lib/apt/lists/*
+        fi
+        ;;
+    *)
+        ;;
+esac
+
 install ext-"$1" $2 "${@:3}"

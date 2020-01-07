@@ -19,4 +19,10 @@ if [[ ! -d "${SWOOLE_SRC_DIR}" ]] ; then
     download swoole-src "${SWOOLE_VERSION}"
 fi
 
+if ! type cmake > /dev/null ; then
+    apt-get update
+    apt-get install -y cmake --no-install-recommends
+    rm -r /var/lib/apt/lists/*
+fi
+
 installPHPX "$@"

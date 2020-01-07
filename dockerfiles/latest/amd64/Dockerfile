@@ -21,10 +21,7 @@ RUN \
     composer self-update 1.9.1                                                                 && \
     apt-get update              && \
     apt-get install -y             \
-        cmake                      \
         inotify-tools              \
-        libargon2-0-dev libcurl4-gnutls-dev libedit-dev libncurses5-dev libsqlite3-dev libxml2-dev \
-        libpq-dev                  \
         libssl-dev                 \
         supervisor                 \
         unzip                      \
