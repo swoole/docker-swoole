@@ -3,10 +3,5 @@ version: '3'
 services:
   app:
     image: phpswoole/swoole
-    environment:
-      SWOOLE_EXT_ASYNC: enabled
-      SWOOLE_EXT_ORM: disabled
-      SWOOLE_EXT_POSTGRESQL: disabled
-      SWOOLE_EXT_SERIALIZE: enabled
     ports:
       - 80:9501
