@@ -103,9 +103,14 @@ class Dockerfile
             }
 
             file_put_contents("{$dockerFileDir}/Dockerfile", $dockerFile);
-            $hookDir = $this->getHookDir($architecture);
-            if ($hookDir) {
-                (new Filesystem())->mirror($hookDir, "{$dockerFileDir}/hooks");
+
+            $hookTemplatesDir = $this->getHookDir($architecture);
+            if ($hookTemplatesDir) {
+                $hookDir = "{$dockerFileDir}/hooks";
+                if (is_dir($hookDir)) {
+                    (new Filesystem())->remove($hookDir);
+                }
+                (new Filesystem())->mirror($hookTemplatesDir, $hookDir);
             }
         }
 
