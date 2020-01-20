@@ -3,30 +3,13 @@ language: php
 php:
   - 7.4
 
-services:
-  - docker
-
 matrix:
   fast_finish: true
 
 before_install:
   - composer update -n
-  - ./bin/generate-dockerfiles.php ${TRAVIS_BRANCH%%-*} || true
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 script:
-  - ARCHITECTURE=amd64 DEV_MODE=false ./bin/build.sh
-  - ARCHITECTURE=amd64 DEV_MODE=true  ./bin/build.sh
+  - ./vendor/bin/phpcs --standard=PSR12 bin/generate-dockerfiles.php src tests
+  - ./vendor/bin/phpunit
 
-jobs:
-  include:
-    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      env: PHP_VERSION=7.1
-    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      env: PHP_VERSION=7.2
-    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      env: PHP_VERSION=7.3
-    - if: branch =~ /^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-\w+)?$/
-      env: PHP_VERSION=7.4
-    - if: branch = master
-      env: PHP_VERSION=7.4
