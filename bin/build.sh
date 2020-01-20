@@ -24,10 +24,10 @@
 #     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 PHP_VERSION=7.3 ./bin/build.sh arm64v8
 #
 #     To build image "phpswoole/swoole":
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=master ./bin/build.sh
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest ./bin/build.sh
 #
 #     To build image "phpswoole/swoole:latest-dev" for local development and debugging purpose:
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=master DEV_MODE=true ./bin/build.sh
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest DEV_MODE=true ./bin/build.sh
 #
 
 set -ex

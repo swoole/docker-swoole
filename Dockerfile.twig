@@ -40,9 +40,9 @@ RUN \
         {%~ endif %}
     {%~ endfor %}
 {%~ endif %}
-    install-swoole.sh {{ swoole_version }} && \
+    install-swoole.sh {% if swoole_version == "latest" %}master{% else %}{{ swoole_version }}{% endif %} && \
     mkdir -p /var/log/supervisor && \
-    rm -r /var/lib/apt/lists/*
+    rm -r /var/lib/apt/lists/* /usr/local/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []

@@ -17,15 +17,12 @@ use Twig\Error\SyntaxError;
  */
 class Dockerfile
 {
-    const ARCH_AMD64   = 'amd64';
-    const ARCH_ARM64V8 = 'arm64v8';
-    const ARCH_DEFAULT = self::ARCH_AMD64;
-
-    const VERSION_BASED = 0;
-    const BRANCH_BASED  = 1;
+    protected const ARCH_AMD64   = 'amd64';
+    protected const ARCH_ARM64V8 = 'arm64v8';
+    protected const ARCH_DEFAULT = self::ARCH_AMD64;
 
     // @see https://github.com/docker-library/official-images#architectures-other-than-amd64
-    const BASE_IMAGES = [
+    protected const BASE_IMAGES = [
         // architecture    => base image,
         self::ARCH_AMD64   => 'php',
         self::ARCH_ARM64V8 => 'arm64v8/php',
@@ -45,11 +42,6 @@ class Dockerfile
      * @var array
      */
     protected $config;
-
-    /**
-     * @var int
-     */
-    protected $type;
 
     /**
      * Dockerfile constructor.
@@ -92,8 +84,8 @@ class Dockerfile
      */
     public function generateDockerFile(string $phpVersion, string $architecture, bool $save = false): string
     {
-        $dockerFile = (new Environment(new FilesystemLoader("{$this->getBasePath()}/dockerfiles")))
-            ->load($this->getDockerfileTemplate($architecture))
+        $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath())))
+            ->load('Dockerfile.twig')
             ->render($this->getContext($phpVersion, $architecture));
 
         if ($save) {
@@ -157,7 +149,7 @@ class Dockerfile
     {
         $this->swooleVersion = $swooleVersion;
 
-        return $this->setType();
+        return $this;
     }
 
     /**
@@ -180,24 +172,6 @@ class Dockerfile
     }
 
     /**
-     * @return int
-     */
-    public function getType(): int
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return Dockerfile
-     */
-    public function setType(): self
-    {
-        $this->type = $this->isValidSwooleVersion($this->getSwooleVersion()) ? self::VERSION_BASED : self::BRANCH_BASED;
-
-        return $this;
-    }
-
-    /**
      * @param string $phpVersion
      * @return string
      */
@@ -213,24 +187,13 @@ class Dockerfile
      */
     protected function getDockerFileDir(string $architecture, string $phpVersion): string
     {
-        switch ($this->getType()) {
-            case self::VERSION_BASED:
-                return sprintf(
-                    "%s/dockerfiles/%s/%s/php%s",
-                    $this->getBasePath(),
-                    $this->getSwooleVersion(),
-                    $architecture,
-                    $this->getPhpMajorVersion($phpVersion)
-                );
-            case self::BRANCH_BASED:
-                if ("master" == $this->getSwooleVersion()) {
-                    return "{$this->getBasePath()}/dockerfiles/latest/{$architecture}";
-                } else {
-                    return "{$this->getBasePath()}/dockerfiles/{$this->getSwooleVersion()}/{$architecture}";
-                }
-            default:
-                throw new Exception("The image should be built from a stable version of Swoole or a branch of Swoole.");
-        }
+        return sprintf(
+            "%s/dockerfiles/%s/%s/php%s",
+            $this->getBasePath(),
+            $this->getSwooleVersion(),
+            $architecture,
+            $this->getPhpMajorVersion($phpVersion)
+        );
     }
 
     /**
@@ -239,17 +202,7 @@ class Dockerfile
      */
     protected function getConfigFilePath(): string
     {
-        switch ($this->getType()) {
-            case self::VERSION_BASED:
-                $file = $this->getConfigFilePathBySwooleVersion($this->getSwooleVersion());
-                break;
-            case self::BRANCH_BASED:
-                $file = $this->getConfigFilePathBySwooleVersion('latest');
-                break;
-            default:
-                throw new Exception("The image should be built from a stable version of Swoole or a branch of Swoole.");
-                break;
-        }
+        $file = $this->getConfigFilePathBySwooleVersion($this->getSwooleVersion());
 
         if (!is_file($file) || !is_readable($file)) {
             throw new Exception("Unable to load configuration file '{$file}'.");
@@ -274,20 +227,6 @@ class Dockerfile
     protected function isValidSwooleVersion(string $swooleVersion): bool
     {
         return preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
-    }
-
-    /**
-     * @param string $architecture
-     * @return string
-     */
-    protected function getDockerfileTemplate(string $architecture): string
-    {
-        switch ($architecture) {
-            case self::ARCH_DEFAULT:
-                return 'Dockerfile.twig';
-            default:
-                return sprintf('Dockerfile-%s.twig', $architecture);
-        }
     }
 
     /**

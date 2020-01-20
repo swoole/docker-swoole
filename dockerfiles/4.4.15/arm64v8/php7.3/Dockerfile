@@ -6,7 +6,6 @@ ENV TERM            xterm-color
 ARG DEV_MODE
 ENV DEV_MODE $DEV_MODE
 
-COPY qemu-arm-static /usr/bin
 COPY ./rootfilesystem/ /
 
 RUN \
@@ -29,7 +28,7 @@ RUN \
         --no-install-recommends && \
     install-swoole.sh 4.4.15 && \
     mkdir -p /var/log/supervisor && \
-    rm -r /var/lib/apt/lists/*
+    rm -r /var/lib/apt/lists/* /usr/local/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []

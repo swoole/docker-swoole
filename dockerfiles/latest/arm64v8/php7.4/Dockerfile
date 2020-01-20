@@ -18,7 +18,7 @@ RUN \
         --retry-max-time   60 \
         http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
     chmod +x "/usr/bin/composer"                                                               && \
-    composer self-update 1.9.1                                                                 && \
+    composer self-update 1.9.2                                                                 && \
     apt-get update              && \
     apt-get install -y             \
         inotify-tools              \
@@ -29,7 +29,7 @@ RUN \
         --no-install-recommends && \
     install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \
-    rm -r /var/lib/apt/lists/*
+    rm -r /var/lib/apt/lists/* /usr/local/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []

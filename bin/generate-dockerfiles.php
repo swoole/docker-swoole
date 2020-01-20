@@ -1,11 +1,12 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * How to use the script:
  *    ./bin/generate-dockerfiles.php [swoole-version|swoole-branch]
  *    e.g.,
  *    ./bin/generate-dockerfiles.php 4.3.6
- *    ./bin/generate-dockerfiles.php master
+ *    ./bin/generate-dockerfiles.php latest
  * Above command will have dockerfiles created for Swoole 4.3.6 under folder images/dockerfiles/.
  */
 
