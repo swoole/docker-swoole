@@ -8,6 +8,8 @@ ENV DEV_MODE $DEV_MODE
 
 COPY ./rootfilesystem/ /
 
+RUN ls -la /usr/bin/qemu-arm-static
+
 RUN \
     curl                      \
         -sfL                  \
