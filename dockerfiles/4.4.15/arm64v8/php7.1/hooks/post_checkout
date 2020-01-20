@@ -4,5 +4,6 @@
 
 # downloads a local copy of qemu on docker-hub build machines
 curl -sfL https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz | tar zxvf - -C .
-cp qemu-3.0.0+resin-arm/qemu-arm-static ../../../../rootfilesystem/usr/local/bin/.
+cp qemu-3.0.0+resin-arm/qemu-arm-static ../../../../rootfilesystem/usr/bin/.
+ls -la ../../../../rootfilesystem/usr/bin/.
 rm -rf qemu-3.0.0+resin-arm
