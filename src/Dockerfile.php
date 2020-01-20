@@ -2,6 +2,7 @@
 
 namespace Swoole\Docker;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -91,8 +92,8 @@ class Dockerfile
      */
     public function generateDockerFile(string $phpVersion, string $architecture, bool $save = false): string
     {
-        $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath())))
-            ->load('Dockerfile.twig')
+        $dockerFile = (new Environment(new FilesystemLoader("{$this->getBasePath()}/dockerfiles")))
+            ->load($this->getDockerfileTemplate($architecture))
             ->render($this->getContext($phpVersion, $architecture));
 
         if ($save) {
@@ -102,6 +103,10 @@ class Dockerfile
             }
 
             file_put_contents("{$dockerFileDir}/Dockerfile", $dockerFile);
+            $hookDir = $this->getHookDir($architecture);
+            if ($hookDir) {
+                (new Filesystem())->mirror($hookDir, "{$dockerFileDir}/hooks");
+            }
         }
 
         return $dockerFile;
@@ -264,6 +269,31 @@ class Dockerfile
     protected function isValidSwooleVersion(string $swooleVersion): bool
     {
         return preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
+    }
+
+    /**
+     * @param string $architecture
+     * @return string
+     */
+    protected function getDockerfileTemplate(string $architecture): string
+    {
+        switch ($architecture) {
+            case self::ARCH_DEFAULT:
+                return 'Dockerfile.twig';
+            default:
+                return sprintf('Dockerfile-%s.twig', $architecture);
+        }
+    }
+
+    /**
+     * @param string $architecture
+     * @return string
+     */
+    protected function getHookDir(string $architecture): string
+    {
+        $dir = sprintf("%s/hooks/%s", $this->getBasePath(), $architecture);
+
+        return (is_dir($dir) ? $dir : "");
     }
 
     /**

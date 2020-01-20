@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo adfasdfasdfasfdsadfas
+ehco a > a.txt
+

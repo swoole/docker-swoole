@@ -6,6 +6,7 @@ ENV TERM            xterm-color
 ARG DEV_MODE
 ENV DEV_MODE $DEV_MODE
 
+COPY qemu-arm-static /usr/bin
 COPY ./rootfilesystem/ /
 
 RUN \

@@ -22,3 +22,7 @@
 
 # Ignore temporary files
 /temp/
+
+# Ignore Docker files
+qemu-3.0.0+resin-arm
+qemu-arm-static

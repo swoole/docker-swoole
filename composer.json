@@ -10,6 +10,7 @@
     "phpunit/phpunit": ">=8.0",
     "squizlabs/php_codesniffer": ">=3.0",
     "swoole/ide-helper": "@dev",
+    "symfony/filesystem":"~4.3.0",
     "symfony/yaml": "~4.3.0",
     "twig/twig": "~2.11.0"
   },
