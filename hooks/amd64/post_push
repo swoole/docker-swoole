@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -ex
-
-# To push the dev image.
-docker push "${IMAGE_NAME}-dev"

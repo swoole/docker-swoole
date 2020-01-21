@@ -7,7 +7,7 @@
 This image is built for general-purpose. We have different examples included in this Git repository to help developers
 to get familiar with the image and _Swoole_.
 
-You may get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
+You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # List of Images
 

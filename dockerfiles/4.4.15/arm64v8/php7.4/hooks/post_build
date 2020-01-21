@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -ex
-
-# To build the dev image.
-docker build --build-arg DEV_MODE=true  -t "${IMAGE_NAME}-dev" -f ./Dockerfile ../../../../

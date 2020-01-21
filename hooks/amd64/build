@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -ex
+
+docker build --build-arg DEV_MODE -t "${IMAGE_NAME}" -f ./Dockerfile ../../../../
