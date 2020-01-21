@@ -30,6 +30,7 @@ Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag
 original image tag). e.g.,
 
 * `phpswoole/swoole:latest-dev`
+* `phpswoole/swoole:latest-arm64v8-dev`
 * `phpswoole/swoole:4.4.15-php7.1-dev`
 * `phpswoole/swoole:4.4.15-php7.4-arm64v8-dev`
 
