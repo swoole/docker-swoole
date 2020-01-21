@@ -28,7 +28,7 @@ RUN \
         --no-install-recommends && \
     install-swoole.sh 4.4.15 && \
     mkdir -p /var/log/supervisor && \
-    rm -r /var/lib/apt/lists/* /usr/bin/qemu-*-static
+    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
