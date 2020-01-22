@@ -4,13 +4,6 @@
 
 set -eux
 
-if [[ "-dev" == ${DOCKER_TAG:(-4)} ]] ; then
-    DEV_MODE=true
-else
-    DEV_MODE=false
-fi
-echo "DEV_MODE=${DEV_MODE}" > ./custom_hook_env
-
 # Register qemu-*-static for all supported processors except the
 # current one, but also remove all registered binfmt_misc before
 docker run --rm --privileged multiarch/qemu-user-static:register --reset

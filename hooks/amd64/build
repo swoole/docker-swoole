@@ -2,6 +2,10 @@
 
 set -eux
 
-source ./custom_hook_env
+if [[ "-dev" == ${DOCKER_TAG:(-4)} ]] ; then
+    DEV_MODE=true
+else
+    DEV_MODE=false
+fi
 
 docker build --build-arg DEV_MODE=${DEV_MODE} -t "${IMAGE_NAME}" -f ./Dockerfile ../../../../
