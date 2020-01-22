@@ -24,5 +24,6 @@
 /temp/
 
 # Ignore Docker files
+custom_hook_env
 qemu-*+resin-*
 qemu-*-static

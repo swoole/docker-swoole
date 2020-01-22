@@ -2,13 +2,14 @@
 # @see https://github.com/docker/hub-feedback/issues/1261#issuecomment-441126749 Support automated ARM builds
 # @see https://hub.docker.com/r/multiarch/qemu-user-static/
 
-set -ex
+set -eux
 
 if [[ "-dev" == ${DOCKER_TAG:(-4)} ]] ; then
-    export DEV_MODE=true
+    DEV_MODE=true
 else
-    export DEV_MODE=false
+    DEV_MODE=false
 fi
+echo "DEV_MODE=${DEV_MODE}" > ./custom_hook_env
 
 # Register qemu-*-static for all supported processors except the
 # current one, but also remove all registered binfmt_misc before

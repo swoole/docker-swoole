@@ -1,5 +1,7 @@
 #!/bin/bash
 
-set -ex
+set -eux
 
-docker build --build-arg DEV_MODE -t "${IMAGE_NAME}" -f ./Dockerfile ../../../../
+source ./custom_hook_env
+
+docker build --build-arg DEV_MODE=${DEV_MODE} -t "${IMAGE_NAME}" -f ./Dockerfile ../../../../

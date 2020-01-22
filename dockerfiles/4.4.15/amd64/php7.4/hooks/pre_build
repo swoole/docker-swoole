@@ -1,9 +1,10 @@
 #!/bin/bash
 
-set -ex
+set -eux
 
 if [[ "-dev" == ${DOCKER_TAG:(-4)} ]] ; then
-    export DEV_MODE=true
+    DEV_MODE=true
 else
-    export DEV_MODE=false
+    DEV_MODE=false
 fi
+echo "DEV_MODE=${DEV_MODE}" > ./custom_hook_env
