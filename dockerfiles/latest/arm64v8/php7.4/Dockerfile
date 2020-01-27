@@ -29,7 +29,7 @@ RUN \
         --no-install-recommends && \
     install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \
-    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static /usr/src/php.tar.xz*
+    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
