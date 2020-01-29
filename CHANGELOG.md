@@ -1,29 +1,39 @@
 Table of Contents
 =================
 
+   * [Table of Contents](#table-of-contents)
    * [Published Images](#published-images)
       * [Latest](#latest)
+      * [4.4.15](#4415)
+         * [Changed](#changed)
       * [4.4.14](#4414)
          * [Added](#added)
-      * [4.4.13](#4413)
-         * [Changed](#changed)
-      * [4.4.12](#4412)
          * [Changed](#changed-1)
+      * [4.4.13](#4413)
+         * [Changed](#changed-2)
+      * [4.4.12](#4412)
+         * [Changed](#changed-3)
       * [4.4.8](#448)
          * [Added](#added-1)
-         * [Changed](#changed-2)
+         * [Changed](#changed-4)
       * [4.4.7](#447)
          * [Added](#added-2)
-         * [Changed](#changed-3)
-      * [4.4.6](#446)
-         * [Changed](#changed-4)
-      * [4.4.5](#445)
          * [Changed](#changed-5)
+      * [4.4.6](#446)
+         * [Changed](#changed-6)
+      * [4.4.5](#445)
+         * [Changed](#changed-7)
       * [4.3.6](#436)
 
 # Published Images
 
 ## Latest
+
+## 4.4.15
+
+### Changed
+- Upgrade _Composer_ from 1.9.1 to 1.9.2.
+- Start building images through Docker Hub instead of Travis.
 
 ## 4.4.14
 
