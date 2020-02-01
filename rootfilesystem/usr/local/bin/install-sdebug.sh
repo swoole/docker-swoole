@@ -26,7 +26,7 @@ else
     echo "Error: PHP extension \"sdebug\" supports PHP 7 only."
     exit 1
 fi
-downlaod_url="https://github.com/mabu233/${project_name}/archive/${version}.zip"
+downlaod_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
 unzipped_dir="${project_name}-${version}"
 
 rm -rf temp.zip "${unzipped_dir}"

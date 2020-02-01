@@ -1,6 +1,6 @@
 [TOC]
 
-[Xdebug](https://xdebug.org) doesn't work with Swoole. For debugging purpose we have to use [Sdebug](https://github.com/mabu233/sdebug) instead, which is a fork of Xdebug.
+[Xdebug](https://xdebug.org) doesn't work with Swoole. For debugging purpose we have to use [Sdebug](https://github.com/swoole/sdebug) instead, which is a fork of Xdebug.
 
 This example shows how to use Sdebug, PHPStorm, and the Swoole image together to debug PHP 7.3 scripts. If you use other
 versions of PHP, Sdebug might not work as discussed on this page.
@@ -64,5 +64,5 @@ Run command `./bin/example.sh stop 34` to stop the Docker container.
 
 # References
 
-* Github project [Sdebug](https://github.com/mabu233/sdebug)
+* Github project [Sdebug](https://github.com/swoole/sdebug)
 * [Xdebug official site](https://xdebug.org)
