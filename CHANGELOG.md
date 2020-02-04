@@ -32,7 +32,7 @@ Table of Contents
 ## 4.4.15
 
 ### Changed
-- Upgrade _Composer_ from 1.9.1 to 1.9.2.
+- Upgrade _Composer_ from 1.9.1 to 1.9.3.
 - Start building images through Docker Hub instead of Travis.
 
 ## 4.4.14
