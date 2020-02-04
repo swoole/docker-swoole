@@ -18,7 +18,7 @@ RUN \
         --retry-max-time   60 \
         http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
     chmod +x "/usr/bin/composer"                                                               && \
-    composer self-update 1.9.2                                                                 && \
+    composer self-update 1.9.3                                                                 && \
     apt-get update              && \
     apt-get install -y             \
         libssl-dev                 \

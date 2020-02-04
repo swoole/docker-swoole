@@ -9,4 +9,4 @@ php:
   - 7.4.1
 image:
   composer:
-    version: 1.9.2
+    version: 1.9.3
