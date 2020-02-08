@@ -3,12 +3,12 @@
 #
 status: "under development"
 php:
-  - 7.1.32
-  - 7.2.22
-  - 7.3.9
+  - "7.1.32"
+  - "7.2.22"
+  - "7.3.9"
 image:
   composer:
-    version: 1.9.0
+    version: "1.9.0"
   swoole_extensions:
     async:
       version: 4.4.7

@@ -13,14 +13,14 @@
 #     There are new releases out and this tag should no longer being used in production.
 status: "under development"
 php: # List of PHP versions to build for.
-  - 7.1.29
-  - 7.2.19
-  - 7.3.6
+  - "7.1.29"
+  - "7.2.19"
+  - "7.3.6"
 image:
   composer:
-    version: 1.8.6 # Composer version.
+    version: "1.8.6" # Composer version.
   inotify: false # Install package inotify-tools or not. By default it's not installed.
   php_extensions: # List of PECL extensions to be installed.
     zip: # An extension name.
-      version: 1.15.4 # Optional.
+      version: "1.15.4" # Optional.
       enabled: true # Enable the extension or not. By default it's disabled.
