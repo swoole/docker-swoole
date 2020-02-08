@@ -10,6 +10,8 @@
  * Above command will have dockerfiles created for Swoole 4.3.6 under folder images/dockerfiles/.
  */
 
+declare(strict_types=1);
+
 use Swoole\Docker\Dockerfile;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';

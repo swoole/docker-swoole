@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Swoole\Docker;
 
 use Symfony\Component\Filesystem\Filesystem;
