@@ -24,10 +24,10 @@
 #     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=4.3.6 PHP_VERSION=7.3 ./bin/build.sh arm64v8
 #
 #     To build image "phpswoole/swoole":
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest ./bin/build.sh
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest PHP_VERSION=7.4 ./bin/build.sh
 #
 #     To build image "phpswoole/swoole:latest-dev" for local development and debugging purpose:
-#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest DEV_MODE=true ./bin/build.sh
+#     IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest PHP_VERSION=7.4 DEV_MODE=true ./bin/build.sh
 #
 
 set -ex
@@ -120,7 +120,11 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
 
         for IMAGE_TAG in "${IMAGE_TAGS[@]}" ; do
             if [[ "${IMAGE_TAG}" == ${DEFAULT_TAG} ]] ; then
-                DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/Dockerfile"
+                if [[ -z "${PHP_VERSION}" ]] ; then
+                    echo "Error: environment variable '${PHP_VERSION}' is missing or empty."
+                    exit 1
+                fi
+                DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/php${PHP_VERSION}/Dockerfile"
             else
                 DOCKERFILE="dockerfiles/${SWOOLE_VERSION}/${ARCHITECTURE}/${IMAGE_TAG:(-6)}/Dockerfile"
             fi
