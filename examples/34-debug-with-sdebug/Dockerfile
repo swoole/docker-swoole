@@ -1,4 +1,4 @@
-FROM phpswoole/swoole:4.4.14-php7.3
+FROM phpswoole/swoole
 
 RUN install-sdebug.sh
 

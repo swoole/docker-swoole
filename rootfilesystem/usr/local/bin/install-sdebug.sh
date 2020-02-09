@@ -18,8 +18,11 @@ if [[ "7" == $(php -r "echo PHP_MAJOR_VERSION;") ]] ; then
         "3")
             version=sdebug_2_7
             ;;
+        "4")
+            version=sdebug_2_9
+            ;;
         *)
-            echo "Error: PHP extension \"sdebug\" supports PHP 7.1 to 7.3 only."
+            echo "Error: PHP extension \"sdebug\" supports PHP 7.1 to 7.4 only."
             exit 1
     esac
 else

@@ -2,7 +2,7 @@
 
 [Xdebug](https://xdebug.org) doesn't work with Swoole. For debugging purpose we have to use [Sdebug](https://github.com/swoole/sdebug) instead, which is a fork of Xdebug.
 
-This example shows how to use Sdebug, PHPStorm, and the Swoole image together to debug PHP 7.3 scripts. If you use other
+This example shows how to use Sdebug, PHPStorm, and the Swoole image together to debug PHP 7.3+ scripts. If you use other
 versions of PHP, Sdebug might not work as discussed on this page.
 
 # Settings
@@ -56,9 +56,9 @@ In _Options_ page, select option _PhpStorm_ with value _PHPSTORM_ under section 
 
 Now You can try following endpoints to check how Sdebug is used:
 
-* [http://127.0.0.1](http://127.0.0.1): The default home page from the base image.
-* [http://127.0.0.1/breakpoint.php](http://127.0.0.1/breakpoint.php): This sample code is used to show how to do remote debugging with Sdebug.
-* [http://127.0.0.1/phpinfo.php](http://127.0.0.1/phpinfo.php): From this phpinfo page you can see that Sdebug is enabled with customized configurations.
+* _http://<span></span>127.0.0.1_: The default home page from the base image.
+* _http://<span></span>127.0.0.1/breakpoint_: This sample code is used to show how to do remote debugging with Sdebug.
+* _http://<span></span>127.0.0.1/phpinfo_: From this phpinfo page you can see that Sdebug is enabled with customized configurations.
 
 Run command `./bin/example.sh stop 34` to stop the Docker container.
 
