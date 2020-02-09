@@ -228,7 +228,7 @@ class Dockerfile
      */
     protected function isValidSwooleVersion(string $swooleVersion): bool
     {
-        return preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
+        return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
     }
 
     /**

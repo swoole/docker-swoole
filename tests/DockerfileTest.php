@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Swoole\Tests\Docker;
 
 use CrowdStar\Reflection\Reflection;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Swoole\Docker\Dockerfile;
-use Swoole\Exception;
 
 /**
  * Class DockerfileTest
