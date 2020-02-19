@@ -4,6 +4,7 @@ Table of Contents
    * [Table of Contents](#table-of-contents)
    * [Published Images](#published-images)
       * [Latest](#latest)
+      * [4.4.16](#4416)
       * [4.4.15](#4415)
          * [Changed](#changed)
       * [4.4.14](#4414)
@@ -28,6 +29,8 @@ Table of Contents
 # Published Images
 
 ## Latest
+
+## 4.4.16
 
 ## 4.4.15
 
