@@ -4,9 +4,9 @@
 status: "under development"
 php:
   - "7.1.33"
-  - "7.2.27"
-  - "7.3.14"
-  - "7.4.2"
+  - "7.2.28"
+  - "7.3.15"
+  - "7.4.3"
 image:
   composer:
     version: "1.9.3"
