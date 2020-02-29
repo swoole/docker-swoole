@@ -14,16 +14,16 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 Image _phpswoole/swoole_ is built using a recent commit from the master branch of the [Swoole](https://github.com/swoole/swoole-src) project.
 
 Besides that, we build images with major versions of PHP (7.1 to 7.4) under different architectures (_amd64_ and
-_arm64v8_ only for now). For example, we have following images built for Swoole 4.4.15:
+_arm64v8_ only for now). For example, we have following images built for Swoole 4.4.16:
 
-* `phpswoole/swoole:4.4.15-php7.1`
-* `phpswoole/swoole:4.4.15-php7.2`
-* `phpswoole/swoole:4.4.15-php7.3`
-* `phpswoole/swoole:4.4.15-php7.4`
-* `phpswoole/swoole:4.4.15-php7.1-arm64v8`
-* `phpswoole/swoole:4.4.15-php7.2-arm64v8`
-* `phpswoole/swoole:4.4.15-php7.3-arm64v8`
-* `phpswoole/swoole:4.4.15-php7.4-arm64v8`
+* `phpswoole/swoole:4.4.16-php7.1`
+* `phpswoole/swoole:4.4.16-php7.2`
+* `phpswoole/swoole:4.4.16-php7.3`
+* `phpswoole/swoole:4.4.16-php7.4`
+* `phpswoole/swoole:4.4.16-php7.1-arm64v8`
+* `phpswoole/swoole:4.4.16-php7.2-arm64v8`
+* `phpswoole/swoole:4.4.16-php7.3-arm64v8`
+* `phpswoole/swoole:4.4.16-php7.4-arm64v8`
 
 We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
 Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the
@@ -31,8 +31,8 @@ original image tag). e.g.,
 
 * `phpswoole/swoole:latest-dev`
 * `phpswoole/swoole:latest-arm64v8-dev`
-* `phpswoole/swoole:4.4.15-php7.1-dev`
-* `phpswoole/swoole:4.4.15-php7.4-arm64v8-dev`
+* `phpswoole/swoole:4.4.16-php7.1-dev`
+* `phpswoole/swoole:4.4.16-php7.4-arm64v8-dev`
 
 Here is the list of commands and tools available in development images:
 
@@ -122,7 +122,7 @@ follow these three steps.
 
 ```bash
 ./bin/generate-dockerfiles.php latest # Generate dockerfiles to build images from the master branch of Swoole.
-./bin/generate-dockerfiles.php 4.4.15 # Generate dockerfiles to build images for Swoole 4.4.15.
+./bin/generate-dockerfiles.php 4.4.16 # Generate dockerfiles to build images for Swoole 4.4.16.
 ```
 
 **3**. Build Docker images with commands like:
@@ -130,8 +130,8 @@ follow these three steps.
 ```bash
 docker build -t phpswoole/swoole                       -f dockerfiles/latest/amd64/php7.4/Dockerfile   .
 docker build -t phpswoole/swoole:latest-arm64v8        -f dockerfiles/latest/arm64v8/php7.4/Dockerfile .
-docker build -t phpswoole/swoole:4.4.15-php7.1         -f dockerfiles/4.4.15/amd64/php7.1/Dockerfile   .
-docker build -t phpswoole/swoole:4.4.15-php7.4-arm64v8 -f dockerfiles/4.4.15/arm64v8/php7.4/Dockerfile .
+docker build -t phpswoole/swoole:4.4.16-php7.1         -f dockerfiles/4.4.16/amd64/php7.1/Dockerfile   .
+docker build -t phpswoole/swoole:4.4.16-php7.4-arm64v8 -f dockerfiles/4.4.16/arm64v8/php7.4/Dockerfile .
 ```
 
 To build development images (where extra tools are included), add an argument _DEV_MODE_:
@@ -139,8 +139,8 @@ To build development images (where extra tools are included), add an argument _D
 ```bash
 docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev                -f dockerfiles/latest/amd64/php7.4/Dockerfile   .
 docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-arm64v8-dev        -f dockerfiles/latest/arm64v8/php7.4/Dockerfile .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.15-php7.1-dev         -f dockerfiles/4.4.15/amd64/php7.1/Dockerfile   .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.15-php7.4-arm64v8-dev -f dockerfiles/4.4.15/arm64v8/php7.4/Dockerfile .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.16-php7.1-dev         -f dockerfiles/4.4.16/amd64/php7.1/Dockerfile   .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.4.16-php7.4-arm64v8-dev -f dockerfiles/4.4.16/arm64v8/php7.4/Dockerfile .
 ```
 
 # TODOs
