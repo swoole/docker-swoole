@@ -1,34 +1,40 @@
 Table of Contents
 =================
 
-   * [Table of Contents](#table-of-contents)
    * [Published Images](#published-images)
       * [Latest](#latest)
+      * [4.4.17](#4417)
+         * [Changed](#changed)
       * [4.4.16](#4416)
       * [4.4.15](#4415)
-         * [Changed](#changed)
+         * [Changed](#changed-1)
       * [4.4.14](#4414)
          * [Added](#added)
-         * [Changed](#changed-1)
-      * [4.4.13](#4413)
          * [Changed](#changed-2)
-      * [4.4.12](#4412)
+      * [4.4.13](#4413)
          * [Changed](#changed-3)
+      * [4.4.12](#4412)
+         * [Changed](#changed-4)
       * [4.4.8](#448)
          * [Added](#added-1)
-         * [Changed](#changed-4)
+         * [Changed](#changed-5)
       * [4.4.7](#447)
          * [Added](#added-2)
-         * [Changed](#changed-5)
-      * [4.4.6](#446)
          * [Changed](#changed-6)
-      * [4.4.5](#445)
+      * [4.4.6](#446)
          * [Changed](#changed-7)
+      * [4.4.5](#445)
+         * [Changed](#changed-8)
       * [4.3.6](#436)
 
 # Published Images
 
 ## Latest
+
+## 4.4.17
+
+### Changed
+- Upgrade _Composer_ from 1.9.3 to 1.10.1.
 
 ## 4.4.16
 
