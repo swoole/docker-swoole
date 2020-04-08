@@ -42,10 +42,10 @@ function download()
         version=$2
     fi
 
-    if [[ "${version}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(\-[A-Za-z0-9]+)?$ ]] ; then
+    if [[ "${version}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(\-?[A-Za-z0-9]+)?$ ]] ; then
         downlaod_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
         unzipped_dir="${project_name}-${version#*v}"
-    elif [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-[A-Za-z0-9]+)?$ ]] ; then
+    elif [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-?[A-Za-z0-9]+)?$ ]] ; then
         downlaod_url="https://github.com/swoole/${project_name}/archive/v${version}.zip"
         unzipped_dir="${project_name}-${version}"
     else
