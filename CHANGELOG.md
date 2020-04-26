@@ -3,6 +3,7 @@ Table of Contents
 
    * [Published Images](#published-images)
       * [Latest](#latest)
+      * [4.5.0](#450)
       * [4.4.18](#4418)
          * [Changed](#changed)
       * [4.4.17](#4417)
@@ -32,6 +33,8 @@ Table of Contents
 # Published Images
 
 ## Latest
+
+## 4.5.0
 
 ## 4.4.18
 
