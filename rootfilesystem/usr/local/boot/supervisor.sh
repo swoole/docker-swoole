@@ -9,10 +9,10 @@ set -e
 case "${BOOT_MODE}" in
     "SERVICE")
         echo "INFO: Supervisord configuration files copied from folder '/etc/supervisor/${BOOT_MODE,,}.d/'."
-        find /etc/supervisor/${BOOT_MODE,,}.d/ -mindepth 1 -type f -name *.conf -exec cp -t /etc/supervisor/conf.d/ {} +
+        find /etc/supervisor/${BOOT_MODE,,}.d/ -mindepth 1 -type f -name "*.conf" -exec cp -t /etc/supervisor/conf.d/ {} +
         ;;
     "TASK")
-        find /etc/supervisor/${BOOT_MODE,,}.d/ -mindepth 1 -type f -name *.conf -exec cp -t /etc/supervisor/conf.d/ {} +
+        find /etc/supervisor/${BOOT_MODE,,}.d/ -mindepth 1 -type f -name "*.conf" -exec cp -t /etc/supervisor/conf.d/ {} +
         ;;
     *)
         echo "Error: BOOT_MODE in the Docker container must be either SERVICE or TASK."
