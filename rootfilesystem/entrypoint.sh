@@ -9,18 +9,19 @@ else
     # The container is to launch some long running services (e.g., web server, job worker, etc).
     BOOT_MODE=SERVICE
 fi
+export BOOT_MODE
 
 # Now run .php and .sh scripts under folder /usr/local/boot in order.
 boot_scripts=()
 shopt -s nullglob
-for f in /usr/local/boot/*.{php,sh} ; do
+for f in /usr/local/boot/*.sh ; do
     boot_scripts+=("$f")
 done
 shopt -u nullglob
 IFS=$'\n' boot_scripts=($(sort <<<"${boot_scripts[*]}"))
 unset IFS
 for f in "${boot_scripts[@]}" ; do
-    BOOT_MODE=${BOOT_MODE} . "$f"
+    . "$f"
 done
 
 # We use option "-c" here to suppress following warning message from console output:

@@ -40,7 +40,8 @@ Table of Contents
 
 ### Changed
 - Upgrade _Composer_ from 1.10.5 to 1.10.6.
-- If you use "exit" or "exit 0" in booting scripts, you should replace them with a "return" statement.
+- If statement "exit" or "exit 0" is used in booting scripts, you need to replace them with a "return" statement.
+- **Stop allowing to run PHP scripts directly when booting containers**.
 
 ## 4.5.0
 

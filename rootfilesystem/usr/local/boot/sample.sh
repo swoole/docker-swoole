@@ -17,3 +17,5 @@ if [[ "${BOOT_MODE}" == "TASK" ]] ; then
 fi
 
 echo "This line is printed out both in SERVICE mode and in TASK mode."
+
+# php /path/to/a/php/script # To execute a PHP script while booting the container.
