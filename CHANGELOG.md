@@ -39,6 +39,7 @@ Table of Contents
 ## 4.5.1
 
 ### Changed
+- Upgrade _Composer_ from 1.10.5 to 1.10.6.
 - If you use "exit" or "exit 0" in booting scripts, you should replace them with a "return" statement.
 
 ## 4.5.0
