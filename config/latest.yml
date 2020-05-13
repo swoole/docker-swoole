@@ -6,5 +6,5 @@ php:
   - "7.4"
 image:
   composer:
-    version: 1.10.5
+    version: 1.10.6
   inotify: true

@@ -18,7 +18,7 @@ RUN \
         --retry-max-time   60 \
         http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
     chmod +x "/usr/bin/composer"                                                               && \
-    composer self-update 1.9.3                                                                 && \
+    composer self-update 1.10.6                                                                 && \
     apt-get update              && \
     apt-get install -y             \
         inotify-tools              \
