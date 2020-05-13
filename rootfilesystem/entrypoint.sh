@@ -20,7 +20,7 @@ shopt -u nullglob
 IFS=$'\n' boot_scripts=($(sort <<<"${boot_scripts[*]}"))
 unset IFS
 for f in "${boot_scripts[@]}" ; do
-    BOOT_MODE=${BOOT_MODE} "$f"
+    BOOT_MODE=${BOOT_MODE} . "$f"
 done
 
 # We use option "-c" here to suppress following warning message from console output:
