@@ -30,20 +30,11 @@ class Dockerfile
         self::ARCH_ARM64V8 => 'arm64v8/php',
     ];
 
-    /**
-     * @var string
-     */
-    protected $basePath;
+    protected string $basePath;
 
-    /**
-     * @var string
-     */
-    protected $swooleVersion;
+    protected string $swooleVersion;
 
-    /**
-     * @var array
-     */
-    protected $config;
+    protected array $config;
 
     /**
      * Dockerfile constructor.

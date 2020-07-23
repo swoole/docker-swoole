@@ -4,15 +4,15 @@
   "homepage": "https://www.swoole.com",
   "license": "Apache-2.0",
   "require-dev": {
-    "php": ">=7.1",
+    "php": ">=7.4",
     "crowdstar/reflection": "~1.0.0",
     "overtrue/phplint": "~1.1.0",
     "phpunit/phpunit": ">=8.0",
     "squizlabs/php_codesniffer": ">=3.0",
     "swoole/ide-helper": "@dev",
-    "symfony/filesystem":"~4.3.0",
-    "symfony/yaml": "~4.3.0",
-    "twig/twig": "~2.11.0"
+    "symfony/filesystem":"~5.1.0",
+    "symfony/yaml": "~4.4.0",
+    "twig/twig": "~3.0.0"
   },
   "autoload-dev": {
     "psr-4": {
