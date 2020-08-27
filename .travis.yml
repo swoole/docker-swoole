@@ -3,13 +3,8 @@ language: php
 php:
   - 7.4
 
-matrix:
-  fast_finish: true
-
-before_install:
-  - composer update -n
+services:
+  - docker
 
 script:
-  - ./vendor/bin/phpcs --standard=PSR12 bin/generate-dockerfiles.php src tests
-  - ./vendor/bin/phpunit
-
+  - ./bin/ci.sh
