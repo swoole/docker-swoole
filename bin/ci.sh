@@ -17,8 +17,8 @@ case "${TRAVIS_EVENT_TYPE}" in
     "cron")
         # @see https://docs.travis-ci.com/user/cron-jobs/#detecting-builds-triggered-by-cron
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest PHP_VERSION=7.4 TRAVIS=true DEV_MODE=false ./bin/build.sh amd64
         IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest PHP_VERSION=7.4 TRAVIS=true DEV_MODE=true  ./bin/build.sh amd64
+        IMAGE_NAME=phpswoole/swoole SWOOLE_VERSION=latest PHP_VERSION=7.4 TRAVIS=true DEV_MODE=false ./bin/build.sh amd64
         ;;
     *)
         composer update -n
