@@ -1,9 +1,10 @@
 Table of Contents
 =================
 
+   * [Table of Contents](#table-of-contents)
    * [Published Images](#published-images)
       * [Latest](#latest)
-      * [4.5.3](#453)
+      * [4.4.20 and 4.5.3](#4420-and-453)
          * [Changed](#changed)
       * [4.4.19 and 4.5.2](#4419-and-452)
       * [4.5.1](#451)
@@ -39,7 +40,7 @@ Table of Contents
 
 ## Latest
 
-## 4.5.3
+## 4.4.20 and 4.5.3
 
 ### Changed
 - Upgrade _Composer_ from 1.10.6 to 1.10.10.
