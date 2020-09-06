@@ -17,7 +17,7 @@ popd > /dev/null
 cd "${CURRENT_SCRIPT_PATH}/.."
 
 if [[ ! -z "${2}" ]] ; then
-    dir=`find examples -type d -depth 1 -name "${2}-*"`
+    dir=$(find examples -maxdepth 1 -type d -name "${2}-*")
     if [[ -z "${dir}" ]] ; then
         echo "Error: Cannot find any subfolder with prefix ${2}- under folder examples/."
         exit 1
