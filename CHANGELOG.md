@@ -4,7 +4,7 @@ Table of Contents
    * [Table of Contents](#table-of-contents)
    * [Published Images](#published-images)
       * [Latest](#latest)
-      * [4.5.4](#454)
+      * [4.4.21 and 4.5.4](#4421-and-454)
          * [Changed](#changed)
       * [4.4.20 and 4.5.3](#4420-and-453)
          * [Changed](#changed-1)
@@ -42,7 +42,7 @@ Table of Contents
 
 ## Latest
 
-## 4.5.4
+## 4.4.21 and 4.5.4
 
 ### Changed
 - Upgrade _Composer_ from 1.10.10 to 1.10.13.
