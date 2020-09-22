@@ -26,7 +26,7 @@ RUN \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
-        libpg-dev                  \
+        libpq-dev                  \
         --no-install-recommends && \
     install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \
