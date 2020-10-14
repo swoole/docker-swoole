@@ -13,15 +13,15 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 * [latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php7.4/Dockerfile), [latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php7.4/Dockerfile) (built daily)
 * amd64
-    * PHP 7.4: [4.5.4-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.4/Dockerfile), [4.5.4-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.4/Dockerfile)
-    * PHP 7.3: [4.5.4-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.3/Dockerfile), [4.5.4-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.3/Dockerfile)
-    * PHP 7.2: [4.5.4-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.2/Dockerfile), [4.5.4-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.2/Dockerfile)
-    * PHP 7.1: [4.5.4-php7.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.1/Dockerfile), [4.5.4-php7.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/amd64/php7.1/Dockerfile)
+    * PHP 7.4: [4.5.5-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.4/Dockerfile), [4.5.5-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.4/Dockerfile)
+    * PHP 7.3: [4.5.5-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.3/Dockerfile), [4.5.5-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.3/Dockerfile)
+    * PHP 7.2: [4.5.5-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.2/Dockerfile), [4.5.5-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.2/Dockerfile)
+    * PHP 7.1: [4.5.5-php7.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.1/Dockerfile), [4.5.5-php7.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/amd64/php7.1/Dockerfile)
 * arm64v8
-    * PHP 7.4: [4.5.4-php7.4-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.4/Dockerfile), [4.5.4-php7.4-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.4/Dockerfile)
-    * PHP 7.3: [4.5.4-php7.3-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.3/Dockerfile), [4.5.4-php7.3-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.3/Dockerfile)
-    * PHP 7.2: [4.5.4-php7.2-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.2/Dockerfile), [4.5.4-php7.2-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.2/Dockerfile)
-    * PHP 7.1: [4.5.4-php7.1-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.1/Dockerfile), [4.5.4-php7.1-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.4/arm64v8/php7.1/Dockerfile)
+    * PHP 7.4: [4.5.5-php7.4-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.4/Dockerfile), [4.5.5-php7.4-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.4/Dockerfile)
+    * PHP 7.3: [4.5.5-php7.3-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.3/Dockerfile), [4.5.5-php7.3-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.3/Dockerfile)
+    * PHP 7.2: [4.5.5-php7.2-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.2/Dockerfile), [4.5.5-php7.2-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.2/Dockerfile)
+    * PHP 7.1: [4.5.5-php7.1-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.1/Dockerfile), [4.5.5-php7.1-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.5/arm64v8/php7.1/Dockerfile)
 
 # List of Images
 
