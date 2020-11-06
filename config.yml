@@ -16,11 +16,12 @@ php: # List of PHP versions to build for.
   - "7.1.29"
   - "7.2.19"
   - "7.3.6"
+alpine: 3.12 # Alpine version. Used to build Alpine images only.
 image:
   composer:
     version: "1.8.6" # Composer version.
-  inotify: false # Install package inotify-tools or not. By default it's not installed.
-  php_extensions: # List of PECL extensions to be installed.
+  inotify: false # Install package inotify-tools or not for non-Alpine images. By default it's not installed.
+  php_extensions: # List of PECL extensions to be installed for non-Alpine images.
     zip: # An extension name.
       version: "1.15.4" # Optional.
       enabled: true # Enable the extension or not. By default it's disabled.

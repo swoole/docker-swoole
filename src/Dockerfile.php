@@ -19,6 +19,8 @@ use Twig\Error\SyntaxError;
  */
 class Dockerfile
 {
+    protected const ALPINE = 'alpine';
+
     protected const ARCH_AMD64   = 'amd64';
     protected const ARCH_ARM64V8 = 'arm64v8';
     protected const ARCH_DEFAULT = self::ARCH_AMD64;
@@ -62,6 +64,9 @@ class Dockerfile
             foreach (array_keys(self::BASE_IMAGES) as $architecture) {
                 $this->generateDockerFile($phpVersion, $architecture, true);
             }
+
+            // Generate Dockerfiles for Alpine images.
+            $this->generateDockerFile($phpVersion, self::ALPINE, true);
         }
     }
 
@@ -78,7 +83,7 @@ class Dockerfile
     public function generateDockerFile(string $phpVersion, string $architecture, bool $save = false): string
     {
         $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath())))
-            ->load('Dockerfile.twig')
+            ->load($this->getTemplateFile($architecture))
             ->render($this->getContext($phpVersion, $architecture));
 
         if ($save) {
@@ -241,17 +246,27 @@ class Dockerfile
      */
     protected function getContext(string $phpVersion, string $architecture = self::ARCH_DEFAULT): array
     {
-        if (!array_key_exists($architecture, self::BASE_IMAGES)) {
+        if (array_key_exists($architecture, self::BASE_IMAGES)) {
+            $imageName = self::BASE_IMAGES[$architecture];
+        } elseif (self::ALPINE == $architecture) {
+            $imageName = 'php'; // For Aline images, we use the official PHP images as base images.
+        } else {
             throw new Exception("Architecture '{$architecture}' not supported.");
         }
 
         return array_merge(
             $this->getConfig()['image'],
             [
-                'image_name'     => self::BASE_IMAGES[$architecture],
+                'image_name'     => $imageName,
                 'php_version'    => $phpVersion,
+                'alpine_version' => $this->getConfig()['alpine'],
                 'swoole_version' => $this->getSwooleVersion(),
             ]
         );
+    }
+
+    protected function getTemplateFile(string $architecture): string
+    {
+        return (self::ALPINE == $architecture) ? 'Dockerfile.alpine.twig' : 'Dockerfile.twig';
     }
 }

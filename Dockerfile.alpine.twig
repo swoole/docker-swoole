@@ -1,0 +1,16 @@
+FROM {{ image_name }}:{{ php_version }}-cli-alpine{{ alpine_version }}
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM            xterm-color
+
+RUN \
+    curl -sfL http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
+    chmod +x "/usr/bin/composer"                                                                     && \
+    composer self-update {{ composer.version }}                                                      && \
+    apk update && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+    pecl install swoole{% if swoole_version != "latest" %}-{{ swoole_version }}{% endif %} --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets && \
+    apk del .build-deps && \
+    docker-php-ext-enable swoole
+
+WORKDIR "/var/www/"

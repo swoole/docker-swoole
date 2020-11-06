@@ -7,6 +7,7 @@ php:
   - "7.2.34"
   - "7.3.24"
   - "7.4.12"
+alpine: 3.12
 image:
   composer:
     version: "1.10.17"
