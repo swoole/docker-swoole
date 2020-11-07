@@ -177,11 +177,6 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.5.7-php7.1-dev     
 docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.5.7-php7.4-arm64v8-dev -f dockerfiles/4.5.7/arm64v8/php7.4/Dockerfile .
 ```
 
-# TODOs
-
-* Allow to stop the container gracefully.
-* Support more architectures.
-
 # Credits
 
 Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://glu.com).
