@@ -149,26 +149,26 @@ follow these three steps.
 
 ```bash
 ./bin/generate-dockerfiles.php latest # Generate dockerfiles to build images from the master branch of Swoole.
-./bin/generate-dockerfiles.php 4.5.7 # Generate dockerfiles to build images for Swoole 4.5.7.
+./bin/generate-dockerfiles.php 4.5.7  # Generate dockerfiles to build images for Swoole 4.5.7.
 ```
 
 **3**. Build Docker images with commands like:
 
 ```bash
-docker build -t phpswoole/swoole                       -f dockerfiles/latest/amd64/php7.4/Dockerfile   .
-docker build -t phpswoole/swoole:latest-arm64v8        -f dockerfiles/latest/arm64v8/php7.4/Dockerfile .
-docker build -t phpswoole/swoole:4.5.7-php7.4         -f dockerfiles/4.5.7/amd64/php7.4/Dockerfile   .
-docker build -t phpswoole/swoole:4.5.7-php7.4-arm64v8 -f dockerfiles/4.5.7/arm64v8/php7.4/Dockerfile .
-docker build -t phpswoole/swoole:4.5.7-php7.4-alpine  -f dockerfiles/4.5.7/alpine/php7.4/Dockerfile .
+docker build -t phpswoole/swoole                      -f dockerfiles/latest/amd64/php7.4/Dockerfile   .
+docker build -t phpswoole/swoole:latest-arm64v8       -f dockerfiles/latest/arm64v8/php7.4/Dockerfile .
+docker build -t phpswoole/swoole:4.5.7-php7.4         -f dockerfiles/4.5.7/amd64/php7.4/Dockerfile    .
+docker build -t phpswoole/swoole:4.5.7-php7.4-arm64v8 -f dockerfiles/4.5.7/arm64v8/php7.4/Dockerfile  .
+docker build -t phpswoole/swoole:4.5.7-php7.4-alpine  -f dockerfiles/4.5.7/alpine/php7.4/Dockerfile   .
 ```
 
 To build development images (where extra tools are included), add an argument _DEV_MODE_:
 
 ```bash
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev                -f dockerfiles/latest/amd64/php7.4/Dockerfile   .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-arm64v8-dev        -f dockerfiles/latest/arm64v8/php7.4/Dockerfile .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.5.7-php7.4-dev         -f dockerfiles/4.5.7/amd64/php7.4/Dockerfile   .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.5.7-php7.4-arm64v8-dev -f dockerfiles/4.5.7/arm64v8/php7.4/Dockerfile .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev               -f dockerfiles/latest/amd64/php7.4/Dockerfile   .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-arm64v8-dev       -f dockerfiles/latest/arm64v8/php7.4/Dockerfile .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.5.7-php7.4-dev         -f dockerfiles/4.5.7/amd64/php7.4/Dockerfile    .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.5.7-php7.4-arm64v8-dev -f dockerfiles/4.5.7/arm64v8/php7.4/Dockerfile  .
 ```
 
 # Credits
