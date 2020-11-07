@@ -1,14 +1,12 @@
 FROM php:7.1.33-cli-alpine3.12
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV TERM            xterm-color
-
 RUN \
     curl -sfL http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
     chmod +x "/usr/bin/composer"                                                                     && \
     composer self-update 1.10.15                                                      && \
     apk update && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS libressl-dev && \
+    apk add --no-cache libressl-dev libstdc++ && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
