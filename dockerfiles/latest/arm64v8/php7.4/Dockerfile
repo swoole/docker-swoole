@@ -9,16 +9,9 @@ ENV DEV_MODE $DEV_MODE
 COPY ./rootfilesystem/ /
 
 RUN \
-    curl                      \
-        -sfL                  \
-        --connect-timeout 5   \
-        --max-time         15 \
-        --retry            5  \
-        --retry-delay      2  \
-        --retry-max-time   60 \
-        http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
-    chmod +x "/usr/bin/composer"                                                               && \
-    composer self-update 1.10.17                                                                 && \
+    curl -sfL http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
+    chmod +x "/usr/bin/composer"                                                                     && \
+    composer self-update 1.10.17                                                      && \
     apt-get update              && \
     apt-get install -y             \
         inotify-tools              \
@@ -30,7 +23,7 @@ RUN \
         --no-install-recommends && \
     install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \
-    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
+    rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []

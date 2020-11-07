@@ -66,7 +66,9 @@ class Dockerfile
             }
 
             // Generate Dockerfiles for Alpine images.
-            $this->generateDockerFile($phpVersion, self::ALPINE, true);
+            if ($this->getSwooleVersion() != 'latest') {
+                $this->generateDockerFile($phpVersion, self::ALPINE, true);
+            }
         }
     }
 
@@ -259,7 +261,7 @@ class Dockerfile
             [
                 'image_name'     => $imageName,
                 'php_version'    => $phpVersion,
-                'alpine_version' => $this->getConfig()['alpine'],
+                'alpine_version' => ($this->getConfig()['alpine'] ?? ''),
                 'swoole_version' => $this->getSwooleVersion(),
             ]
         );
