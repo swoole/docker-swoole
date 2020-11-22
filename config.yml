@@ -16,7 +16,6 @@ php: # List of PHP versions to build for.
   - "7.1.29"
   - "7.2.19"
   - "7.3.6"
-alpine: 3.12 # Alpine version. Used to build Alpine images only.
 image:
   composer:
     version: "1.8.6" # Composer version.

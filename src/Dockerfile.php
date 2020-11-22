@@ -30,6 +30,17 @@ class Dockerfile
         // architecture    => base image,
         self::ARCH_AMD64   => 'php',
         self::ARCH_ARM64V8 => 'arm64v8/php',
+
+        // For Aline images, we use the official PHP images as base images.
+        self::ALPINE       => 'php',
+    ];
+
+    protected const ALPINE_VERSIONS = [
+        // PHP major version => Alpine version,
+        '7.1' => '3.10',
+        '7.2' => '3.12',
+        '7.3' => '3.12',
+        '7.4' => '3.12',
     ];
 
     protected string $basePath;
@@ -250,8 +261,6 @@ class Dockerfile
     {
         if (array_key_exists($architecture, self::BASE_IMAGES)) {
             $imageName = self::BASE_IMAGES[$architecture];
-        } elseif (self::ALPINE == $architecture) {
-            $imageName = 'php'; // For Aline images, we use the official PHP images as base images.
         } else {
             throw new Exception("Architecture '{$architecture}' not supported.");
         }
@@ -261,7 +270,7 @@ class Dockerfile
             [
                 'image_name'     => $imageName,
                 'php_version'    => $phpVersion,
-                'alpine_version' => ($this->getConfig()['alpine'] ?? ''),
+                'alpine_version' => $this->getAlpineVersion($phpVersion),
                 'swoole_version' => $this->getSwooleVersion(),
             ]
         );
@@ -270,5 +279,15 @@ class Dockerfile
     protected function getTemplateFile(string $architecture): string
     {
         return (self::ALPINE == $architecture) ? 'Dockerfile.alpine.twig' : 'Dockerfile.twig';
+    }
+
+    protected function getAlpineVersion(string $phpVersion): string
+    {
+        $phpMajorVersion = preg_replace('/^(\d+\.\d+).*$/', '$1', $phpVersion);
+        if (!array_key_exists($phpMajorVersion, self::ALPINE_VERSIONS)) {
+            throw new Exception("No matching version of Alpine found for PHP {$phpVersion}.");
+        }
+
+        return self::ALPINE_VERSIONS[$phpMajorVersion];
     }
 }
