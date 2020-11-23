@@ -14,12 +14,16 @@ jobs:
       matrix:
         php: [7.1, 7.2, 7.3, 7.4]
 
-    name: Docker image phpswoole/swoole:${BRANCH_NAME}-php${{ matrix.php }}
+    name: The amd64 image for PHP ${{ matrix.php }}
 
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
+
+      - name: Get/set branch name
+        id: vars
+        run: echo ::set-output name=branch_name::${GITHUB_REF##*/}
 
       -
         name: Set up Docker Buildx
@@ -33,16 +37,16 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
-        name: Build and push Docker image phpswoole/swoole:${BRANCH_NAME}-php${{ matrix.php }}
+        name: Build and push Docker image phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/${BRANCH_NAME}/amd64/php${{ matrix.php }}/Dockerfile
+          file: dockerfiles/${{ steps.vars.outputs.branch_name }}/amd64/php${{ matrix.php }}/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: phpswoole/swoole:${BRANCH_NAME}-php${{ matrix.php }}
+          tags: phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}
 
       -
-        name: Image digest of phpswoole/swoole:${BRANCH_NAME}-php${{ matrix.php }}
+        name: Image digest of phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}
         run: echo ${{ steps.docker_build.outputs.digest }}
