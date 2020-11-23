@@ -3,6 +3,7 @@ name: Build Latest Images
 on:
   schedule:
     - cron: '47 4 * * *'
+  workflow_dispatch:
 
 jobs:
   buid_latest_images:
