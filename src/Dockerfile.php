@@ -41,6 +41,7 @@ class Dockerfile
         '7.2' => '3.12',
         '7.3' => '3.12',
         '7.4' => '3.12',
+        '8.0' => '3.12',
     ];
 
     protected string $basePath;
@@ -74,11 +75,6 @@ class Dockerfile
         foreach ($this->getConfig()['php'] as $phpVersion) {
             foreach (array_keys(self::BASE_IMAGES) as $architecture) {
                 $this->generateDockerFile($phpVersion, $architecture, true);
-            }
-
-            // Generate Dockerfiles for Alpine images.
-            if ($this->getSwooleVersion() != 'latest') {
-                $this->generateDockerFile($phpVersion, self::ALPINE, true);
             }
         }
     }

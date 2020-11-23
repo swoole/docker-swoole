@@ -1,4 +1,4 @@
-FROM arm64v8/php:7.4-cli
+FROM php:8.0.0RC5-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -19,7 +19,6 @@ RUN \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
-        libpq-dev                  \
         --no-install-recommends && \
     install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \

@@ -75,7 +75,7 @@ if [[ ! -z "${ARCHITECTURE}" ]] ; then
     ARCHITECTURES=(${ARCHITECTURE})
 else
     if [[ -z "${1}" ]] ; then
-        ARCHITECTURES=(amd64 arm64v8)
+        ARCHITECTURES=(amd64 arm64v8 alpine)
     else
         case "$1" in
             ${DEFAULT_ARCHITECTURE}|"default")
@@ -87,8 +87,11 @@ else
             "arm64v8")
                 ARCHITECTURES=(arm64v8)
                 ;;
+            "alpine")
+                ARCHITECTURES=(alpine)
+                ;;
             *)
-                echo "Error: First command line parameter must be one of \"php\", \"amd64\", \"default\", or \"arm64v8\"."
+                echo "Error: First command line parameter must be one of \"php\", \"default\", \"amd64\", \"arm64v8\", or \"alpine\"."
                 exit 1
         esac
     fi
@@ -140,7 +143,13 @@ if egrep -q '^status\:\s*"under development"\s*($|\#)' "${IMAGE_CONFIG_FILE}" ; 
                 fi
 
                 IMAGE_FULL_NAME="${IMAGE_NAME}:${IMAGE_TAG}${IMAGE_TAG_POSTFIX}"
-                echo "INFO: Building Docker image ${IMAGE_FULL_NAME}."
+                if [ "${DEV_MODE}" == "true" ] && [ "${ARCHITECTURE}" == "alpine" ] ; then
+                    echo "NOTICE: Won't build Docker image ${IMAGE_FULL_NAME}."
+                    continue 2
+                else
+                    echo "INFO: Building Docker image ${IMAGE_FULL_NAME}."
+                fi
+
                 docker build                         \
                     --build-arg DEV_MODE=${DEV_MODE} \
                     -t "${IMAGE_FULL_NAME}"          \

@@ -11,7 +11,7 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # Supported Tags and Respective `Dockerfile` Links
 
-* [latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php7.4/Dockerfile), [latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php7.4/Dockerfile) (built daily)
+* [latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/alpine/php8.0/Dockerfile) (built daily for PHP 8.0)
 * amd64
     * PHP 7.4: [4.5.8-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.4/Dockerfile), [4.5.8-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.4/Dockerfile)
     * PHP 7.3: [4.5.8-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.3/Dockerfile), [4.5.8-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.3/Dockerfile)
@@ -90,8 +90,7 @@ Our _amd64_ and _arm64v8_ images have following features included:
 
 # Examples
 
-Following examples are for the latest images, the _amd64_ images, and the _arm64v8_ images only. We don't have examples
-included for the Alpine images.
+**Following examples are for non-Alpine images only**. We don't have examples included for the Alpine images.
 
 You can use the image to serve an HTTP/WebSocket server, or run some one-off command with it. e.g.,
 
