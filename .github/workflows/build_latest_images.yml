@@ -1,0 +1,72 @@
+name: Build Latest Images
+
+on:
+  schedule:
+    - cron: '47 4 * * *'
+
+jobs:
+  buid_latest_images:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Build and push Docker image phpswoole/swoole:latest
+        id: docker_build_latest
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: dockerfiles/latest/amd64/php8.0/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: phpswoole/swoole:latest
+
+      -
+        name: Image digest of phpswoole/swoole:latest
+        run: echo ${{ steps.docker_build_latest.outputs.digest }}
+
+      -
+        name: Build and push Docker image phpswoole/swoole:latest-dev
+        id: docker_build_latest_dev
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: dockerfiles/latest/amd64/php8.0/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: phpswoole/swoole:latest-dev
+          build-args: DEV_MODE=true
+      -
+        name: Image digest of phpswoole/swoole:latest-dev
+        run: echo ${{ steps.docker_build_latest_dev.outputs.digest }}
+
+      -
+        name: Build and push Docker image phpswoole/swoole:latest-alpine
+        id: docker_build_latest_alpine
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: dockerfiles/latest/alpine/php8.0/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: phpswoole/swoole:latest-alpine
+
+      -
+        name: Image digest of phpswoole/swoole:latest-alpine
+        run: echo ${{ steps.docker_build_latest_alpine.outputs.digest }}
