@@ -8,6 +8,7 @@ on:
 jobs:
   buid_latest_images:
     runs-on: ubuntu-latest
+    if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: true
 

@@ -1,6 +1,7 @@
 # Docker Image for Swoole
 
-[![Build Status](https://travis-ci.org/swoole/docker-swoole.svg?branch=master)](https://travis-ci.org/swoole/docker-swoole)
+[![Tests](https://github.com/swoole/docker-swoole/workflows/Tests/badge.svg)](https://github.com/swoole/docker-swoole/actions)
+[![Build Latest Images](https://github.com/swoole/docker-swoole/workflows/Build%20Latest%20Images/badge.svg)](https://github.com/swoole/docker-swoole/actions)
 [![Docker Pulls](https://img.shields.io/docker/pulls/phpswoole/swoole.svg)](https://hub.docker.com/r/phpswoole/swoole)
 [![License](https://img.shields.io/badge/license-apache2-blue.svg)](https://github.com/swoole/docker-swoole/blob/master/LICENSE)
 
