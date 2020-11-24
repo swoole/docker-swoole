@@ -5,6 +5,9 @@ on:
     - cron: '47 4 * * *'
   workflow_dispatch:
 
+env:
+  PHP_VERSION: 7.4
+
 jobs:
   buid_latest_images:
     runs-on: ubuntu-latest
@@ -34,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/latest/amd64/php8.0/Dockerfile
+          file: dockerfiles/latest/amd64/php${PHP_VERSION}/Dockerfile
           platforms: linux/amd64
           push: true
           tags: phpswoole/swoole:latest
@@ -49,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/latest/amd64/php8.0/Dockerfile
+          file: dockerfiles/latest/amd64/php${PHP_VERSION}/Dockerfile
           platforms: linux/amd64
           push: true
           tags: phpswoole/swoole:latest-dev
@@ -64,7 +67,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/latest/alpine/php8.0/Dockerfile
+          file: dockerfiles/latest/alpine/php${PHP_VERSION}/Dockerfile
           platforms: linux/amd64
           push: true
           tags: phpswoole/swoole:latest-alpine
