@@ -12,7 +12,7 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # Supported Tags and Respective `Dockerfile` Links
 
-* [latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/alpine/php8.0/Dockerfile) (built daily for PHP 8.0)
+* [latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/alpine/php8.0/Dockerfile)
 * amd64
     * PHP 7.4: [4.5.8-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.4/Dockerfile), [4.5.8-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.4/Dockerfile)
     * PHP 7.3: [4.5.8-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.3/Dockerfile), [4.5.8-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.3/Dockerfile)
