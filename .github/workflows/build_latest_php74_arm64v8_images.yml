@@ -25,6 +25,13 @@ jobs:
         run: echo ::set-output name=php_version::${PHP_VERSION}
 
       -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          image: tonistiigi/binfmt
+          platforms: arm64
+
+      -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
