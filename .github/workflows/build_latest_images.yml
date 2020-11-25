@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PHP_VERSION: 7.4
+  PHP_VERSION: 8.0
 
 jobs:
   buid_latest_images:
