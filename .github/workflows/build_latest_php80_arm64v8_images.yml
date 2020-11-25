@@ -1,12 +1,10 @@
-name: Build Latest Images
+name: Build Latest PHP 8.0 arm64v8 Images
 
 on:
-  schedule:
-    - cron: '47 4 * * *'
   workflow_dispatch:
 
 env:
-  PHP_VERSION: "7.4"
+  PHP_VERSION: "8.0"
 
 jobs:
   buid_latest_images:
@@ -36,31 +34,31 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
-        name: Build and push Docker image phpswoole/swoole:php7.4
-        id: docker_build_php74
+        name: Build and push Docker image phpswoole/swoole:php8.0-arm64v8
+        id: docker_build_php80
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/latest/amd64/php${{ steps.vars.outputs.php_version }}/Dockerfile
-          platforms: linux/amd64
+          file: dockerfiles/latest/arm64v8/php${{ steps.vars.outputs.php_version }}/Dockerfile
+          platforms: linux/arm64
           push: true
-          tags: phpswoole/swoole:php7.4,phpswoole/swoole:latest
+          tags: phpswoole/swoole:php8.0-arm64v8
 
       -
-        name: Image digest of phpswoole/swoole:php7.4
-        run: echo ${{ steps.docker_build_php74.outputs.digest }}
+        name: Image digest of phpswoole/swoole:php8.0-arm64v8
+        run: echo ${{ steps.docker_build_php80.outputs.digest }}
 
       -
-        name: Build and push Docker image phpswoole/swoole:php7.4-dev
-        id: docker_build_php74_dev
+        name: Build and push Docker image phpswoole/swoole:php8.0-arm64v8-dev
+        id: docker_build_php80_dev
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/latest/amd64/php${{ steps.vars.outputs.php_version }}/Dockerfile
-          platforms: linux/amd64
+          file: dockerfiles/latest/arm64v8/php${{ steps.vars.outputs.php_version }}/Dockerfile
+          platforms: linux/arm64
           push: true
-          tags: phpswoole/swoole:php7.4-dev,phpswoole/swoole:latest-dev
+          tags: phpswoole/swoole:php8.0-arm64v8-dev
           build-args: DEV_MODE=true
       -
-        name: Image digest of phpswoole/swoole:php7.4-dev
-        run: echo ${{ steps.docker_build_php74_dev.outputs.digest }}
+        name: Image digest of phpswoole/swoole:php8.0-arm64v8-dev
+        run: echo ${{ steps.docker_build_php80_dev.outputs.digest }}

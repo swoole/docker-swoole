@@ -15,10 +15,10 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 * latest images (built with the master branch of [swoole-src](https://github.com/swoole/swoole-src))
     * [latest, php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php7.4/Dockerfile)
     * [latest-dev, php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php7.4/Dockerfile)
+    * [latest-arm64v8, php7.4-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/arm64v8/php7.4/Dockerfile)
+    * [latest-arm64v8-dev, php7.4-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/arm64v8/php7.4/Dockerfile)
     * [latest-alpine, php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/alpine/php7.4/Dockerfile)
-    * [php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile)
-    * [php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile)
-    * [php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/alpine/php8.0/Dockerfile)
+    * [php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile), [php8.0-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/arm64v8/php8.0/Dockerfile), [php8.0-arm64v8-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/arm64v8/php8.0/Dockerfile), [php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/alpine/php8.0/Dockerfile)
 * versioned images (based on stable releases of Swoole)
     * amd64
         * PHP 7.4: [4.5.8-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.4/Dockerfile), [4.5.8-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.8/amd64/php7.4/Dockerfile)

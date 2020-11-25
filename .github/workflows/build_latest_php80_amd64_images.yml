@@ -62,18 +62,3 @@ jobs:
       -
         name: Image digest of phpswoole/swoole:php8.0-dev
         run: echo ${{ steps.docker_build_php80_dev.outputs.digest }}
-
-      -
-        name: Build and push Docker image phpswoole/swoole:php8.0-alpine
-        id: docker_build_php80_alpine
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: dockerfiles/latest/alpine/php${{ steps.vars.outputs.php_version }}/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: phpswoole/swoole:php8.0-alpine
-
-      -
-        name: Image digest of phpswoole/swoole:php8.0-alpine
-        run: echo ${{ steps.docker_build_php80_alpine.outputs.digest }}
