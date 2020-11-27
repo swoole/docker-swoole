@@ -1,4 +1,4 @@
-name: Build Latest PHP 8.0 Images
+name: Build Latest Images
 
 on:
   workflow_dispatch:
@@ -42,7 +42,7 @@ jobs:
           file: dockerfiles/latest/amd64/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: phpswoole/swoole:php8.0
+          tags: phpswoole/swoole:php8.0,phpswoole/swoole:latest
 
       -
         name: Image digest of phpswoole/swoole:php8.0
@@ -57,7 +57,7 @@ jobs:
           file: dockerfiles/latest/amd64/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: phpswoole/swoole:php8.0-dev
+          tags: phpswoole/swoole:php8.0-dev,phpswoole/swoole:latest-dev
           build-args: DEV_MODE=true
       -
         name: Image digest of phpswoole/swoole:php8.0-dev

@@ -49,7 +49,7 @@ jobs:
           file: dockerfiles/latest/arm64v8/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/arm64
           push: true
-          tags: phpswoole/swoole:php8.0-arm64v8
+          tags: phpswoole/swoole:php8.0-arm64v8,phpswoole/swoole:latest-arm64v8
 
       -
         name: Image digest of phpswoole/swoole:php8.0-arm64v8
@@ -64,7 +64,7 @@ jobs:
           file: dockerfiles/latest/arm64v8/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/arm64
           push: true
-          tags: phpswoole/swoole:php8.0-arm64v8-dev
+          tags: phpswoole/swoole:php8.0-arm64v8-dev,phpswoole/swoole:latest-arm64v8-dev
           build-args: DEV_MODE=true
       -
         name: Image digest of phpswoole/swoole:php8.0-arm64v8-dev

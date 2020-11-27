@@ -1,4 +1,4 @@
-FROM arm64v8/php:8.0.0RC5-cli
+FROM arm64v8/php:8.0.0-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -9,9 +9,9 @@ ENV DEV_MODE $DEV_MODE
 COPY ./rootfilesystem/ /
 
 RUN \
-    curl -sfL http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
-    chmod +x "/usr/bin/composer"                                                                     && \
-    composer self-update 1.10.17                                                      && \
+    curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+    chmod +x /usr/bin/composer                                                                     && \
+    composer self-update 2.0.7                                                    && \
     apt-get update              && \
     apt-get install -y             \
         inotify-tools              \

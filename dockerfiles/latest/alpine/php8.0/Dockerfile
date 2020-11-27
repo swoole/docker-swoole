@@ -1,9 +1,9 @@
-FROM php:8.0.0RC5-cli-alpine3.12
+FROM php:8.0.0-cli-alpine3.12
 
 RUN \
-    curl -sfL http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
-    chmod +x "/usr/bin/composer"                                                                     && \
-    composer self-update --clean-backups 1.10.17                                      && \
+    curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+    chmod +x /usr/bin/composer                                                                     && \
+    composer self-update --clean-backups 2.0.7                                    && \
     apk update && \
     apk add --no-cache libstdc++ && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS openssl-dev pcre-dev pcre2-dev zlib-dev && \

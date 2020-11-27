@@ -1,4 +1,4 @@
-name: Build Latest Images
+name: Build Latest PHP 7.4 Images
 
 on:
   schedule:
@@ -44,7 +44,7 @@ jobs:
           file: dockerfiles/latest/amd64/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: phpswoole/swoole:php7.4,phpswoole/swoole:latest
+          tags: phpswoole/swoole:php7.4
 
       -
         name: Image digest of phpswoole/swoole:php7.4
@@ -59,7 +59,7 @@ jobs:
           file: dockerfiles/latest/amd64/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: phpswoole/swoole:php7.4-dev,phpswoole/swoole:latest-dev
+          tags: phpswoole/swoole:php7.4-dev
           build-args: DEV_MODE=true
       -
         name: Image digest of phpswoole/swoole:php7.4-dev

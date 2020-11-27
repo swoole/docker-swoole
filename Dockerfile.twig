@@ -9,9 +9,9 @@ ENV DEV_MODE $DEV_MODE
 COPY ./rootfilesystem/ /
 
 RUN \
-    curl -sfL http://getcomposer.org/installer | php -- --install-dir="/usr/bin" --filename=composer && \
-    chmod +x "/usr/bin/composer"                                                                     && \
-    composer self-update {{ composer.version }}                                                      && \
+    curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+    chmod +x /usr/bin/composer                                                                     && \
+    composer self-update {{ composer.version }}                                                    && \
     apt-get update              && \
     apt-get install -y             \
 {%~ if inotify == true %}

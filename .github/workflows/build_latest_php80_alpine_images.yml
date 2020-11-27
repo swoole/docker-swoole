@@ -42,7 +42,7 @@ jobs:
           file: dockerfiles/latest/alpine/php${{ steps.vars.outputs.php_version }}/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: phpswoole/swoole:php8.0-alpine
+          tags: phpswoole/swoole:php8.0-alpine,phpswoole/swoole:latest-alpine
 
       -
         name: Image digest of phpswoole/swoole:php8.0-alpine
