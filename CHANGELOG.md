@@ -50,7 +50,7 @@ Table of Contents
 ## 4.5.9
 
 ### Changed
-- Upgrade _Composer_ from 1.10.17 to 2.0.7.
+- **Upgrade _Composer_ from 1.10.17 to 2.0.7.**
 
 ## 4.4.22 and 4.5.7
 

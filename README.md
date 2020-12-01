@@ -12,7 +12,7 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # Supported Tags and Respective `Dockerfile` Links
 
-* latest images (built with the master branch of [swoole-src](https://github.com/swoole/swoole-src))
+* latest images (built daily using the master branch of [swoole-src](https://github.com/swoole/swoole-src))
     * [latest, php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile)
     * [latest-dev, php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/amd64/php8.0/Dockerfile)
     * [latest-arm64v8, php8.0-arm64v8](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/arm64v8/php8.0/Dockerfile)
