@@ -1,6 +1,8 @@
 name: Build Latest PHP 8.0 arm64v8 Images
 
 on:
+  schedule:
+    - cron: '47 4 * * *'
   workflow_dispatch:
 
 env:
