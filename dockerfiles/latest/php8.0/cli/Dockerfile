@@ -1,4 +1,4 @@
-FROM php:{{ php_version }}-cli
+FROM php:8.0-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -11,29 +11,16 @@ COPY ./rootfilesystem/ /
 RUN \
     curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update {{ composer.version }}                                                    && \
+    composer self-update 2.0.8                                                    && \
     apt-get update              && \
     apt-get install -y             \
-{%~ if inotify == true %}
         inotify-tools              \
-{%~ endif %}
         libssl-dev                 \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
-{%~ if php_extensions is not empty %}
-    pecl update-channels && \
-    {%~ for name, data in php_extensions %}
-    pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
-    {%~ endfor %}
-    {%~ for name, data in php_extensions %}
-        {%~ if data.enabled %}
-    docker-php-ext-enable {{ name }} && \
-        {%~ endif %}
-    {%~ endfor %}
-{%~ endif %}
-    install-swoole.sh {% if swoole_version == "latest" %}master{% else %}{{ swoole_version }}{% endif %} && \
+    install-swoole.sh master && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
 

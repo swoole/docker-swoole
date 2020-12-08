@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Swoole\Docker;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -20,20 +19,7 @@ use Twig\Error\SyntaxError;
 class Dockerfile
 {
     protected const ALPINE = 'alpine';
-
-    protected const ARCH_AMD64   = 'amd64';
-    protected const ARCH_ARM64V8 = 'arm64v8';
-    protected const ARCH_DEFAULT = self::ARCH_AMD64;
-
-    // @see https://github.com/docker-library/official-images#architectures-other-than-amd64
-    protected const BASE_IMAGES = [
-        // architecture    => base image,
-        self::ARCH_AMD64   => 'php',
-        self::ARCH_ARM64V8 => 'arm64v8/php',
-
-        // For Aline images, we use the official PHP images as base images.
-        self::ALPINE       => 'php',
-    ];
+    protected const CLI = 'cli';
 
     protected const ALPINE_VERSIONS = [
         // PHP major version => Alpine version,
@@ -73,15 +59,15 @@ class Dockerfile
     public function render(): void
     {
         foreach ($this->getConfig()['php'] as $phpVersion) {
-            foreach (array_keys(self::BASE_IMAGES) as $architecture) {
-                $this->generateDockerFile($phpVersion, $architecture, true);
+            foreach ([self::ALPINE, self::CLI] as $type) {
+                $this->generateDockerFile($phpVersion, $type, true);
             }
         }
     }
 
     /**
      * @param string $phpVersion
-     * @param string $architecture
+     * @param string $type
      * @param bool $save
      * @return string
      * @throws Exception
@@ -89,28 +75,19 @@ class Dockerfile
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function generateDockerFile(string $phpVersion, string $architecture, bool $save = false): string
+    public function generateDockerFile(string $phpVersion, string $type, bool $save = false): string
     {
         $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath())))
-            ->load($this->getTemplateFile($architecture))
-            ->render($this->getContext($phpVersion, $architecture));
+            ->load($this->getTemplateFile($type))
+            ->render($this->getContext($phpVersion));
 
         if ($save) {
-            $dockerFileDir = $this->getDockerFileDir($architecture, $phpVersion);
+            $dockerFileDir = $this->getDockerFileDir($type, $phpVersion);
             if (!file_exists($dockerFileDir)) {
                 mkdir($dockerFileDir, 0777, true);
             }
 
             file_put_contents("{$dockerFileDir}/Dockerfile", $dockerFile);
-
-            $hookTemplatesDir = $this->getHookDir($architecture);
-            if ($hookTemplatesDir) {
-                $hookDir = "{$dockerFileDir}/hooks";
-                if (is_dir($hookDir)) {
-                    (new Filesystem())->remove($hookDir);
-                }
-                (new Filesystem())->mirror($hookTemplatesDir, $hookDir);
-            }
         }
 
         return $dockerFile;
@@ -188,18 +165,18 @@ class Dockerfile
     }
 
     /**
-     * @param string $architecture
+     * @param string $type
      * @param string $phpVersion Needed only when creating Dockerfiles for a released version of Swoole.
      * @return string
      */
-    protected function getDockerFileDir(string $architecture, string $phpVersion): string
+    protected function getDockerFileDir(string $type, string $phpVersion): string
     {
         return sprintf(
-            "%s/dockerfiles/%s/%s/php%s",
+            "%s/dockerfiles/%s/php%s/%s",
             $this->getBasePath(),
             $this->getSwooleVersion(),
-            $architecture,
-            $this->getPhpMajorVersion($phpVersion)
+            $this->getPhpMajorVersion($phpVersion),
+            $type,
         );
     }
 
@@ -236,35 +213,11 @@ class Dockerfile
         return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
     }
 
-    /**
-     * @param string $architecture
-     * @return string
-     */
-    protected function getHookDir(string $architecture): string
+    protected function getContext(string $phpVersion): array
     {
-        $dir = sprintf("%s/hooks/%s", $this->getBasePath(), $architecture);
-
-        return (is_dir($dir) ? $dir : "");
-    }
-
-    /**
-     * @param string $phpVersion
-     * @param string $architecture
-     * @return array
-     * @throws Exception
-     */
-    protected function getContext(string $phpVersion, string $architecture = self::ARCH_DEFAULT): array
-    {
-        if (array_key_exists($architecture, self::BASE_IMAGES)) {
-            $imageName = self::BASE_IMAGES[$architecture];
-        } else {
-            throw new Exception("Architecture '{$architecture}' not supported.");
-        }
-
         return array_merge(
             $this->getConfig()['image'],
             [
-                'image_name'     => $imageName,
                 'php_version'    => $phpVersion,
                 'alpine_version' => $this->getAlpineVersion($phpVersion),
                 'swoole_version' => $this->getSwooleVersion(),
@@ -272,9 +225,9 @@ class Dockerfile
         );
     }
 
-    protected function getTemplateFile(string $architecture): string
+    protected function getTemplateFile(string $type): string
     {
-        return (self::ALPINE == $architecture) ? 'Dockerfile.alpine.twig' : 'Dockerfile.twig';
+        return (self::ALPINE == $type) ? 'Dockerfile.alpine.twig' : 'Dockerfile.cli.twig';
     }
 
     protected function getAlpineVersion(string $phpVersion): string
