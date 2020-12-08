@@ -8,6 +8,7 @@ on:
 jobs:
   buid_latest_php74_images:
     runs-on: ubuntu-latest
+    timeout-minutes: 1200
     if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: true
@@ -67,6 +68,7 @@ jobs:
 
   buid_latest_php80_images:
     runs-on: ubuntu-latest
+    timeout-minutes: 1200
     if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: true

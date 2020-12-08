@@ -8,6 +8,7 @@ on:
 jobs:
   buid_versioned_images:
     runs-on: ubuntu-latest
+    timeout-minutes: 3000
     if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: true
