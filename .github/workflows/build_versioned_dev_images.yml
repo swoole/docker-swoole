@@ -13,7 +13,6 @@ jobs:
       fail-fast: true
       matrix:
         php: ["7.1", "7.2", "7.3", "7.4", "8.0"]
-        platform: [linux/386, linux/amd64, linux/arm/v6, linux/arm/v7, linux/arm64/v8, linux/ppc64le, linux/s390x]
 
     name: The dev image for PHP ${{ matrix.php }}
 
@@ -21,6 +20,10 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
       - name: Get/set branch name
         id: vars
@@ -44,7 +47,7 @@ jobs:
         with:
           context: .
           file: dockerfiles/${{ steps.vars.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
-          platforms: ${{ matrix.platform }}
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
           tags: phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}-dev
           build-args: DEV_MODE=true
