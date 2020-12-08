@@ -1,12 +1,9 @@
-name: Build Latest PHP 8.0 Alpine Images
+name: Build Latest Alpine Images
 
 on:
   schedule:
     - cron: '47 4 * * *'
   workflow_dispatch:
-
-env:
-  PHP_VERSION: "8.0"
 
 jobs:
   buid_latest_images:
@@ -14,15 +11,14 @@ jobs:
     if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: true
+      matrix:
+        php: ["7.4", "8.0"]
+        platform: [linux/386, linux/amd64, linux/arm/v6, linux/arm/v7, linux/arm64/v8, linux/ppc64le, linux/s390x]
 
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
-
-      - name: Get/set PHP version
-        id: vars
-        run: echo ::set-output name=php_version::${PHP_VERSION}
 
       -
         name: Set up Docker Buildx
@@ -36,16 +32,22 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
-        name: Build and push Docker image phpswoole/swoole:php8.0-alpine
-        id: docker_build_php80_alpine
+        name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}-alpine
+        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/latest/alpine/php${{ steps.vars.outputs.php_version }}/Dockerfile
-          platforms: linux/amd64
+          file: dockerfiles/latest/php${{ matrix.php }}/alpine/Dockerfile
+          platforms: ${{ matrix.platform }}
           push: true
-          tags: phpswoole/swoole:php8.0-alpine,phpswoole/swoole:latest-alpine
+          tags: phpswoole/swoole:php${{ matrix.php }}-alpine
 
       -
-        name: Image digest of phpswoole/swoole:php8.0-alpine
-        run: echo ${{ steps.docker_build_php80_alpine.outputs.digest }}
+        name: Image digest of phpswoole/swoole:php${{ matrix.php }}-alpine
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Tag latest Alpine image
+        if: ${{ matrix.php }} == '8.0'
+        run: |
+          docker tag phpswoole/swoole:php${{ matrix.php }}-alpine phpswoole/swoole:latest-alpine
+          docker push phpswoole/swoole:latest-alpine

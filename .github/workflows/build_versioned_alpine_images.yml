@@ -13,6 +13,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ["7.1", "7.2", "7.3", "7.4", "8.0"]
+        platform: [linux/386, linux/amd64, linux/arm/v6, linux/arm/v7, linux/arm64/v8, linux/ppc64le, linux/s390x]
 
     name: The Alpine image for PHP ${{ matrix.php }}
 
@@ -42,8 +43,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/${{ steps.vars.outputs.branch_name }}/alpine/php${{ matrix.php }}/Dockerfile
-          platforms: linux/amd64
+          file: dockerfiles/${{ steps.vars.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
+          platforms: ${{ matrix.platform }}
           push: true
           tags: phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}-alpine
 
