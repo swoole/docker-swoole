@@ -1,4 +1,4 @@
-name: Build Versioned Images (dev)
+name: Build Versioned Dev Images
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
         with:
           context: .
           file: dockerfiles/${{ steps.vars.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
           tags: phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}-dev
           build-args: DEV_MODE=true
