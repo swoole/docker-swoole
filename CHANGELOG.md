@@ -51,6 +51,7 @@ Table of Contents
 
 ### Changed
 - **Upgrade _Composer_ from 1.10.17 to 2.0.7.**
+- Support building multi-architecture image with the same tag.
 
 ## 4.4.22 and 4.5.7
 
