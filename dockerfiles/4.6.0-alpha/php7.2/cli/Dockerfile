@@ -14,6 +14,7 @@ RUN \
     composer self-update 2.0.8                                                    && \
     apt-get update              && \
     apt-get install -y             \
+        libcurl4-openssl-dev       \
         libssl-dev                 \
         supervisor                 \
         unzip                      \

@@ -15,6 +15,7 @@ RUN \
     apt-get update              && \
     apt-get install -y             \
         inotify-tools              \
+        libcurl4-openssl-dev       \
         libssl-dev                 \
         supervisor                 \
         unzip                      \
