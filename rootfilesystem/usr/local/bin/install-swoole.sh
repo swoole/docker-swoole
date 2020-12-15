@@ -58,7 +58,7 @@ if [[ "true" = "${DEV_MODE}" ]] ; then
 else
     DEV_OPTIONS=""
 fi
-install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-json --enable-swoole-curl ${DEV_OPTIONS}
+install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-json ${DEV_OPTIONS}
 if hash docker-php-ext-enable 2>/dev/null ; then
     docker-php-ext-enable swoole
 else
