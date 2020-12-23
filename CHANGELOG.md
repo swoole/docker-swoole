@@ -1,51 +1,71 @@
 Table of Contents
 =================
 
-   * [Table of Contents](#table-of-contents)
-   * [Published Images](#published-images)
-      * [4.5.9](#459)
+   * [Swoole 4.5](#swoole-45)
+      * [4.5.10](#4510)
          * [Changed](#changed)
-      * [4.4.22 and 4.5.7](#4422-and-457)
+      * [4.5.9](#459)
          * [Changed](#changed-1)
-      * [4.5.6](#456)
+      * [4.5.7](#457)
          * [Changed](#changed-2)
-      * [4.5.5](#455)
+      * [4.5.6](#456)
          * [Changed](#changed-3)
-      * [4.4.21 and 4.5.4](#4421-and-454)
+      * [4.5.5](#455)
          * [Changed](#changed-4)
-      * [4.4.20 and 4.5.3](#4420-and-453)
+      * [4.5.4](#454)
          * [Changed](#changed-5)
-      * [4.4.19 and 4.5.2](#4419-and-452)
-      * [4.5.1](#451)
+      * [4.5.3](#453)
          * [Changed](#changed-6)
-      * [4.5.0](#450)
-      * [4.4.18](#4418)
+      * [4.5.2](#452)
+      * [4.5.1](#451)
          * [Changed](#changed-7)
-      * [4.4.17](#4417)
+      * [4.5.0](#450)
+   * [Swoole 4.4](#swoole-44)
+      * [4.4.23](#4423)
          * [Changed](#changed-8)
+      * [4.4.22](#4422)
+         * [Changed](#changed-9)
+      * [4.4.22](#4422-1)
+         * [Changed](#changed-10)
+      * [4.4.21](#4421)
+         * [Changed](#changed-11)
+      * [4.4.20](#4420)
+         * [Changed](#changed-12)
+      * [4.4.19](#4419)
+         * [Changed](#changed-13)
+      * [4.4.18](#4418)
+         * [Changed](#changed-14)
+      * [4.4.17](#4417)
+         * [Changed](#changed-15)
       * [4.4.16](#4416)
       * [4.4.15](#4415)
-         * [Changed](#changed-9)
+         * [Changed](#changed-16)
       * [4.4.14](#4414)
          * [Added](#added)
-         * [Changed](#changed-10)
+         * [Changed](#changed-17)
       * [4.4.13](#4413)
-         * [Changed](#changed-11)
+         * [Changed](#changed-18)
       * [4.4.12](#4412)
-         * [Changed](#changed-12)
+         * [Changed](#changed-19)
       * [4.4.8](#448)
          * [Added](#added-1)
-         * [Changed](#changed-13)
+         * [Changed](#changed-20)
       * [4.4.7](#447)
          * [Added](#added-2)
-         * [Changed](#changed-14)
+         * [Changed](#changed-21)
       * [4.4.6](#446)
-         * [Changed](#changed-15)
+         * [Changed](#changed-22)
       * [4.4.5](#445)
-         * [Changed](#changed-16)
+         * [Changed](#changed-23)
+   * [Swoole 4.3](#swoole-43)
       * [4.3.6](#436)
 
-# Published Images
+# Swoole 4.5
+
+## 4.5.10
+
+### Changed
+- Upgrade _Composer_ from 2.0.7 to 2.0.8.
 
 ## 4.5.9
 
@@ -53,7 +73,7 @@ Table of Contents
 - **Upgrade _Composer_ from 1.10.17 to 2.0.7.**
 - Support building multi-architecture image with the same tag.
 
-## 4.4.22 and 4.5.7
+## 4.5.7
 
 ### Changed
 - Upgrade _Composer_ from 1.10.16 to 1.10.17.
@@ -68,17 +88,17 @@ Table of Contents
 ### Changed
 - Upgrade _Composer_ from 1.10.13 to 1.10.15.
 
-## 4.4.21 and 4.5.4
+## 4.5.4
 
 ### Changed
 - Upgrade _Composer_ from 1.10.10 to 1.10.13.
 
-## 4.4.20 and 4.5.3
+## 4.5.3
 
 ### Changed
 - Upgrade _Composer_ from 1.10.6 to 1.10.10.
 
-## 4.4.19 and 4.5.2
+## 4.5.2
 
 ## 4.5.1
 
@@ -88,6 +108,42 @@ Table of Contents
 - **Stop allowing to run PHP scripts directly when booting containers**.
 
 ## 4.5.0
+
+Branched from branch _4.4.18_.
+
+# Swoole 4.4
+
+## 4.4.23
+
+### Changed
+- Upgrade _Composer_ from 1.10.17 to 1.10.19.
+
+## 4.4.22
+
+### Changed
+- Upgrade _Composer_ from 1.10.16 to 1.10.17.
+
+## 4.4.22
+
+### Changed
+- Upgrade _Composer_ from 1.10.16 to 1.10.17.
+
+## 4.4.21
+
+### Changed
+- Upgrade _Composer_ from 1.10.10 to 1.10.13.
+
+## 4.4.20
+
+### Changed
+- Upgrade _Composer_ from 1.10.6 to 1.10.10.
+
+## 4.4.19
+
+### Changed
+- Upgrade _Composer_ from 1.10.5 to 1.10.6.
+- If statement "exit" or "exit 0" is used in booting scripts, you need to replace them with a "return" statement.
+- **Stop allowing to run PHP scripts directly when booting containers**.
 
 ## 4.4.18
 
@@ -163,8 +219,12 @@ Table of Contents
 
 ## 4.4.5
 
+Branched from branch _4.3.6_.
+
 ### Changed
 - Support _zlib_.
+
+# Swoole 4.3
 
 ## 4.3.6
 
