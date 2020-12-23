@@ -213,14 +213,34 @@ class Dockerfile
         return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
     }
 
+    /**
+     * @see https://github.com/swoole/swoole-src/releases/tag/v4.5.7
+     */
     protected function getContext(string $phpVersion): array
     {
+        if (
+            ($this->getSwooleVersion() === 'latest')
+            || (version_compare($this->getSwooleVersion(), '4.6.0-alpha') >= 0)
+        ) {
+            $optionCurl = !in_array($phpVersion, ['8.0', '8.0.0']); //TODO: remove '8.0' after PHP 8.0.1 is out.
+        } else {
+            $optionCurl = false;
+        }
+
+        if (($this->getSwooleVersion() === 'latest') || (version_compare($this->getSwooleVersion(), '4.5.7') >= 0)) {
+            $optionJson = true;
+        } else {
+            $optionJson = false;
+        }
+
         return array_merge(
             $this->getConfig()['image'],
             [
                 'php_version'    => $phpVersion,
                 'alpine_version' => $this->getAlpineVersion($phpVersion),
                 'swoole_version' => $this->getSwooleVersion(),
+                'option_curl'    => $optionCurl,
+                'option_json'    => $optionJson,
             ]
         );
     }

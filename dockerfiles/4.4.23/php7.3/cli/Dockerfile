@@ -19,7 +19,11 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
-    install-swoole.sh 4.4.23 && \
+    install-swoole.sh 4.4.23 \
+        --enable-http2   \
+        --enable-mysqlnd \
+        --enable-openssl \
+        --enable-sockets && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
 

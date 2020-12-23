@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
 # This script is used to install Swoole in the official Swoole image.
 #
-# You may also use the script locally. To do that, set environment variable "SWOOLE_VERSION" when running the script.
-# The variable value should be a branch name, a tag or a Git commit number. For example,
+# How to use this script?
+#     install-swoole.sh [SWOOLE_VERSION] [Swoole installation options]
+# For example,
+#     install-swoole.sh
+#     install-swoole.sh master
+#     install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
 #
-#     SWOOLE_VERSION=master                                   # To install Swoole with latest code from branch "master".
-#     SWOOLE_VERSION=b8a876a4b3f285c9682dabd80ae1aa15932050f9 # To install Swoole with code from a Git commit.
-#     SWOOLE_VERSION=4.4.14                                   # To install Swoole 4.4.14.
+# The first parameter (SWOOLE_VERSION) should be a branch name, a tag or a Git commit number. For example,
+#     master                                   # To install Swoole with latest code from branch "master".
+#     b8a876a4b3f285c9682dabd80ae1aa15932050f9 # To install Swoole with code from a Git commit.
+#     4.5.10                                   # To install Swoole 4.5.10.
 #
 # Here is an example command to install Swoole:
 #
-#     SWOOLE_VERSION=4.4.14 \
+#     SWOOLE_VERSION=4.5.10 \
 #     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
 #
 # Here is another example:
@@ -21,7 +26,7 @@
 # You can specify other predefined variables if needed. For example, on macOS Mojave you may need to specify LDFLAGS,
 # CFLAGS and CPPFLAGS like following:
 #
-#     SWOOLE_VERSION=4.4.14                                                                            \
+#     SWOOLE_VERSION=4.5.10                                                                            \
 #     LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/expat/lib"               \
 #     CFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include"   \
 #     CPPFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include" \
@@ -36,8 +41,8 @@ set -ex
 
 if [[ ! -z ${1} ]] ; then
     SWOOLE_VERSION=$1
-fi
-if [[ -z ${SWOOLE_VERSION} ]] ; then
+    shift 1 # Remove Swoole version # out from command line arguments.
+else
     SWOOLE_VERSION=master
 fi
 export SWOOLE_VERSION=$SWOOLE_VERSION
@@ -58,7 +63,7 @@ if [[ "true" = "${DEV_MODE}" ]] ; then
 else
     DEV_OPTIONS=""
 fi
-install swoole-src "${SWOOLE_VERSION}" --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-json ${DEV_OPTIONS}
+install swoole-src "${SWOOLE_VERSION}" "$@" ${DEV_OPTIONS}
 if hash docker-php-ext-enable 2>/dev/null ; then
     docker-php-ext-enable swoole
 else
