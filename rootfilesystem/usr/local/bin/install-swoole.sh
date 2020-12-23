@@ -2,35 +2,24 @@
 # This script is used to install Swoole in the official Swoole image.
 #
 # How to use this script?
-#     install-swoole.sh [SWOOLE_VERSION] [Swoole installation options]
+#     ./install-swoole.sh [SWOOLE_VERSION] [Swoole installation options]
 # For example,
-#     install-swoole.sh
-#     install-swoole.sh master
-#     install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
+#     ./install-swoole.sh
+#     ./install-swoole.sh master
+#     ./install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
 #
 # The first parameter (SWOOLE_VERSION) should be a branch name, a tag or a Git commit number. For example,
 #     master                                   # To install Swoole with latest code from branch "master".
 #     b8a876a4b3f285c9682dabd80ae1aa15932050f9 # To install Swoole with code from a Git commit.
 #     4.5.10                                   # To install Swoole 4.5.10.
 #
-# Here is an example command to install Swoole:
-#
-#     SWOOLE_VERSION=4.5.10 \
-#     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
-#
-# Here is another example:
-#
-#     SWOOLE_VERSION=b8a876a4b3f285c9682dabd80ae1aa15932050f9 \
-#     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
-#
 # You can specify other predefined variables if needed. For example, on macOS Mojave you may need to specify LDFLAGS,
 # CFLAGS and CPPFLAGS like following:
 #
-#     SWOOLE_VERSION=4.5.10                                                                            \
 #     LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/expat/lib"               \
 #     CFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include"   \
 #     CPPFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include" \
-#     bash <(curl -s https://raw.githubusercontent.com/swoole/docker-swoole/master/rootfilesystem/usr/local/bin/install-swoole.sh)
+#     ./install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
 #
 # Before using this script, you should have PHP extension sockets installed, and have packages like openssl installed
 # already.
