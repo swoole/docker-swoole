@@ -20,9 +20,6 @@
 # Ignore PHPUnit files
 /.phpunit.result.cache
 
-# Ignore temporary files
-/temp/
-
 # Ignore Docker files
 qemu-*+resin-*
 qemu-*-static
