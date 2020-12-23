@@ -13,7 +13,16 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ["7.2", "7.3", "7.4", "8.0"]
+        php: ["7.1" "7.2", "7.3", "7.4", "8.0"]
+        swoole44:
+          - ${{ contains(github.ref, '4.4.') }}
+        swoole46:
+          - ${{ contains(github.ref, '4.6.') }}
+        exclude:
+          - php: "8.0"
+            swoole44: true
+          - php: "7.1"
+            swoole46: true
 
     name: The dev image for PHP ${{ matrix.php }}
 
