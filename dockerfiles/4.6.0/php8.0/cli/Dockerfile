@@ -1,4 +1,4 @@
-FROM php:8.0.0-cli
+FROM php:8.0.1-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -14,6 +14,7 @@ RUN \
     composer self-update 2.0.8                                                    && \
     apt-get update              && \
     apt-get install -y             \
+        libcurl4-openssl-dev       \
         libssl-dev                 \
         supervisor                 \
         unzip                      \
@@ -23,7 +24,7 @@ RUN \
         --enable-http2   \
         --enable-mysqlnd \
         --enable-openssl \
-        --enable-sockets --enable-swoole-json && \
+        --enable-sockets --enable-swoole-curl --enable-swoole-json && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
 

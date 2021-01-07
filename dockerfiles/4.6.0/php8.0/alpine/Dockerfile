@@ -1,4 +1,4 @@
-FROM php:8.0.0-cli-alpine3.12
+FROM php:8.0.1-cli-alpine3.12
 
 RUN \
     curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
@@ -6,7 +6,7 @@ RUN \
     composer self-update --clean-backups 2.0.8                                    && \
     apk update && \
     apk add --no-cache libstdc++ && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS openssl-dev pcre-dev pcre2-dev zlib-dev && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
@@ -16,7 +16,7 @@ RUN \
         --enable-http2   \
         --enable-mysqlnd \
         --enable-openssl \
-        --enable-sockets --enable-swoole-json && \
+        --enable-sockets --enable-swoole-curl --enable-swoole-json && \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz $HOME/.composer/*-old.phar && \
     docker-php-source delete && \
