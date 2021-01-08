@@ -13,10 +13,11 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 # Supported Tags and Respective `Dockerfile` Links
 
 * latest images (built daily using the master branch of [swoole-src](https://github.com/swoole/swoole-src))
-    * [latest, php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile)
-    * [latest-dev, php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile)
-    * [latest-alpine, php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile)
-    * [php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile), [php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile), [php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/alpine/Dockerfile)
+    * [latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) (same as tag _php8.0_), [latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) (same as tag _php8.0-dev_), [latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile) (same as tag _php8.0-alpine_)
+    * PHP 8.0: [php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile), [php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile), [php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile)
+    * PHP 7.4: [php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile), [php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile), [php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/alpine/Dockerfile)
+    * PHP 7.3: [php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile), [php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile), [php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/alpine/Dockerfile)
+    * PHP 7.2: [php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/cli/Dockerfile), [php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/cli/Dockerfile), [php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/alpine/Dockerfile)
 * versioned images (based on stable releases of Swoole)
     * Swoole 4.6
         * PHP 8.0: [4.6.0-php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.0/php8.0/cli/Dockerfile), [4.6.0-php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.0/php8.0/cli/Dockerfile), [4.6.0-php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.0/php8.0/alpine/Dockerfile)
