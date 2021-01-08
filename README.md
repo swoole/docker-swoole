@@ -46,7 +46,6 @@ Besides that, we build images with major versions of PHP (7.1 to 8.0) under diff
 * `phpswoole/swoole:4.6.0-php7.4`, `phpswoole/swoole:4.6.0-php7.4-alpine`
 * `phpswoole/swoole:4.6.0-php7.3`, `phpswoole/swoole:4.6.0-php7.3-alpine`
 * `phpswoole/swoole:4.6.0-php7.2`, `phpswoole/swoole:4.6.0-php7.2-alpine`
-* `phpswoole/swoole:4.6.0-php7.1`, `phpswoole/swoole:4.6.0-php7.1-alpine`
 
 We also build development images where extra tools are included for testing, debugging, and monitoring purpose.
 Development images are tagged in the format of _&lt;image name&gt;:&lt;image tag&gt;-dev_ (a "dev" postfix added to the
@@ -76,7 +75,7 @@ NOTE:
 * Easy to manage booting scripts in Docker.
 * Allow running PHP scripts and other commands directly in different environments (including ECS).
 * Use one root filesystem for simplicity (one Docker `COPY` command only in dockerfiles).
-* _Composer_ included (_Composer v1_ for Swoole 4.5.8 and before; _Composer v2_ for Swoole 4.6.0 and after).
+* _Composer_ included (_Composer v1_ for Swoole 4.5.8 and before; _Composer v2_ for Swoole 4.5.9 and after).
 * Built for different architectures.
 * Support auto-reloading for local development.
 * Support code debugging for local development.
