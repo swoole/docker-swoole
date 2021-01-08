@@ -222,7 +222,7 @@ class Dockerfile
             ($this->getSwooleVersion() === 'latest')
             || (version_compare($this->getSwooleVersion(), '4.6.0-alpha') >= 0)
         ) {
-            $optionCurl = !in_array($phpVersion, ['8.0', '8.0.0']); //TODO: remove '8.0' after PHP 8.0.1 is out.
+            $optionCurl = ($phpVersion != '8.0.0');
         } else {
             $optionCurl = false;
         }
