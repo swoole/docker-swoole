@@ -7,7 +7,7 @@ on:
       - '[4-9].[0-9]+.[0-9]+-?[a-zA-Z]**'
 
 jobs:
-  buid_versioned_images:
+  build_versioned_images:
     runs-on: ubuntu-latest
     if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
