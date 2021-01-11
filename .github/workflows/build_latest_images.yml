@@ -38,8 +38,10 @@ jobs:
 
       -
         name: Add full name of the latest Docker image
-        if: ${{ ${{ matrix.php }} == '8.0' }}
-        run: echo "::set-env name=DOCKER_IMAGE_FULL_NAMES::${{ env.DOCKER_IMAGE_FULL_NAMES }},phpswoole/swoole:latest"
+        run: |
+          if [ ${{ matrix.php }} == '8.0' ] ; then
+            echo "::set-env name=DOCKER_IMAGE_FULL_NAMES::${{ env.DOCKER_IMAGE_FULL_NAMES }},phpswoole/swoole:latest"
+          fi
 
       -
         name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}
