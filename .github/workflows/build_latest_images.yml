@@ -6,13 +6,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  buid_latest_php74_images:
+  build_latest_images:
     runs-on: ubuntu-latest
     if: ${{ github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: true
       matrix:
-        php: ["7.2", "7.3", "7.4"]
+        php: ["7.2", "7.3", "7.4", "8.0"]
+    env:
+      DOCKER_IMAGE_FULL_NAMES: phpswoole/swoole:php${{ matrix.php }}
 
     steps:
       -
@@ -35,47 +37,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
-        name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: dockerfiles/latest/php${{ matrix.php }}/cli/Dockerfile
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
-          push: true
-          tags: phpswoole/swoole:php${{ matrix.php }}
-
-      -
-        name: Image digest of phpswoole/swoole:php${{ matrix.php }}
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-  buid_latest_php80_images:
-    runs-on: ubuntu-latest
-    if: ${{ github.repository == 'swoole/docker-swoole' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        php: ["8.0"]
-
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        name: Add full name of the latest Docker image
+        if: {{ ${{ matrix.php }} == '8.0' }}
+        run: echo "::set-env name=DOCKER_IMAGE_FULL_NAMES::${{ env.DOCKER_IMAGE_FULL_NAMES }},phpswoole/swoole:latest"
 
       -
         name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}
@@ -86,7 +50,7 @@ jobs:
           file: dockerfiles/latest/php${{ matrix.php }}/cli/Dockerfile
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
-          tags: phpswoole/swoole:php${{ matrix.php }},phpswoole/swoole:latest
+          tags: ${{ env.DOCKER_IMAGE_FULL_NAMES }}
 
       -
         name: Image digest of phpswoole/swoole:php${{ matrix.php }}
