@@ -35,10 +35,6 @@ jobs:
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
-      - name: Get/set branch name
-        id: vars
-        run: echo ::set-output name=branch_name::${GITHUB_REF##*/}
-
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -60,7 +56,7 @@ jobs:
               echo "::set-output name=full_names::phpswoole/swoole:${GITHUB_REF##*/}-php${{ matrix.php }},phpswoole/swoole:${GITHUB_REF%.*}-php${{ matrix.php }},phpswoole/swoole:${GITHUB_REF%.*}"
             else
               echo "::set-output name=full_names::phpswoole/swoole:${GITHUB_REF##*/}-php${{ matrix.php }},phpswoole/swoole:${GITHUB_REF%.*}-php${{ matrix.php }}"
-            if
+            fi
           else
               echo "::set-output name=full_names::phpswoole/swoole:${GITHUB_REF##*/}-php${{ matrix.php }}"
           fi
