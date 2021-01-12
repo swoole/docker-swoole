@@ -12,79 +12,44 @@ You can get the image from [here](https://hub.docker.com/r/phpswoole/swoole).
 
 # Supported Tags and Respective `Dockerfile` Links
 
-* latest images (built daily using the master branch of [swoole-src](https://github.com/swoole/swoole-src))
-    * PHP 8.0:
-        * [php8.0, latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile)
-        * [php8.0-dev, latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile)
-        * [php8.0-alpine, latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile)
-    * PHP 7.4:
-        * [php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile)
-        * [php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile)
-        * [php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/alpine/Dockerfile)
-    * PHP 7.3:
-        * [php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile)
-        * [php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile)
-        * [php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/alpine/Dockerfile)
-    * PHP 7.2:
-        * [php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/cli/Dockerfile)
-        * [php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/cli/Dockerfile)
-        * [php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/alpine/Dockerfile)
-* versioned images (based on stable releases of Swoole)
-    * Swoole 4.6
-        * PHP 8.0:
-            * [4.6.1-php8.0, 4.6-php8.0, 4.6](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php8.0/cli/Dockerfile)
-            * [4.6.1-php8.0-dev, 4.6-php8.0-dev, 4.6-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php8.0/cli/Dockerfile)
-            * [4.6.1-php8.0-alpine, 4.6-php8.0-alpine, 4.6-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php8.0/alpine/Dockerfile)
-        * PHP 7.4:
-            * [4.6.1-php7.4, 4.6-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.4/cli/Dockerfile)
-            * [4.6.1-php7.4-dev, 4.6-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.4/cli/Dockerfile)
-            * [4.6.1-php7.4-alpine, 4.6-php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.4/alpine/Dockerfile)
-        * PHP 7.3:
-            * [4.6.1-php7.3, 4.6-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.3/cli/Dockerfile)
-            * [4.6.1-php7.3-dev, 4.6-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.3/cli/Dockerfile)
-            * [4.6.1-php7.3-alpine, 4.6-php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.3/alpine/Dockerfile)
-        * PHP 7.2:
-            * [4.6.1-php7.2, 4.6-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.2/cli/Dockerfile)
-            * [4.6.1-php7.2-dev, 4.6-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.2/cli/Dockerfile)
-            * [4.6.1-php7.2-alpine, 4.6-php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.2/alpine/Dockerfile)
-    * Swoole 4.5
-        * PHP 8.0:
-            * [4.5.11-php8.0, 4.5-php8.0, 4.5](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php8.0/cli/Dockerfile)
-            * [4.5.11-php8.0-dev, 4.5-php8.0-dev, 4.5-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php8.0/cli/Dockerfile)
-            * [4.5.11-php8.0-alpine, 4.5-php8.0-alpine, 4.5-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php8.0/alpine/Dockerfile)
-        * PHP 7.4:
-            * [4.5.11-php7.4, 4.5-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.4/cli/Dockerfile)
-            * [4.5.11-php7.4-dev, 4.5-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.4/cli/Dockerfile)
-            * [4.5.11-php7.4-alpine, 4.5-php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.4/alpine/Dockerfile)
-        * PHP 7.3:
-            * [4.5.11-php7.3, 4.5-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.3/cli/Dockerfile)
-            * [4.5.11-php7.3-dev, 4.5-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.3/cli/Dockerfile)
-            * [4.5.11-php7.3-alpine, 4.5-php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.3/alpine/Dockerfile)
-        * PHP 7.2:
-            * [4.5.11-php7.2, 4.5-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.2/cli/Dockerfile)
-            * [4.5.11-php7.2-dev, 4.5-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.2/cli/Dockerfile)
-            * [4.5.11-php7.2-alpine, 4.5-php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.2/alpine/Dockerfile)
-        * PHP 7.1:
-            * [4.5.11-php7.1, 4.5-php7.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.1/cli/Dockerfile)
-            * [4.5.11-php7.1-dev, 4.5-php7.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.1/cli/Dockerfile)
-            * [4.5.11-php7.1-alpine, 4.5-php7.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.1/alpine/Dockerfile)
-    * Swoole 4.4
-        * PHP 7.4:
-            * [4.4.23-php7.4, 4.4-php7.4, 4.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.4/cli/Dockerfile)
-            * [4.4.23-php7.4-dev, 4.4-php7.4-dev, 4.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.4/cli/Dockerfile)
-            * [4.4.23-php7.4-alpine, 4.4-php7.4-alpine, 4.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.4/alpine/Dockerfile)
-        * PHP 7.3:
-            * [4.4.23-php7.3, 4.4-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.3/cli/Dockerfile)
-            * [4.4.23-php7.3-dev, 4.4-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.3/cli/Dockerfile)
-            * [4.4.23-php7.3-alpine, 4.4-php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.3/alpine/Dockerfile)
-        * PHP 7.2:
-            * [4.4.23-php7.2, 4.4-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.2/cli/Dockerfile)
-            * [4.4.23-php7.2-dev, 4.4-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.2/cli/Dockerfile)
-            * [4.4.23-php7.2-alpine, 4.4-php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.2/alpine/Dockerfile)
-        * PHP 7.1:
-            * [4.4.23-php7.1, 4.4-php7.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.1/cli/Dockerfile)
-            * [4.4.23-php7.1-dev, 4.4-php7.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.1/cli/Dockerfile)
-            * [4.4.23-php7.1-alpine, 4.4-php7.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.1/alpine/Dockerfile)
+`1` Latest images (built daily using the master branch of [swoole-src](https://github.com/swoole/swoole-src))
+
+| PHP Versions | Default Images | Dev Images | Alpine Images |
+|-|-|-|-|
+| PHP 8.0 | [php8.0, latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) | [php8.0-dev, latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) | [php8.0-alpine, latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile) |
+| PHP 7.4 | [php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile) | [php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile) | [php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/alpine/Dockerfile) |
+| PHP 7.3 | [php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile) | [php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile) | [php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/alpine/Dockerfile) |
+| PHP 7.2 | [php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/cli/Dockerfile) | [php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/cli/Dockerfile) | [php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.2/alpine/Dockerfile) |
+
+`2` Versioned images (based on stable releases of Swoole)
+
+`2.1` Swoole 4.6
+
+| PHP Versions | Default Images | Dev Images | Alpine Images |
+|-|-|-|-|
+| PHP 8.0 | [4.6.1-php8.0, 4.6-php8.0, 4.6](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php8.0/cli/Dockerfile) | [4.6.1-php8.0-dev, 4.6-php8.0-dev, 4.6-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php8.0/cli/Dockerfile) | [4.6.1-php8.0-alpine, 4.6-php8.0-alpine, 4.6-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php8.0/alpine/Dockerfile) |
+| PHP 7.4 | [4.6.1-php7.4, 4.6-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.4/cli/Dockerfile) | [4.6.1-php7.4-dev, 4.6-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.4/cli/Dockerfile) | [4.6.1-php7.4-alpine, 4.6-php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.4/alpine/Dockerfile) |
+| PHP 7.3 | [4.6.1-php7.3, 4.6-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.3/cli/Dockerfile) | [4.6.1-php7.3-dev, 4.6-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.3/cli/Dockerfile) | [4.6.1-php7.3-alpine, 4.6-php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.3/alpine/Dockerfile) |
+| PHP 7.2 | [4.6.1-php7.2, 4.6-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.2/cli/Dockerfile) | [4.6.1-php7.2-dev, 4.6-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.2/cli/Dockerfile) | [4.6.1-php7.2-alpine, 4.6-php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.6.1/php7.2/alpine/Dockerfile) |
+
+`2.2` Swoole 4.5
+
+| PHP Versions | Default Images | Dev Images | Alpine Images |
+|-|-|-|-|
+| PHP 8.0 | [4.5.11-php8.0, 4.5-php8.0, 4.5](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php8.0/cli/Dockerfile) | [4.5.11-php8.0-dev, 4.5-php8.0-dev, 4.5-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php8.0/cli/Dockerfile) | [4.5.11-php8.0-alpine, 4.5-php8.0-alpine, 4.5-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php8.0/alpine/Dockerfile) |
+| PHP 7.4 | [4.5.11-php7.4, 4.5-php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.4/cli/Dockerfile) | [4.5.11-php7.4-dev, 4.5-php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.4/cli/Dockerfile) | [4.5.11-php7.4-alpine, 4.5-php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.4/alpine/Dockerfile) |
+| PHP 7.3 | [4.5.11-php7.3, 4.5-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.3/cli/Dockerfile) | [4.5.11-php7.3-dev, 4.5-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.3/cli/Dockerfile) | [4.5.11-php7.3-alpine, 4.5-php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.3/alpine/Dockerfile) |
+| PHP 7.2 | [4.5.11-php7.2, 4.5-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.2/cli/Dockerfile) | [4.5.11-php7.2-dev, 4.5-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.2/cli/Dockerfile) | [4.5.11-php7.2-alpine, 4.5-php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.2/alpine/Dockerfile) |
+| PHP 7.1 | [4.5.11-php7.1, 4.5-php7.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.1/cli/Dockerfile) | [4.5.11-php7.1-dev, 4.5-php7.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.1/cli/Dockerfile) | [4.5.11-php7.1-alpine, 4.5-php7.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.5.11/php7.1/alpine/Dockerfile) |
+
+`2.3` Swoole 4.4
+
+| PHP Versions | Default Images | Dev Images | Alpine Images |
+|-|-|-|-|
+| PHP 7.4 | [4.4.23-php7.4, 4.4-php7.4, 4.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.4/cli/Dockerfile) | [4.4.23-php7.4-dev, 4.4-php7.4-dev, 4.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.4/cli/Dockerfile) | [4.4.23-php7.4-alpine, 4.4-php7.4-alpine, 4.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.4/alpine/Dockerfile) |
+| PHP 7.3 | [4.4.23-php7.3, 4.4-php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.3/cli/Dockerfile) | [4.4.23-php7.3-dev, 4.4-php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.3/cli/Dockerfile) | [4.4.23-php7.3-alpine, 4.4-php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.3/alpine/Dockerfile) |
+| PHP 7.2 | [4.4.23-php7.2, 4.4-php7.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.2/cli/Dockerfile) | [4.4.23-php7.2-dev, 4.4-php7.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.2/cli/Dockerfile) | [4.4.23-php7.2-alpine, 4.4-php7.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.2/alpine/Dockerfile) |
+| PHP 7.1 | [4.4.23-php7.1, 4.4-php7.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.1/cli/Dockerfile) | [4.4.23-php7.1-dev, 4.4-php7.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.1/cli/Dockerfile) | [4.4.23-php7.1-alpine, 4.4-php7.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/4.4.23/php7.1/alpine/Dockerfile) |
 
 # List of Images
 
