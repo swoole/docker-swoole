@@ -51,16 +51,31 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
-        name: Build and push Docker image phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}-alpine
+        name: Set output parameters
+        id: params
+        run: |
+          echo ::set-output name=branch_name::${GITHUB_REF##*/}
+          if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${GITHUB_REF##*/}.yml" ; then
+            if [ ${{ matrix.php }} == '8.0' ] ; then
+              echo "::set-output name=full_names::phpswoole/swoole:${GITHUB_REF##*/}-php${{ matrix.php }}-alpine,phpswoole/swoole:${GITHUB_REF%.*}-php${{ matrix.php }}-alpine,phpswoole/swoole:${GITHUB_REF%.*}-alpine"
+            else
+              echo "::set-output name=full_names::phpswoole/swoole:${GITHUB_REF##*/}-php${{ matrix.php }}-alpine,phpswoole/swoole:${GITHUB_REF%.*}-php${{ matrix.php }}-alpine"
+            if
+          else
+              echo "::set-output name=full_names::phpswoole/swoole:${GITHUB_REF##*/}-php${{ matrix.php }}-alpine"
+          fi
+
+      -
+        name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: dockerfiles/${{ steps.vars.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
-          tags: phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}-alpine
+          tags: ${{ steps.params.outputs.full_names }}
 
       -
-        name: Image digest of phpswoole/swoole:${{ steps.vars.outputs.branch_name }}-php${{ matrix.php }}-alpine
+        name: Image digest of phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
         run: echo ${{ steps.docker_build.outputs.digest }}

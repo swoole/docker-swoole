@@ -6,11 +6,11 @@
 
 # Options for field "status": "under development", "released", "end-of-life".
 #   * "under development":
-#     Still under development. Please DO NOT use it in production.
+#     Under development and is actively maintained. This status is also used in GitLab Actions to identify most-recent stable releases.
 #   * "released":
-#     Released and can be used in production. The tag is frozen and won't be updated any more.
+#     The tag is frozen and won't be updated any more.
 #   * "end-of-life":
-#     There are new releases out and this tag should no longer being used in production.
+#     The tag is not actively maintained and is not suggested to be used any more.
 status: "under development"
 php: # List of PHP versions to build for.
   - "7.1.29"
