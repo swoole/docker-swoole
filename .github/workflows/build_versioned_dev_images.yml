@@ -54,7 +54,7 @@ jobs:
           branch_name=${GITHUB_REF##*/}
           major_version=${branch_name%.*}
           if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
-            if [ ${{ matrix.php }} == '8.0' ] ; then
+            if [ ${{ matrix.php }} == '8.0' ] || ([ ${{ matrix.php }} == '7.4' ] && [ ${major_version} == '4.4' ]) ; then
               echo "::set-output name=full_names::phpswoole/swoole:${branch_name}-php${{ matrix.php }}-dev,phpswoole/swoole:${major_version}-php${{ matrix.php }}-dev,phpswoole/swoole:${major_version}-dev"
             else
               echo "::set-output name=full_names::phpswoole/swoole:${branch_name}-php${{ matrix.php }}-dev,phpswoole/swoole:${major_version}-php${{ matrix.php }}-dev"
