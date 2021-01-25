@@ -63,7 +63,7 @@ jobs:
                 echo "::set-output name=full_names::phpswoole/swoole:${branch_name}-php${{ matrix.php }},phpswoole/swoole:${major_version}-php${{ matrix.php }}"
               fi
             fi
-        else
+          else
               echo "::set-output name=full_names::phpswoole/swoole:${branch_name}-php${{ matrix.php }}"
           fi
 
