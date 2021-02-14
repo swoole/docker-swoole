@@ -17,9 +17,6 @@
 /composer.phar
 /vendor/*
 
-# Ignore PHPUnit files
+# Ignore temporarily files
+/.php_cs.cache
 /.phpunit.result.cache
-
-# Ignore Docker files
-qemu-*+resin-*
-qemu-*-static
