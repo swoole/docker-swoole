@@ -1,7 +1,7 @@
 FROM php:7.3.27-cli-alpine3.12
 
 RUN \
-    curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+    curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
     composer self-update --clean-backups 2.0.9                                    && \
     apk update && \
