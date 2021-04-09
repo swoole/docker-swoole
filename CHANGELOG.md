@@ -1,6 +1,7 @@
 Table of Contents
 =================
 
+* [Table of Contents](#table-of-contents)
 * [Swoole 4.6](#swoole-46)
     * [4.6.4](#464)
         * [Changed](#changed)
@@ -29,44 +30,46 @@ Table of Contents
         * [Changed](#changed-10)
     * [4.5.0](#450)
 * [Swoole 4.4](#swoole-44)
-    * [4.4.24](#4424)
+    * [4.4.25](#4425)
         * [Changed](#changed-11)
-    * [4.4.23](#4423)
+    * [4.4.24](#4424)
         * [Changed](#changed-12)
-    * [4.4.22](#4422)
+    * [4.4.23](#4423)
         * [Changed](#changed-13)
-    * [4.4.22](#4422-1)
+    * [4.4.22](#4422)
         * [Changed](#changed-14)
-    * [4.4.21](#4421)
+    * [4.4.22](#4422-1)
         * [Changed](#changed-15)
-    * [4.4.20](#4420)
+    * [4.4.21](#4421)
         * [Changed](#changed-16)
-    * [4.4.19](#4419)
+    * [4.4.20](#4420)
         * [Changed](#changed-17)
-    * [4.4.18](#4418)
+    * [4.4.19](#4419)
         * [Changed](#changed-18)
-    * [4.4.17](#4417)
+    * [4.4.18](#4418)
         * [Changed](#changed-19)
+    * [4.4.17](#4417)
+        * [Changed](#changed-20)
     * [4.4.16](#4416)
     * [4.4.15](#4415)
-        * [Changed](#changed-20)
+        * [Changed](#changed-21)
     * [4.4.14](#4414)
         * [Added](#added)
-        * [Changed](#changed-21)
-    * [4.4.13](#4413)
         * [Changed](#changed-22)
-    * [4.4.12](#4412)
+    * [4.4.13](#4413)
         * [Changed](#changed-23)
+    * [4.4.12](#4412)
+        * [Changed](#changed-24)
     * [4.4.8](#448)
         * [Added](#added-1)
-        * [Changed](#changed-24)
+        * [Changed](#changed-25)
     * [4.4.7](#447)
         * [Added](#added-2)
-        * [Changed](#changed-25)
-    * [4.4.6](#446)
         * [Changed](#changed-26)
-    * [4.4.5](#445)
+    * [4.4.6](#446)
         * [Changed](#changed-27)
+    * [4.4.5](#445)
+        * [Changed](#changed-28)
 * [Swoole 4.3](#swoole-43)
     * [4.3.6](#436)
 
@@ -143,6 +146,11 @@ Branched from branch _4.5.10_.
 Branched from branch _4.4.18_.
 
 # Swoole 4.4
+
+## 4.4.25
+
+### Changed
+- Upgrade _Composer_ from 1.10.20 to 1.10.21.
 
 ## 4.4.24
 
