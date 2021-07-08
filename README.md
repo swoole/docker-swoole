@@ -135,7 +135,7 @@ Here is a list of the examples under folder "_examples/_":
 
 # Image Variants
 
-The `phpswoole/swoole` images come in three flavors, each designed for a specific use case.
+The `phpswoole/swoole` images come in three flavors, each designed for a specific use case. **In production environment, we suggest using the Alpine images.**
 
 ## 1. `latest`, `<swoole-version>`, and `<swoole-version>-php<php-version>`
 
