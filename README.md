@@ -19,6 +19,7 @@ Table of Contents
    * [Image Variants](#image-variants)
    * [Supported Tags and Respective Dockerfile Links](#supported-tags-and-respective-dockerfile-links)
       * [Versioned images](#versioned-images-based-on-stable-releases-of-swoole)
+         * [Swoole 4.7](#swoole-47)
          * [Swoole 4.6](#swoole-46)
          * [Swoole 4.5](#swoole-45)
          * [Swoole 4.4](#swoole-44)
