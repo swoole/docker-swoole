@@ -18,11 +18,15 @@ jobs:
           - ${{ contains(github.ref, '4.4.') }}
         swoole46:
           - ${{ contains(github.ref, '4.6.') }}
+        swoole47:
+          - ${{ contains(github.ref, '4.7.') }}
         exclude:
           - php: "8.0"
             swoole44: true
           - php: "7.1"
             swoole46: true
+          - php: "7.1"
+            swoole47: true
 
     name: The dev image for PHP ${{ matrix.php }}
 
