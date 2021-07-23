@@ -3,6 +3,8 @@ This example shows how to use [Blackfire](https://blackfire.io) and Composer pac
 _Blackfire_ is not included in the images by default, but you can easily get it installed using the built-in script
 _install-blackfire.sh_.
 
+NOTE: When debugging Swoole applications, we recommend to use [yasd](https://github.com/swoole/yasd) instead of _Blackfire_, _sdebug_, or _Xdebug_.
+
 How to run this example?
 
 # 1. Set Blackfire Environment Variables

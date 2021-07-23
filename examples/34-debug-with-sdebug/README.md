@@ -5,6 +5,8 @@
 This example shows how to use Sdebug, PHPStorm, and the Swoole image together to debug PHP 7.3+ scripts. If you use other
 versions of PHP, Sdebug might not work as discussed on this page.
 
+NOTE: When debugging Swoole applications, we recommend to use [yasd](https://github.com/swoole/yasd) instead of _Blackfire_, _sdebug_, or _Xdebug_.
+
 # Settings
 
 ## Dockerized Development Environment

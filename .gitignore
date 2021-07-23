@@ -20,3 +20,4 @@
 # Ignore temporarily files
 /.php_cs.cache
 /.phpunit.result.cache
+/examples/35-debug-with-yasd/rootfilesystem/var/www/debug.log
