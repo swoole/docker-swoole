@@ -25,7 +25,7 @@ This example shows how to debug a Swoole-based web server using [yasd](https://g
 * Browser extensions/plugins like `Xdebug helper` are not needed.
 * In the PHP _.ini_ file, use `zend_extension=yasd.so` instead of `extension=yasd.so` to load the `yasd` extension.
 * Before starting the Docker container, please make sure Docker environment variable `PHP_IDE_CONFIG` is properly set. In this example, it's set to "serverName=demo", where "demo" is the server name set in _Phpstorm_.
-* Starting from _yasd_ v0.3.9, you can use a domain name instead of an address IP for option `yasd.remote_host`, e.g., "yasd.remote_host=host.docker.internal".
+* Starting from _yasd_ v0.3.9, you can use a domain/host name instead of an address IP for option `yasd.remote_host`, e.g., "yasd.remote_host=host.docker.internal".
 * To debug HTTP calls, you don't have to use a browser. In some cases, `curl` is a better choice, especially when debugging HTTP POST/PUT/DELETE requests.
 
 ## Additional Commands for Local Development
