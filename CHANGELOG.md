@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 4.8](#swoole-48)
+   * [4.8.1](#481)
    * [4.8.0](#480)
       * [Changed](#changed)
 * [Swoole 4.7](#swoole-47)
@@ -85,6 +86,8 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 4.8
+
+## 4.8.1
 
 ## 4.8.0
 
