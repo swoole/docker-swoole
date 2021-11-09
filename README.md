@@ -225,6 +225,7 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
+| PHP 8.1 | [php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.1/cli/Dockerfile) | [php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.1/cli/Dockerfile) | [php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.1/alpine/Dockerfile) |
 | PHP 8.0 | [php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) | [php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) | [php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile) |
 | PHP 7.4 | [php7.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile) | [php7.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/cli/Dockerfile) | [php7.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.4/alpine/Dockerfile) |
 | PHP 7.3 | [php7.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile) | [php7.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/cli/Dockerfile) | [php7.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php7.3/alpine/Dockerfile) |
