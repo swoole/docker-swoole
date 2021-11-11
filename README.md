@@ -1,5 +1,6 @@
 # Docker Image for Swoole
 
+[![Twitter](https://badgen.net/badge/icon/twitter?icon=twitter&label)](https://twitter.com/phpswoole)
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.swoole.dev)
 [![Docker Pulls](https://img.shields.io/docker/pulls/phpswoole/swoole.svg)](https://hub.docker.com/r/phpswoole/swoole)
 [![License](https://img.shields.io/badge/license-apache2-blue.svg)](https://github.com/swoole/docker-swoole/blob/master/LICENSE)
