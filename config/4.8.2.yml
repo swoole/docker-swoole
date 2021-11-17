@@ -1,7 +1,7 @@
-# The YAML configuration file for generating Dockerfile of image phpswoole/swoole:4.8.1.
+# The YAML configuration file for generating Dockerfile of image phpswoole/swoole:4.8.2.
 # For technical details of the configuration file, please check comments and sample configurations in file /config.yml.
 #
-status: "released"
+status: "under development"
 php:
   - "7.2.34"
   - "7.3.32"
@@ -9,4 +9,4 @@ php:
   - "8.0.12"
 image:
   composer:
-    version: "2.1.9"
+    version: "2.1.12"
