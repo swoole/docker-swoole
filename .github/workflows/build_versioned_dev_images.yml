@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ["7.1", "7.2", "7.3", "7.4", "8.0"]
+        php: ["7.1", "7.2", "7.3", "7.4", "8.0", "8.1"]
         swoole44:
           - ${{ contains(github.ref, '4.4.') }}
         swoole46:
@@ -23,6 +23,12 @@ jobs:
         swoole48:
           - ${{ contains(github.ref, '4.8.') }}
         exclude:
+          - php: "8.1"
+            swoole44: true
+          - php: "8.1"
+            swoole46: true
+          - php: "8.1"
+            swoole47: true
           - php: "8.0"
             swoole44: true
           - php: "7.1"
@@ -62,7 +68,7 @@ jobs:
           branch_name=${GITHUB_REF##*/}
           major_version=${branch_name%.*}
           if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
-            if [ ${{ matrix.php }} == '8.0' ] ; then
+            if [ ${{ matrix.php }} == '8.1' ] ; then
               echo "::set-output name=full_names::phpswoole/swoole:${branch_name}-php${{ matrix.php }}-dev,phpswoole/swoole:${major_version}-php${{ matrix.php }}-dev,phpswoole/swoole:${major_version}-dev,phpswoole/swoole:latest-dev"
             else
               if [ ${{ matrix.php }} == '7.4' ] && [ ${major_version} == '4.4' ] ; then
