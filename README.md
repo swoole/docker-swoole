@@ -145,8 +145,8 @@ The `phpswoole/swoole` images come in three flavors, each designed for a specifi
 
 * `phpswoole/swoole:latest`
 * `phpswoole/swoole:4.8`
-* `phpswoole/swoole:4.8-php8.1`
-* `phpswoole/swoole:4.8.3-php8.1`
+* `phpswoole/swoole:4.8-php8.0`
+* `phpswoole/swoole:4.8.3-php8.0`
 
 This variant is based on the _php:cli_ images, with a few changes. It uses _Supervisord_ to manage booting processes, and has _Composer_ preinstalled.
 
@@ -154,8 +154,8 @@ This variant is based on the _php:cli_ images, with a few changes. It uses _Supe
 
 * `phpswoole/swoole:latest-dev`
 * `phpswoole/swoole:4.8-dev`
-* `phpswoole/swoole:4.8-php8.1-dev`
-* `phpswoole/swoole:4.8.3-php8.1-dev`
+* `phpswoole/swoole:4.8-php8.0-dev`
+* `phpswoole/swoole:4.8.3-php8.0-dev`
 
 This variant is very similar to the previous one, but it has extra tools added for testing, debugging, and monitoring purpose,
 including [gdb](https://www.gnu.org/s/gdb), git, lsof, [strace](https://strace.io), [tcpdump](https://www.tcpdump.org), [Valgrind](http://www.valgrind.org), and vim.
@@ -164,8 +164,8 @@ including [gdb](https://www.gnu.org/s/gdb), git, lsof, [strace](https://strace.i
 
 * `phpswoole/swoole:latest-alpine`
 * `phpswoole/swoole:4.8-alpine`
-* `phpswoole/swoole:4.8-php8.1-alpine`
-* `phpswoole/swoole:4.8.3-php8.1-alpine`
+* `phpswoole/swoole:4.8-php8.0-alpine`
+* `phpswoole/swoole:4.8.3-php8.0-alpine`
 
 You can use this variant in the same way as using the _php:alpine_ image, except that we changed the default working directory to _/var/www_.
 Also, we have _Composer_ preinstalled in the image.
@@ -251,15 +251,15 @@ follow these three steps.
 
 ```bash
 docker build -t phpswoole/swoole                     -f dockerfiles/latest/php8.0/cli/Dockerfile   .
-docker build -t phpswoole/swoole:4.8.3-php8.1        -f dockerfiles/4.8.3/php8.0/cli/Dockerfile    .
-docker build -t phpswoole/swoole:4.8.3-php8.1-alpine -f dockerfiles/4.8.3/php8.0/alpine/Dockerfile .
+docker build -t phpswoole/swoole:4.8.3-php8.0        -f dockerfiles/4.8.3/php8.0/cli/Dockerfile    .
+docker build -t phpswoole/swoole:4.8.3-php8.0-alpine -f dockerfiles/4.8.3/php8.0/alpine/Dockerfile .
 ```
 
 To build development images (where extra tools are included), add an argument _DEV_MODE_:
 
 ```bash
 docker build --build-arg DEV_MODE=true -t phpswoole/swoole:latest-dev       -f dockerfiles/latest/php8.0/cli/Dockerfile .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.8.3-php8.1-dev -f dockerfiles/4.8.3/php8.0/cli/Dockerfile  .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:4.8.3-php8.0-dev -f dockerfiles/4.8.3/php8.0/cli/Dockerfile  .
 ```
 
 # Credits
