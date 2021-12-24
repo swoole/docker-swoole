@@ -56,6 +56,9 @@ Table of Contents
 
 ## 4.8.5
 
+### Changed
+- Alpine images are built with Alpine Linux 3.15 for PHP 7.4+ (PHP 7.4 to PHP 8.1).
+
 ## 4.8.4
 
 ## 4.8.3
