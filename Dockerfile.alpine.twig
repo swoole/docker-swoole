@@ -5,17 +5,18 @@ RUN \
     chmod +x /usr/bin/composer                                                                     && \
     composer self-update --clean-backups {{ composer.version }}                                    && \
     apk update && \
-    apk add --no-cache libstdc++ && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS {% if option_curl == true  %}curl-dev {% endif %}openssl-dev pcre-dev pcre2-dev zlib-dev && \
+    apk add --no-cache libstdc++ libpq && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS {% if option_curl == true  %}curl-dev{% endif %} postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
     curl -sfL https://github.com/swoole/swoole-src/archive/{% if swoole_version == "latest" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
-        --enable-http2   \
-        --enable-mysqlnd \
-        --enable-openssl \
+        --enable-http2        \
+        --enable-mysqlnd      \
+        --enable-swoole-pgsql \
+        --enable-openssl      \
         --enable-sockets {% if option_curl == true  %}--enable-swoole-curl {% endif %}{% if option_json == true  %}--enable-swoole-json {% endif %}&& \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz $HOME/.composer/*-old.phar && \

@@ -16,15 +16,17 @@ RUN \
     apt-get install -y             \
         inotify-tools              \
         libcurl4-openssl-dev       \
+        libpq-dev                  \
         libssl-dev                 \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
     install-swoole.sh master \
-        --enable-http2   \
-        --enable-mysqlnd \
-        --enable-openssl \
+        --enable-http2        \
+        --enable-mysqlnd      \
+        --enable-swoole-pgsql \
+        --enable-openssl      \
         --enable-sockets --enable-swoole-curl --enable-swoole-json && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
