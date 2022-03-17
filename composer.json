@@ -12,7 +12,7 @@
     "swoole/ide-helper": "@dev",
     "symfony/filesystem":"~5.1.0",
     "symfony/yaml": "~5.1.0",
-    "twig/twig": "~3.0.0"
+    "twig/twig": "~3.0"
   },
   "autoload-dev": {
     "psr-4": {
