@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 4.8](#swoole-48)
+   * [4.8.11](#4811)
    * [4.8.10](#4810)
    * [4.8.9](#489)
    * [4.8.8](#488)
@@ -58,6 +59,11 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 4.8
+
+## 4.8.11
+
+### Changed
+- Upgrade _Composer_ from 2.2.12 to 2.2.16.
 
 ## 4.8.10
 
