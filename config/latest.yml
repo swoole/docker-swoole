@@ -7,5 +7,5 @@ php:
   - "8.1"
 image:
   composer:
-    version: "2.2.6"
+    version: "2.3.10"
   inotify: true
