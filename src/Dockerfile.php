@@ -228,7 +228,12 @@ class Dockerfile
             $optionCurl = false;
         }
 
-        if (($this->getSwooleVersion() === 'latest') || (version_compare($this->getSwooleVersion(), '4.5.7') >= 0)) {
+        if ($this->getSwooleVersion() === 'latest') {
+            $optionJson = false;
+        } elseif (
+            (version_compare($this->getSwooleVersion(), '4.5.7') >= 0)
+            && (version_compare($this->getSwooleVersion(), '5.0.0') < 0)
+        ) {
             $optionJson = true;
         } else {
             $optionJson = false;

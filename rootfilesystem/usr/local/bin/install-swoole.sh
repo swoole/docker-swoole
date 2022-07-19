@@ -7,6 +7,7 @@
 #     ./install-swoole.sh
 #     ./install-swoole.sh master
 #     ./install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
+#     ./install-swoole.sh 5.0.0 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl
 #
 # The first parameter (SWOOLE_VERSION) should be a branch name, a tag or a Git commit number. For example,
 #     master                                   # To install Swoole with latest code from branch "master".
@@ -20,6 +21,7 @@
 #     CFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include"   \
 #     CPPFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include" \
 #     ./install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
+#     ./install-swoole.sh 5.0.0 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl
 #
 # Before using this script, you should have PHP extension sockets installed, and have packages like openssl installed
 # already.

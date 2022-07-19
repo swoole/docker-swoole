@@ -3,7 +3,7 @@ FROM php:8.0-cli-alpine3.15
 RUN \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update --clean-backups 2.2.6                                    && \
+    composer self-update --clean-backups 2.3.10                                    && \
     apk update && \
     apk add --no-cache libstdc++ libpq && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
@@ -13,11 +13,10 @@ RUN \
     curl -sfL https://github.com/swoole/swoole-src/archive/master.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
-        --enable-http2        \
         --enable-mysqlnd      \
         --enable-swoole-pgsql \
         --enable-openssl      \
-        --enable-sockets --enable-swoole-curl --enable-swoole-json && \
+        --enable-sockets --enable-swoole-curl && \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz $HOME/.composer/*-old.phar && \
     docker-php-source delete && \

@@ -13,7 +13,6 @@ RUN \
     curl -sfL https://github.com/swoole/swoole-src/archive/{% if swoole_version == "latest" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
-        --enable-http2        \
         --enable-mysqlnd      \
         --enable-swoole-pgsql \
         --enable-openssl      \
