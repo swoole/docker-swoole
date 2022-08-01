@@ -1,6 +1,8 @@
 Table of Contents
 =================
 
+* [Swoole 5.0](#swoole-50)
+   * [5.0.0](#500)
 * [Swoole 4.8](#swoole-48)
    * [4.8.11](#4811)
    * [4.8.10](#4810)
@@ -57,6 +59,19 @@ Table of Contents
    * [4.4.5](#445)
 * [Swoole 4.3](#swoole-43)
    * [4.3.6](#436)
+
+# Swoole 5.0
+
+## 5.0.0
+
+### Added
+- the Swoole-based PostgreSQL client (formerly the [swoole_postgresql](https://github.com/swoole/ext-postgresql) extension) is included.
+
+### Changed
+- Upgrade _Composer_ from 2.2.16 to 2.3.10.
+
+### Removed
+- Swoole 5.0.0+ works with PHP 8.0+ only. No more PHP 7 images built.
 
 # Swoole 4.8
 

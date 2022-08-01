@@ -20,6 +20,7 @@ Table of Contents
 * [Image Variants](#image-variants)
 * [Supported Tags and Respective Dockerfile Links](#supported-tags-and-respective-dockerfile-links)
    * [Versioned images](#versioned-images-based-on-stable-releases-of-swoole)
+      * [Swoole 5.0](#swoole-50)
       * [Swoole 4.8](#swoole-48)
       * [Swoole 4.7](#swoole-47)
       * [Swoole 4.6](#swoole-46)
@@ -175,6 +176,13 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 # Supported Tags and Respective `Dockerfile` Links
 
 ## Versioned images (based on stable releases of Swoole)
+
+### Swoole 5.0
+
+| PHP Versions | Default Images | Dev Images | Alpine Images |
+|-|-|-|-|
+| PHP 8.1 | [5.0.0-php8.1, 5.0-php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.0.0/php8.1/cli/Dockerfile) | [5.0.0-php8.1-dev, 5.0-php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.0.0/php8.1/cli/Dockerfile) | [5.0.0-php8.1-alpine, 5.0-php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.0.0/php8.1/alpine/Dockerfile) |
+| PHP 8.0 | [5.0.0-php8.0, 5.0-php8.0, 5.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.0.0/php8.0/cli/Dockerfile) | [5.0.0-php8.0-dev, 5.0-php8.0-dev, 5.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.0.0/php8.0/cli/Dockerfile) | [5.0.0-php8.0-alpine, 5.0-php8.0-alpine, 5.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.0.0/php8.0/alpine/Dockerfile) |
 
 ### Swoole 4.8
 
