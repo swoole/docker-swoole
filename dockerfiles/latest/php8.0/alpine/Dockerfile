@@ -1,6 +1,7 @@
 FROM php:8.0-cli-alpine3.15
 
 RUN \
+    set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
     composer self-update --clean-backups 2.3.10                                    && \
