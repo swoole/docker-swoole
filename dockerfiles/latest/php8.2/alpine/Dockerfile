@@ -7,7 +7,7 @@ RUN \
     composer self-update --clean-backups 2.3.10                                    && \
     apk update && \
     apk add --no-cache libstdc++ libpq && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
