@@ -5,6 +5,7 @@ status: "under development"
 php:
   - "8.0"
   - "8.1"
+  - "8.2"
 image:
   composer:
     version: "2.3.10"
