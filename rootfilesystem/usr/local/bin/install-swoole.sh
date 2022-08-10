@@ -50,7 +50,7 @@ fi
 
 if [[ "true" = "${DEV_MODE}" ]] ; then
     apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends
-    DEV_OPTIONS="--enable-debug --enable-debug-log --enable-trace-log"
+    DEV_OPTIONS="--enable-debug-log --enable-trace-log"
 else
     DEV_OPTIONS=""
 fi
