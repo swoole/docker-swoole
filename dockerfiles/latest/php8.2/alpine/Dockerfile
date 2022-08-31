@@ -1,4 +1,4 @@
-FROM php:8.2-cli-alpine3.15
+FROM php:8.2-rc-cli-alpine3.15
 
 RUN \
     set -ex && \
