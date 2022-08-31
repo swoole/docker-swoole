@@ -23,4 +23,5 @@ image:
   php_extensions: # List of PECL extensions to be installed for non-Alpine images.
     zip: # An extension name.
       version: "1.15.4" # Optional.
+      configureoptions: "" # List of configure options. Optional.
       enabled: true # Enable the extension or not. By default it's disabled.

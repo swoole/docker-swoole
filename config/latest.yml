@@ -10,3 +10,8 @@ image:
   composer:
     version: "2.3.10"
   inotify: true
+  php_extensions:
+    redis:
+      version: "5.3.7"
+      configureoptions: "enable-redis-igbinary=\"no\" enable-redis-lzf=\"no\" enable-redis-zstd=\"no\""
+      enabled: true

@@ -27,10 +27,15 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
+    docker-php-ext-install pdo_mysql && \
 {%~ if php_extensions is not empty %}
-    pecl update-channels && \
+    pecl channel-update pecl.php.net && \
     {%~ for name, data in php_extensions %}
+        {%~ if data.configureoptions is empty %}
     pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
+        {%~ else %}
+    pecl install --configureoptions '{{ data.configureoptions }}' {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
+        {%~ endif %}
     {%~ endfor %}
     {%~ for name, data in php_extensions %}
         {%~ if data.enabled %}

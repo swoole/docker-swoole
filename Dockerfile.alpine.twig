@@ -8,6 +8,22 @@ RUN \
     apk update && \
     apk add --no-cache libstdc++ libpq && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS {% if option_curl == true  %}curl-dev{% endif %} {% if php_version|slice(0, 3) == "8.2" %}linux-headers {% endif %}postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
+    docker-php-ext-install pdo_mysql && \
+{%~ if php_extensions is not empty %}
+    pecl channel-update pecl.php.net && \
+    {%~ for name, data in php_extensions %}
+        {%~ if data.configureoptions is empty %}
+    pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
+        {%~ else %}
+    pecl install --configureoptions '{{ data.configureoptions }}' {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
+        {%~ endif %}
+    {%~ endfor %}
+    {%~ for name, data in php_extensions %}
+        {%~ if data.enabled %}
+    docker-php-ext-enable {{ name }} && \
+        {%~ endif %}
+    {%~ endfor %}
+{%~ endif %}
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \

@@ -79,7 +79,7 @@ class Dockerfile
      */
     public function generateDockerFile(string $phpVersion, string $type, bool $save = false): string
     {
-        $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath())))
+        $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath()), ['autoescape' => false]))
             ->load($this->getTemplateFile($type))
             ->render($this->getContext($phpVersion));
 
