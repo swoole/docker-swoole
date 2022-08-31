@@ -40,6 +40,8 @@ Table of Contents
 * Built for different architectures.
 * Support auto-reloading for local development.
 * Support code debugging for local development.
+* **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**
+* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.** It's installed with default options.
 
 # How to Use This Image
 
@@ -52,6 +54,7 @@ Same as in the official PHP image, most PHP extensions can be installed/configur
 
 ```Dockerfile
 # To install the MySQL extensions.
+# NOTE: The pdo_mysql extension is included in 4.8.12+ and 5.0.1+ images.
 FROM phpswoole/swoole:4.8-php7.4-alpine
 
 RUN docker-php-ext-install mysqli pdo_mysql
@@ -59,11 +62,12 @@ RUN docker-php-ext-install mysqli pdo_mysql
 
 ```Dockerfile
 # To install the Redis extension.
+# NOTE: The Redis extension is included in 4.8.12+ and 5.0.1+ images.
 FROM phpswoole/swoole:4.8-php7.4-alpine
 
 RUN set -ex \
-    && pecl update-channels \
-    && pecl install redis-stable \
+    && pecl channel-update pecl.php.net \
+    && yes no | pecl install redis-stable \
     && docker-php-ext-enable redis
 ```
 

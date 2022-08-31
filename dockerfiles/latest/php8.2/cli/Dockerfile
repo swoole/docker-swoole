@@ -1,4 +1,4 @@
-FROM php:8.2.0beta2-cli
+FROM php:8.2-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -23,6 +23,10 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
+    docker-php-ext-install pdo_mysql && \
+    pecl channel-update pecl.php.net && \
+    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-5.3.7 && \
+    docker-php-ext-enable redis && \
     install-swoole.sh master \
         --enable-mysqlnd      \
         --enable-swoole-pgsql \
