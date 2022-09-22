@@ -4,6 +4,7 @@ Table of Contents
 * [Swoole 5.0](#swoole-50)
    * [5.0.0](#500)
 * [Swoole 4.8](#swoole-48)
+   * [4.8.12](#4812)
    * [4.8.11](#4811)
    * [4.8.10](#4810)
    * [4.8.9](#489)
@@ -74,6 +75,16 @@ Table of Contents
 - Swoole 5.0.0+ works with PHP 8.0+ only. No more PHP 7 images built.
 
 # Swoole 4.8
+
+## 4.8.12
+
+### Added
+- New Docker images built for PHP 8.2.
+- [The Redis extension](https://pecl.php.net/package/redis) is included and enabled.
+- PHP extension _pdo_mysql_ is included and enabled.
+
+### Changed
+- Upgrade _Composer_ from 2.2.16 to 2.2.18.
 
 ## 4.8.11
 
