@@ -7,7 +7,7 @@ RUN \
     composer self-update --clean-backups 2.2.18                                    && \
     apk update && \
     apk add --no-cache libstdc++ && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers openssl-dev pcre-dev pcre2-dev zlib-dev && \
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
     pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-5.3.7 && \
