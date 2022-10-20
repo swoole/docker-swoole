@@ -16,6 +16,7 @@ Table of Contents
 * [Feature List](#feature-list)
 * [How to Use This Image](#how-to-use-this-image)
    * [How to Install More PHP Extensions](#how-to-install-more-php-extensions)
+   * [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions)
    * [More Examples](#more-examples)
 * [Image Variants](#image-variants)
 * [Supported Tags and Respective Dockerfile Links](#supported-tags-and-respective-dockerfile-links)
@@ -41,7 +42,9 @@ Table of Contents
 * Support auto-reloading for local development.
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**
+    * To disable it, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
 * **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.** It's installed with default options.
+    * To disable it, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
 
 # How to Use This Image
 
@@ -85,6 +88,21 @@ RUN set -ex \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/src/php.tar.xz*
 ```
+
+## Disable Installed/Enabled PHP Extensions
+
+Since 4.8.12+ and 5.0.1+, PHP extensions _pdo_mysql_ and _Redis_ are installed and enabled by default. If you want to
+disable them, you can use the following commands in your Dockerfile.
+
+```Dockerfile
+FROM phpswoole/swoole:4.8-alpine
+
+RUN set -ex && \
+    rm -f "$(php-config --ini-dir)/docker-php-ext-pdo_mysql.ini" && \
+    rm -f "$(php-config --ini-dir)/docker-php-ext-redis.ini"
+```
+
+Note that above commands will remove the corresponding configuration files for the extensions, but won't remove the extensions themselves.
 
 ## More Examples
 
