@@ -34,6 +34,7 @@ RUN \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
+# PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
 {%~ if php_extensions is not empty %}
     pecl channel-update pecl.php.net && \
@@ -44,6 +45,7 @@ RUN \
     pecl install --configureoptions '{{ data.configureoptions }}' {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
         {%~ endif %}
     {%~ endfor %}
+# PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     {%~ for name, data in php_extensions %}
         {%~ if data.enabled %}
     docker-php-ext-enable {{ name }} && \

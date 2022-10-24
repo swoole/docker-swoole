@@ -41,14 +41,13 @@ Table of Contents
 * Built for different architectures.
 * Support auto-reloading for local development.<sup>1</sup>
 * Support code debugging for local development.
-* **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**
-    * To disable it, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
-* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.** It's installed with default options.
-    * To disable it, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
+* **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup>
+* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> It's installed with default options.
 
 **NOTES**
 
 1. The auto-reloading feature is supported for non-Alpine images only.
+2. To disable extension _pdo_mysql_ and/or _Redis_, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
 
 # How to Use This Image
 
