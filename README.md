@@ -39,12 +39,16 @@ Table of Contents
 * Use one root filesystem for simplicity (one Docker `COPY` command only in dockerfiles).
 * _Composer_ included (_Composer v1_ for Swoole 4.5.8 and before; _Composer v2_ for Swoole 4.5.9 and after).
 * Built for different architectures.
-* Support auto-reloading for local development.
+* Support auto-reloading for local development.<sup>1</sup>
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**
     * To disable it, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
 * **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.** It's installed with default options.
     * To disable it, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
+
+**NOTES**
+
+1. The auto-reloading feature is supported for non-Alpine images only.
 
 # How to Use This Image
 
@@ -132,7 +136,7 @@ To run another example, just replace the last command line parameter _00_ with a
 Here is a list of the examples under folder "_examples/_":
 
 * Basic examples:
-    * **00-autoload**: Restart the Swoole web server automatically if file changes detected under web root.
+    * **00-autoreload**: Restart the Swoole web server automatically if file changes detected under web root.
     * **01-basic**: print out "Hello, World!" using Swoole as backend HTTP server.
     * **02-www**: to use some customized PHP script(s) in the Docker image built.
     * **03-nginx**: to use Swoole behind an Nginx server.

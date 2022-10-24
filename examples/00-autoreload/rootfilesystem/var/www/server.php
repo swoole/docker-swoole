@@ -21,6 +21,8 @@ $http->on(
                 2. AUTORELOAD_ANY_FILES: Optional. If set to "true", "1", "yes", or "y", reload Supervisor program(s)
                    when any files under the root directory (/var/www in this example) is changed; otherwise, reload only
                    when PHP file(s) are changed.
+
+                NOTE: The auto-reloading feature is supported for non-Alpine images only.
                 </i>
                 </pre>
             EOT

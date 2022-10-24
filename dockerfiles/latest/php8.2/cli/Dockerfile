@@ -15,6 +15,13 @@ RUN \
     composer self-update 2.3.10                                                    && \
     apt-get update              && \
     apt-get install -y             \
+# The auto-reloading feature is supported for non-Alpine images only.
+#
+# Package "inotify-tools" is pre-installed in latest non-Alpine images. For versioned non-Alpine images, it will be
+# installed automatically when needed. For details, please check script "autoreload.sh" and example "00-autoreload".
+#
+# @see https://github.com/swoole/docker-swoole/blob/master/rootfilesystem/usr/local/boot/autoreload.sh
+# @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
         inotify-tools              \
         libcurl4-openssl-dev       \
         libpq-dev                  \

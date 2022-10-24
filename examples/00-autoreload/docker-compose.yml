@@ -7,6 +7,8 @@
 #        files under the root directory (/var/www in this example) is changed; otherwise, reload only when PHP file(s)
 #        are changed.
 #
+# NOTE: The auto-reloading feature is supported for non-Alpine images only.
+#
 version: '3'
 
 services:
