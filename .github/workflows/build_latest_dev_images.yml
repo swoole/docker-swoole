@@ -37,7 +37,7 @@ jobs:
       -
         name: Set full names of the Docker image
         id: set_full_names
-        run: echo "::set-output name=full_names::phpswoole/swoole:php${{ matrix.php }}-dev"
+        run: echo "{full_names}={phpswoole/swoole:php${{ matrix.php }}-dev}" >> $GITHUB_OUTPUT
 
       -
         name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}-dev
