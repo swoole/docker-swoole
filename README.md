@@ -275,7 +275,7 @@ follow these three steps.
 **2**. Use commands like following to create dockerfiles:
 
 ```bash
-./bin/generate-dockerfiles.php latest # Generate dockerfiles to build images from the master branch of Swoole.
+./bin/generate-dockerfiles.php nightly # Generate dockerfiles to build images from the master branch of Swoole.
 ./bin/generate-dockerfiles.php 4.8.12  # Generate dockerfiles to build images for Swoole 4.8.12.
 ```
 

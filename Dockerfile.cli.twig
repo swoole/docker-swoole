@@ -52,7 +52,7 @@ RUN \
         {%~ endif %}
     {%~ endfor %}
 {%~ endif %}
-    install-swoole.sh {% if swoole_version == "latest" %}master{% else %}{{ swoole_version }}{% endif %} \
+    install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %} \
         --enable-mysqlnd      \
         --enable-swoole-pgsql \
         --enable-openssl      \
