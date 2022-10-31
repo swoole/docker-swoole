@@ -35,11 +35,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
-        name: Set full names of the Docker image
-        id: set_full_names
-        run: echo "{full_names}={phpswoole/swoole:php${{ matrix.php }}-alpine}" >> $GITHUB_OUTPUT
-
-      -
         name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}-alpine
         id: docker_build
         uses: docker/build-push-action@v3
@@ -48,7 +43,7 @@ jobs:
           file: dockerfiles/latest/php${{ matrix.php }}/alpine/Dockerfile
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
-          tags: ${{ steps.set_full_names.outputs.full_names }}
+          tags: phpswoole/swoole:php${{ matrix.php }}-alpine
 
       -
         name: Image digest of phpswoole/swoole:php${{ matrix.php }}-alpine
