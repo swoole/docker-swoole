@@ -1,4 +1,4 @@
-name: Build Latest Dev Images
+name: Build Nightly Dev Images
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_latest_images:
+  build_nightly_images:
     runs-on: ubuntu-latest
     if: github.repository == 'swoole/docker-swoole'
     strategy:
