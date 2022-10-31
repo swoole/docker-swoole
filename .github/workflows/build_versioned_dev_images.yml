@@ -72,8 +72,3 @@ jobs:
           push: true
           tags: ${{ steps.params.outputs.full_names }}
           build-args: DEV_MODE=true
-
-      -
-        name: Image digest of phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev
-        if: steps.params.outputs.released_already != 'true'
-        run: echo ${{ steps.docker_build.outputs.digest }}

@@ -71,8 +71,3 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
           tags: ${{ steps.params.outputs.full_names }}
-
-      -
-        name: Image digest of phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
-        if: steps.params.outputs.released_already != 'true'
-        run: echo ${{ steps.docker_build.outputs.digest }}

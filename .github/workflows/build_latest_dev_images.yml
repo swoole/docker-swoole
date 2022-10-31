@@ -45,7 +45,3 @@ jobs:
           push: true
           tags: phpswoole/swoole:php${{ matrix.php }}-dev
           build-args: DEV_MODE=true
-
-      -
-        name: Image digest of phpswoole/swoole:php${{ matrix.php }}-dev
-        run: echo ${{ steps.docker_build.outputs.digest }}
