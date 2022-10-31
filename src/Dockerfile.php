@@ -21,6 +21,8 @@ class Dockerfile
     protected const ALPINE = 'alpine';
     protected const CLI = 'cli';
 
+    protected const VERSION_NIGHTLY = 'nightly';
+
     protected const ALPINE_VERSIONS = [
         // PHP major version => Alpine version,
         '7.1' => '3.10',
@@ -221,7 +223,7 @@ class Dockerfile
     protected function getContext(string $phpVersion): array
     {
         if (
-            ($this->getSwooleVersion() === 'latest')
+            ($this->getSwooleVersion() === self::VERSION_NIGHTLY)
             || (version_compare($this->getSwooleVersion(), '4.6.0-alpha') >= 0)
         ) {
             $optionCurl = ($phpVersion != '8.0.0');
@@ -229,7 +231,7 @@ class Dockerfile
             $optionCurl = false;
         }
 
-        if ($this->getSwooleVersion() === 'latest') {
+        if ($this->getSwooleVersion() === self::VERSION_NIGHTLY) {
             $optionJson = false;
         } elseif (
             (version_compare($this->getSwooleVersion(), '4.5.7') >= 0)

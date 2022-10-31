@@ -29,7 +29,7 @@ RUN \
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
-    curl -sfL https://github.com/swoole/swoole-src/archive/{% if swoole_version == "latest" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
+    curl -sfL https://github.com/swoole/swoole-src/archive/{% if swoole_version == "nightly" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
         --enable-mysqlnd      \

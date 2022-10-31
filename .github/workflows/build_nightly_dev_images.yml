@@ -1,4 +1,4 @@
-name: Build Latest Dev Images
+name: Build Nightly Dev Images
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_latest_images:
+  build_nightly_images:
     runs-on: ubuntu-latest
     if: github.repository == 'swoole/docker-swoole'
     strategy:
@@ -40,7 +40,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: dockerfiles/latest/php${{ matrix.php }}/cli/Dockerfile
+          file: dockerfiles/nightly/php${{ matrix.php }}/cli/Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
           tags: phpswoole/swoole:php${{ matrix.php }}-dev

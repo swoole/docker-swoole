@@ -261,9 +261,9 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
-| PHP 8.2 | [php8.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.2/cli/Dockerfile) | [php8.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.2/cli/Dockerfile) | [php8.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.2/alpine/Dockerfile) |
-| PHP 8.1 | [php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.1/cli/Dockerfile) | [php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.1/cli/Dockerfile) | [php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.1/alpine/Dockerfile) |
-| PHP 8.0 | [php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) | [php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/cli/Dockerfile) | [php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/latest/php8.0/alpine/Dockerfile) |
+| PHP 8.2 | [php8.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/cli/Dockerfile) | [php8.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/cli/Dockerfile) | [php8.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/alpine/Dockerfile) |
+| PHP 8.1 | [php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/cli/Dockerfile) | [php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/cli/Dockerfile) | [php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/alpine/Dockerfile) |
+| PHP 8.0 | [php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.0/cli/Dockerfile) | [php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.0/cli/Dockerfile) | [php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.0/alpine/Dockerfile) |
 
 # Build Images Manually
 
@@ -275,7 +275,7 @@ follow these three steps.
 **2**. Use commands like following to create dockerfiles:
 
 ```bash
-./bin/generate-dockerfiles.php latest # Generate dockerfiles to build images from the master branch of Swoole.
+./bin/generate-dockerfiles.php nightly # Generate dockerfiles to build images from the master branch of Swoole.
 ./bin/generate-dockerfiles.php 4.8.12  # Generate dockerfiles to build images for Swoole 4.8.12.
 ```
 
