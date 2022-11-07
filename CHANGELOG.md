@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 5.0](#swoole-50)
+   * [5.0.1](#501)
    * [5.0.0](#500)
 * [Swoole 4.8](#swoole-48)
    * [4.8.12](#4812)
@@ -62,6 +63,16 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 5.0
+
+## 5.0.1
+
+### Added
+- New Docker images built for PHP 8.2.
+- [The Redis extension](https://pecl.php.net/package/redis) is included and enabled.
+- PHP extension _pdo_mysql_ is included and enabled.
+
+### Changed
+- Upgrade _Composer_ from 2.3.10 to 2.4.4.
 
 ## 5.0.0
 
