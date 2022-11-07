@@ -43,10 +43,12 @@ jobs:
         run: |
           set -ex
 
-          echo "branch_name=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
           branch_name=${GITHUB_REF##*/}
+          echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
           if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
             major_version=${branch_name%.*}
+            echo "major_version=${major_version}" >> $GITHUB_OUTPUT
+
             if [ ${{ matrix.php }} == '8.1' ] ; then
               if [ ${major_version} == '5.0' ] ; then
                 echo "image_type=latest" >> $GITHUB_OUTPUT
@@ -70,9 +72,9 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
           tags: |
-            phpswoole/swoole:${branch_name}-php${{ matrix.php }}
-            phpswoole/swoole:${major_version}-php${{ matrix.php }}
-            phpswoole/swoole:${major_version}
+            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}
             phpswoole/swoole:latest
 
       -
@@ -85,9 +87,9 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
           tags: |
-            phpswoole/swoole:${branch_name}-php${{ matrix.php }}
-            phpswoole/swoole:${major_version}-php${{ matrix.php }}
-            phpswoole/swoole:${major_version}
+            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}
 
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }} (${{ steps.params.outputs.image_type }})
@@ -99,5 +101,5 @@ jobs:
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le
           push: true
           tags: |
-            phpswoole/swoole:${branch_name}-php${{ matrix.php }}
-            phpswoole/swoole:${major_version}-php${{ matrix.php }}
+            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}
