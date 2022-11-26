@@ -1,11 +1,8 @@
 [TOC]
 
-[Xdebug](https://xdebug.org) doesn't work with Swoole. For debugging purpose we have to use [Sdebug](https://github.com/swoole/sdebug) instead, which is a fork of Xdebug.
+This example shows how to use Xdebug, PHPStorm, and the Swoole image together to debug PHP 8.1+ scripts.
 
-This example shows how to use Sdebug, PHPStorm, and the Swoole image together to debug PHP 7.3+ scripts. If you use other
-versions of PHP, Sdebug might not work as discussed on this page.
-
-NOTE: When debugging Swoole applications, we recommend to use [yasd](https://github.com/swoole/yasd) instead of _Blackfire_, _sdebug_, or _Xdebug_.
+[Xdebug][1] works with Swoole on PHP 8.1+.
 
 # Settings
 
@@ -43,11 +40,11 @@ Now Go to File -> Settings -> Languages and Frameworks -> PHP -> Servers and add
 * **Host**: localhost
 * **Port**: 9501
 * **Debugger**: Xdebug
-* **Use path mapping**: check the checkbox, and map local directory "examples/34-debug-with-sdebug/rootfilesystem" to the absolute path "/" on the server.
+* **Use path mapping**: check the checkbox, and map local directory "examples/34-debug-with-xdebug/rootfilesystem" to the absolute path "/" on the server.
  
 ## In Browser (Chrome)
 
-Install and enable Chrome extension [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc).
+Install and enable Chrome extension [Xdebug helper][2].
 In _Options_ page, select option _PhpStorm_ with value _PHPSTORM_ under section _IDE key_, and save the settings.
 
 # How to Debug
@@ -56,15 +53,13 @@ In _Options_ page, select option _PhpStorm_ with value _PHPSTORM_ under section 
 2. In Phpstorm, click menu _Run_ -> _Start Listening to PHP Debug Connections_.
 3. Run command `./bin/example.sh start 34` to start our sample Docker container.
 
-Now You can try following endpoints to check how Sdebug is used:
+Now You can try following endpoints to check how Xdebug is used:
 
 * _http://<span></span>127.0.0.1_: The default home page from the base image.
-* _http://<span></span>127.0.0.1/breakpoint_: This sample code is used to show how to do remote debugging with Sdebug.
-* _http://<span></span>127.0.0.1/phpinfo_: From this phpinfo page you can see that Sdebug is enabled with customized configurations.
+* _http://<span></span>127.0.0.1/breakpoint_: This sample code is used to show how to do remote debugging with Xdebug.
+* _http://<span></span>127.0.0.1/phpinfo_: From this phpinfo page you can see that Xdebug is enabled with customized configurations.
 
 Run command `./bin/example.sh stop 34` to stop the Docker container.
 
-# References
-
-* Github project [Sdebug](https://github.com/swoole/sdebug)
-* [Xdebug official site](https://xdebug.org)
+[1]: https://xdebug.org
+[2]: https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc

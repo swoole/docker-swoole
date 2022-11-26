@@ -5,6 +5,7 @@ services:
     build: .
     environment:
       PHP_IDE_CONFIG: "serverName=swoole"
-      XDEBUG_CONFIG: idekey=PHPSTORM remote_host=host.docker.internal remote_port=9000
+      XDEBUG_SESSION: "PHPSTORM"
+      XDEBUG_CONFIG: client_host=host.docker.internal client_port=9000
     ports:
       - 80:9501

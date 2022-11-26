@@ -1,5 +1,7 @@
 This example shows how to debug a Swoole-based web server using [yasd](https://github.com/swoole/yasd) (Yet Another Swoole Debugger) in _Phpstorm_.
 
+**Please note that yasd is no longer actively maintained, and it only works for lower versions of Swoole (Swoole < 5.0) and PHP (PHP <= 8.0).** We recommend using _Xdebug_ instead for latest versions of Swoole and PHP.
+
 # How to Use Yasd With Phpstorm
 
 * In _Phpstorm_, please
