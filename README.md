@@ -161,7 +161,6 @@ Here is a list of the examples under folder "_examples/_":
     * **32-debug-with-strace**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/32-debug-with-strace) file included to see how to debug your PHP code with _strace_.
     * **33-debug-with-blackfire**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/33-debug-with-blackfire) file included to see how to debug your PHP code with [Blackfire](https://blackfire.io).
     * **34-debug-with-xdebug**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/34-debug-with-xdebug) file included to see how to debug your PHP code using [Xdebug](https://xdebug.org). Please note that Xdebug 3.1.0+ works with Swoole 5.0.2+ on PHP 8.1+ only. Lower versions of Xdebug don't work with Swoole.
-    * **35-debug-with-yasd**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/35-debug-with-yasd) file included to see how to debug a Swoole-based web server using [yasd](https://github.com/swoole/yasd) (Yet Another Swoole Debugger) in _Phpstorm_. Please note that yasd is no longer actively maintained, and it only works for lower versions of Swoole (Swoole < 5.0) and PHP (PHP <= 8.0). We recommend using _Xdebug_ instead for latest versions of Swoole and PHP.
 
 # Image Variants
 
