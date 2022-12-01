@@ -62,7 +62,10 @@ Now You can try following endpoints to check how Xdebug is used:
 * _http://<span></span>127.0.0.1/breakpoint_: This sample code is used to show how to do remote debugging with Xdebug.
 * _http://<span></span>127.0.0.1/phpinfo_: From this phpinfo page you can see that Xdebug is enabled with customized configurations.
 
-Run command `./bin/example.sh stop 34` to stop the Docker container.
+Please try not hitting the URLs through web browsers since they tend to send multiple requests to server automatically
+(e.g., to fetch favicon.ico). It's recommended to use a command line tool like `curl` to hit the URLs.
+
+Once done with the tests, run command `./bin/example.sh stop 34` to stop the Docker container.
 
 [1]: https://xdebug.org
 [2]: https://github.com/swoole/docker-swoole/blob/master/examples/34-debug-with-xdebug/docker-compose.yml
