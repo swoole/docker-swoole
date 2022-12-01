@@ -1,14 +1,12 @@
-[TOC]
+This example shows how to use [Xdebug][1], PhpStorm, and the Swoole image together to debug PHP scripts.
 
-This example shows how to use Xdebug, PHPStorm, and the Swoole image together to debug PHP 8.1+ scripts.
-
-[Xdebug][1] works with Swoole on PHP 8.1+.
+Please note that Xdebug 3.1.0+ works with Swoole 5.0.2+ on PHP 8.1+ only. Lower versions of Xdebug don't work with Swoole.
 
 # Settings
 
 ## Dockerized Development Environment
 
-Your _docker-compose.yml_ file should look like following:
+The _docker-compose.yml_ file should look similar to the following:
 
 ```yaml
 version: '3'
@@ -18,40 +16,45 @@ services:
     build: .
     environment:
       PHP_IDE_CONFIG: "serverName=swoole"
-      XDEBUG_CONFIG: idekey=PHPSTORM remote_host=host.docker.internal remote_port=9000
+      XDEBUG_SESSION: "PHPSTORM"
     ports:
       - 80:9501
 ```
 
-Please note that:
+In the _docker-compose.yml_ file:
 
-* Both environment variable _PHP_IDE_CONFIG_ and _XDEBUG_CONFIG_ need to be set.
-* Please update remote port number 9000 if you use a different port number in Phpstorm.
-* The special DNS name `host.docker.internal` is available only from Docker 18.03 onwards.
+* Environment variable _PHP_IDE_CONFIG_ needs to be set to `serverName=SomeName`, where SomeName is the name of the server configured on the `PHP | Servers` page of the `Settings/Preferences` dialog in PhpStorm.
+* Environment variable _XDEBUG_SESSION_ is to enable step debugging. There are other ways to enable step debugging. See [Xdebug documentation][5] for more details.
 
-## In IDE (PHPStorm)
+## Xdebug Configuration Options
 
-In PHPStorm, go to File -> Settings -> Languages and Frameworks -> PHP > Debug -> Xdebug, set _Debug port_ to 9000 (it
-should be the same as the one set in the _docker-compose.yml_ file). Make sure to have other checkboxes checked.
+File [xdebug.ini][3] used in the Docker image should look similar to the following:
 
-Now Go to File -> Settings -> Languages and Frameworks -> PHP -> Servers and add a server:
+```ini
+[xdebug]
+zend_extension=xdebug
+xdebug.mode=develop,debug
+xdebug.client_host=host.docker.internal
+xdebug.client_port=9003
+```
 
-* **Name**: swoole
-* **Host**: localhost
-* **Port**: 9501
-* **Debugger**: Xdebug
+## PhpStorm Settings
+
+In the `Settings/Preferences` dialog, click `PHP` -> `Debug` -> `Xdebug`, set _Debug port_ to 9003 (it
+should be the same as the one set in [xdebug.ini][3]). Make sure to have other checkboxes checked.
+
+In the `Settings/Preferences` dialog, click `PHP` -> `Servers`, then add a server there:
+
+* **Name**: `swoole` (must be the same as the one in the [docker-compose.yml][2] file)
+* **Host**: `localhost`
+* **Port**: `9501` (must be the same as the one in the [server.php][4] file)
+* **Debugger**: `Xdebug`
 * **Use path mapping**: check the checkbox, and map local directory "examples/34-debug-with-xdebug/rootfilesystem" to the absolute path "/" on the server.
  
-## In Browser (Chrome)
-
-Install and enable Chrome extension [Xdebug helper][2].
-In _Options_ page, select option _PhpStorm_ with value _PHPSTORM_ under section _IDE key_, and save the settings.
-
 # How to Debug
 
-1. Enable Chrome extension _Xdebug helper_.
-2. In Phpstorm, click menu _Run_ -> _Start Listening to PHP Debug Connections_.
-3. Run command `./bin/example.sh start 34` to start our sample Docker container.
+1. In Phpstorm, click menu _Run_ -> _Start Listening to PHP Debug Connections_.
+2. Run command `./bin/example.sh start 34` to start our sample Docker container.
 
 Now You can try following endpoints to check how Xdebug is used:
 
@@ -62,4 +65,7 @@ Now You can try following endpoints to check how Xdebug is used:
 Run command `./bin/example.sh stop 34` to stop the Docker container.
 
 [1]: https://xdebug.org
-[2]: https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc
+[2]: https://github.com/swoole/docker-swoole/blob/master/examples/34-debug-with-xdebug/docker-compose.yml
+[3]: https://github.com/swoole/docker-swoole/blob/master/examples/34-debug-with-xdebug/rootfilesystem/usr/local/etc/php/conf.d/xdebug.ini
+[4]: https://github.com/swoole/docker-swoole/blob/master/examples/34-debug-with-xdebug/rootfilesystem/var/www/server.php
+[5]: https://xdebug.org/docs/step_debug
