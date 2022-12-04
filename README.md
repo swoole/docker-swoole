@@ -296,4 +296,5 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.0.1-php8.1-dev -f d
 
 # Credits
 
-Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://glu.com).
+* Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://ea.com).
+* Thanks to [Blackfire](https://blackfire.io) for providing free open-source subscription for their awesome profiling tool.

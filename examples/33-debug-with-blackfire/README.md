@@ -1,7 +1,7 @@
-This example shows how to use [Blackfire](https://blackfire.io) and Composer package
+This example shows how to use Blackfire and Composer package
 [upscale/swoole-blackfire](https://github.com/upscalesoftware/swoole-blackfire) to debug your Swoole web server.
-_Blackfire_ is not included in the images by default, but you can easily get it installed using the built-in script
-_install-blackfire.sh_.
+
+Thanks to [Blackfire](https://blackfire.io) for providing free open-source subscription for their awesome profiling tool.
 
 How to run this example?
 
@@ -20,22 +20,16 @@ From now on, we assume that these environment variables are set up properly.
 
 # 2. Start the Docker Containers
 
-Start the Docker containers with one of following two commands:
-
-* `./bin/example.sh start 33` if under root directory of the repository.
-* `docker-compose up --build -d` if under same directory of this file.
+Switch over to the same directory of this file and start the Docker containers with command `docker-compose up --build -d`.
 
 # 3. Profile URLs
 
 Execute following command to profile a web URL:
 
 ```bash
-docker exec -t $(docker ps -qf "label=name=blackfire") blackfire curl http://app:9501
+docker compose exec -ti blackfire blackfire curl http://app:9501
 ```
 
 # 4. Stop the Docker Containers
 
-Once done, you can run one of following two commands to stop the containers:
-
-* `./bin/example.sh stop 33` if under root directory of the repository.
-* `docker-compose stop` if under same directory of this file.
+Once done, you can run command `docker-compose stop` to stop the containers.
