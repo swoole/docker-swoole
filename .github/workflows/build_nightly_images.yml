@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_nightly_images:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.repository == 'swoole/docker-swoole'
     strategy:
       fail-fast: true
