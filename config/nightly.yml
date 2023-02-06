@@ -8,7 +8,7 @@ php:
   - "8.2"
 image:
   composer:
-    version: "2.4.4"
+    version: "2.5.2"
   inotify: true
   php_extensions:
     redis:
