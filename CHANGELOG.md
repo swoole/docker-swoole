@@ -2,9 +2,11 @@ Table of Contents
 =================
 
 * [Swoole 5.0](#swoole-50)
+   * [5.0.2](#502)
    * [5.0.1](#501)
    * [5.0.0](#500)
 * [Swoole 4.8](#swoole-48)
+   * [4.8.13](#4813)
    * [4.8.12](#4812)
    * [4.8.11](#4811)
    * [4.8.10](#4810)
@@ -64,6 +66,11 @@ Table of Contents
 
 # Swoole 5.0
 
+## 5.0.2
+
+### Changed
+- Upgrade _Composer_ from 2.4.4 to 2.5.2.
+
 ## 5.0.1
 
 ### Added
@@ -86,6 +93,11 @@ Table of Contents
 - Swoole 5.0.0+ works with PHP 8.0+ only. No more PHP 7 images built.
 
 # Swoole 4.8
+
+## 4.8.13
+
+### Changed
+- Upgrade _Composer_ from 2.2.18 to 2.2.21.
 
 ## 4.8.12
 
