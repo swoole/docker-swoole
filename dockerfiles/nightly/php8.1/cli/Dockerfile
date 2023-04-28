@@ -12,7 +12,7 @@ RUN \
     set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update 2.5.2                                                    && \
+    composer self-update 2.5.5                                                    && \
     apt-get update              && \
     apt-get install -y             \
 # The auto-reloading feature is supported for non-Alpine images only.
