@@ -12,7 +12,7 @@ RUN \
     set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update 2.5.5                                                    && \
+    composer self-update 2.6.2                                                    && \
     apt-get update              && \
     apt-get install -y             \
 # The auto-reloading feature is supported for non-Alpine images only.
@@ -33,7 +33,7 @@ RUN \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
-    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-5.3.7 && \
+    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.0.0 && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
     install-swoole.sh master \

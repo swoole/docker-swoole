@@ -1,17 +1,17 @@
-FROM php:8.1-cli-alpine3.16
+FROM php:8.1-cli-alpine3.18
 
 RUN \
     set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update --clean-backups 2.5.5                                    && \
+    composer self-update --clean-backups 2.6.2                                    && \
     apk update && \
     apk add --no-cache libstdc++ libpq && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
-    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-5.3.7 && \
+    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.0.0 && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
     docker-php-ext-install sockets && \
