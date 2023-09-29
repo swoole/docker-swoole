@@ -1,6 +1,8 @@
 Table of Contents
 =================
 
+* [Swoole 5.1](#swoole-51)
+   * [5.1.0](#510)
 * [Swoole 5.0](#swoole-50)
    * [5.0.3](#503)
    * [5.0.2](#502)
@@ -64,6 +66,14 @@ Table of Contents
    * [4.4.5](#445)
 * [Swoole 4.3](#swoole-43)
    * [4.3.6](#436)
+
+# Swoole 5.1
+
+## 5.1.0
+
+### Changed
+- Upgrade PHP extension _Redis_ from 5.3.7 to 6.0.1.
+- Upgrade _Composer_ from 2.5.5 to 2.6.4.
 
 # Swoole 5.0
 
