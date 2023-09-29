@@ -6,13 +6,13 @@ php:
   - "8.0"
   - "8.1"
   - "8.2"
-  - "8.3"
+  - "8.3.0RC2"
 image:
   composer:
-    version: "2.6.2"
+    version: "2.6.4"
   inotify: true
   php_extensions:
     redis:
-      version: "6.0.0"
+      version: "6.0.1"
       configureoptions: "enable-redis-igbinary=\"no\" enable-redis-lzf=\"no\" enable-redis-zstd=\"no\""
       enabled: true
