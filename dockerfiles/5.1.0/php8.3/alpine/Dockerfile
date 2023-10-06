@@ -1,10 +1,10 @@
-FROM php:8.3.0RC2-cli-alpine3.18
+FROM php:8.3.0RC3-cli-alpine3.18
 
 RUN \
     set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update --clean-backups 2.6.4                                    && \
+    composer self-update --clean-backups 2.6.5                                    && \
     apk update && \
     apk add --no-cache libstdc++ libpq && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers postgresql-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \

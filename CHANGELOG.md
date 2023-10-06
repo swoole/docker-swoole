@@ -73,7 +73,7 @@ Table of Contents
 
 ### Changed
 - Upgrade PHP extension _Redis_ from 5.3.7 to 6.0.1.
-- Upgrade _Composer_ from 2.5.5 to 2.6.4.
+- Upgrade _Composer_ from 2.5.5 to 2.6.5.
 
 # Swoole 5.0
 

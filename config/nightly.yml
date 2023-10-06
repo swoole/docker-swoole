@@ -6,10 +6,10 @@ php:
   - "8.0"
   - "8.1"
   - "8.2"
-  - "8.3.0RC2"
+  - "8.3.0RC3"
 image:
   composer:
-    version: "2.6.4"
+    version: "2.6.5"
   inotify: true
   php_extensions:
     redis:

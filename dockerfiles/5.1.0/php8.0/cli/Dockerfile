@@ -12,7 +12,7 @@ RUN \
     set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update 2.6.4                                                    && \
+    composer self-update 2.6.5                                                    && \
     apt-get update              && \
     apt-get install -y             \
         libcurl4-openssl-dev       \
