@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 5.1](#swoole-51)
+   * [5.1.1](#511)
    * [5.1.0](#510)
 * [Swoole 5.0](#swoole-50)
    * [5.0.3](#503)
@@ -68,6 +69,11 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 5.1
+
+## 5.1.1
+
+### Changed
+- Upgrade PHP extension _Redis_ from 6.0.1 to 6.0.2.
 
 ## 5.1.0
 

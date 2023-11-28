@@ -172,7 +172,7 @@ The `phpswoole/swoole` images come in three flavors, each designed for a specifi
 * `phpswoole/swoole:latest`
 * `phpswoole/swoole:5.1`
 * `phpswoole/swoole:5.1-php8.2`
-* `phpswoole/swoole:5.1.0-php8.2`
+* `phpswoole/swoole:5.1.1-php8.2`
 
 This variant is based on the _php:cli_ images, with a few changes. It uses _Supervisord_ to manage booting processes, and has _Composer_ preinstalled.
 
@@ -181,7 +181,7 @@ This variant is based on the _php:cli_ images, with a few changes. It uses _Supe
 * `phpswoole/swoole:latest-dev`
 * `phpswoole/swoole:5.1-dev`
 * `phpswoole/swoole:5.1-php8.2-dev`
-* `phpswoole/swoole:5.1.0-php8.2-dev`
+* `phpswoole/swoole:5.1.1-php8.2-dev`
 
 This variant is very similar to the previous one, but it has extra tools added for testing, debugging, and monitoring purpose,
 including [gdb](https://www.gnu.org/s/gdb), git, lsof, [strace](https://strace.io), [tcpdump](https://www.tcpdump.org), [Valgrind](http://www.valgrind.org), and vim.
@@ -191,12 +191,12 @@ including [gdb](https://www.gnu.org/s/gdb), git, lsof, [strace](https://strace.i
 * `phpswoole/swoole:latest-alpine`
 * `phpswoole/swoole:5.1-alpine`
 * `phpswoole/swoole:5.1-php8.2-alpine`
-* `phpswoole/swoole:5.1.0-php8.2-alpine`
+* `phpswoole/swoole:5.1.1-php8.2-alpine`
 
 You can use this variant in the same way as using the _php:alpine_ image, except that we changed the default working directory to _/var/www_.
 Also, we have _Composer_ preinstalled in the image.
 
-Note: We don't have development tools built in for Alpine images. There is no Docker images like `phpswoole/swoole:5.1.0-php8.2-alpine-dev`.
+Note: We don't have development tools built in for Alpine images. There is no Docker images like `phpswoole/swoole:5.1.1-php8.2-alpine-dev`.
 
 # Supported Tags and Respective `Dockerfile` Links
 
@@ -206,10 +206,10 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
-| PHP 8.3 | [5.1.0-php8.3, 5.1-php8.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.3/cli/Dockerfile) | [5.1.0-php8.3-dev, 5.1-php8.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.3/cli/Dockerfile) | [5.1.0-php8.3-alpine, 5.1-php8.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.3/alpine/Dockerfile) |
-| PHP 8.2 | [5.1.0-php8.2, 5.1-php8.2,<br />5.1, latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.2/cli/Dockerfile) | [5.1.0-php8.2-dev, 5.1-php8.2-dev,<br />5.1-dev, latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.2/cli/Dockerfile) | [5.1.0-php8.2-alpine, 5.1-php8.2-alpine,<br />5.1-alpine, latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.2/alpine/Dockerfile) |
-| PHP 8.1 | [5.1.0-php8.1, 5.1-php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.1/cli/Dockerfile) | [5.1.0-php8.1-dev, 5.1-php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.1/cli/Dockerfile) | [5.1.0-php8.1-alpine, 5.1-php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.1/alpine/Dockerfile) |
-| PHP 8.0 | [5.1.0-php8.0, 5.1-php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.0/cli/Dockerfile) | [5.1.0-php8.0-dev, 5.1-php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.0/cli/Dockerfile) | [5.1.0-php8.0-alpine, 5.1-php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.0/php8.0/alpine/Dockerfile) |
+| PHP 8.3 | [5.1.1-php8.3, 5.1-php8.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.3/cli/Dockerfile) | [5.1.1-php8.3-dev, 5.1-php8.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.3/cli/Dockerfile) | [5.1.1-php8.3-alpine, 5.1-php8.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.3/alpine/Dockerfile) |
+| PHP 8.2 | [5.1.1-php8.2, 5.1-php8.2,<br />5.1, latest](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.2/cli/Dockerfile) | [5.1.1-php8.2-dev, 5.1-php8.2-dev,<br />5.1-dev, latest-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.2/cli/Dockerfile) | [5.1.1-php8.2-alpine, 5.1-php8.2-alpine,<br />5.1-alpine, latest-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.2/alpine/Dockerfile) |
+| PHP 8.1 | [5.1.1-php8.1, 5.1-php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.1/cli/Dockerfile) | [5.1.1-php8.1-dev, 5.1-php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.1/cli/Dockerfile) | [5.1.1-php8.1-alpine, 5.1-php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.1/alpine/Dockerfile) |
+| PHP 8.0 | [5.1.1-php8.0, 5.1-php8.0](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.0/cli/Dockerfile) | [5.1.1-php8.0-dev, 5.1-php8.0-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.0/cli/Dockerfile) | [5.1.1-php8.0-alpine, 5.1-php8.0-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/5.1.1/php8.0/alpine/Dockerfile) |
 
 ### Swoole 5.0
 
@@ -287,22 +287,22 @@ follow these three steps.
 
 ```bash
 ./bin/generate-dockerfiles.php nightly # Generate dockerfiles to build images from the master branch of Swoole.
-./bin/generate-dockerfiles.php 5.1.0   # Generate dockerfiles to build images for Swoole 5.1.0.
+./bin/generate-dockerfiles.php 5.1.1   # Generate dockerfiles to build images for Swoole 5.1.1.
 ```
 
 **3**. Build Docker images with commands like:
 
 ```bash
 docker build -t phpswoole/swoole:php8.2              -f dockerfiles/nightly/php8.2/cli/Dockerfile   .
-docker build -t phpswoole/swoole:5.1.0-php8.2        -f dockerfiles/5.1.0/php8.2/cli/Dockerfile    .
-docker build -t phpswoole/swoole:5.1.0-php8.2-alpine -f dockerfiles/5.1.0/php8.2/alpine/Dockerfile .
+docker build -t phpswoole/swoole:5.1.1-php8.2        -f dockerfiles/5.1.1/php8.2/cli/Dockerfile    .
+docker build -t phpswoole/swoole:5.1.1-php8.2-alpine -f dockerfiles/5.1.1/php8.2/alpine/Dockerfile .
 ```
 
 To build development images (where extra tools are included), add an argument _DEV_MODE_:
 
 ```bash
 docker build --build-arg DEV_MODE=true -t phpswoole/swoole:php8.2-dev       -f dockerfiles/nightly/php8.2/cli/Dockerfile .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.0-php8.2-dev -f dockerfiles/5.1.0/php8.2/cli/Dockerfile  .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.1-php8.2-dev -f dockerfiles/5.1.1/php8.2/cli/Dockerfile  .
 ```
 
 # Credits
