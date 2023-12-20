@@ -6,15 +6,13 @@ ENV TERM            xterm-color
 ARG DEV_MODE
 ENV DEV_MODE $DEV_MODE
 
+COPY --from=composer:2.6.6 /usr/bin/composer /usr/bin/
 COPY ./rootfilesystem/ /
 
 RUN \
     set -ex && \
-    curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-    chmod +x /usr/bin/composer                                                                     && \
-    composer self-update 2.6.5                                                    && \
-    apt-get update              && \
-    apt-get install -y             \
+    apt-get update  && \
+    apt-get install -y \
 # The auto-reloading feature is supported for non-Alpine images only.
 #
 # Package "inotify-tools" is pre-installed in latest non-Alpine images. For versioned non-Alpine images, it will be
@@ -42,7 +40,7 @@ RUN \
         --enable-openssl      \
         --enable-sockets --enable-swoole-curl && \
     mkdir -p /var/log/supervisor && \
-    rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
+    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
