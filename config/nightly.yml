@@ -9,7 +9,7 @@ php:
   - "8.3"
 image:
   composer:
-    version: "2.6.5"
+    version: "2.6.6"
   inotify: true
   php_extensions:
     redis:

@@ -6,15 +6,13 @@ ENV TERM            xterm-color
 ARG DEV_MODE
 ENV DEV_MODE $DEV_MODE
 
+COPY --from=composer:{{ composer.version }} /usr/bin/composer /usr/bin/
 COPY ./rootfilesystem/ /
 
 RUN \
     set -ex && \
-    curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-    chmod +x /usr/bin/composer                                                                     && \
-    composer self-update {{ composer.version }}                                                    && \
-    apt-get update              && \
-    apt-get install -y             \
+    apt-get update  && \
+    apt-get install -y \
 {%~ if inotify == true %}
 # The auto-reloading feature is supported for non-Alpine images only.
 #
@@ -58,7 +56,7 @@ RUN \
         --enable-openssl      \
         --enable-sockets {% if option_curl == true  %}--enable-swoole-curl {% endif %}{% if option_json == true  %}--enable-swoole-json {% endif %}&& \
     mkdir -p /var/log/supervisor && \
-    rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
+    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
