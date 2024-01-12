@@ -37,7 +37,7 @@ jobs:
       -
         name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}-alpine
         id: docker_build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: dockerfiles/nightly/php${{ matrix.php }}/alpine/Dockerfile

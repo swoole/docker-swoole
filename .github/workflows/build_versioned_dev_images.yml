@@ -65,7 +65,7 @@ jobs:
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'latest'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
@@ -81,7 +81,7 @@ jobs:
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'major'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
@@ -96,7 +96,7 @@ jobs:
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'default'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
