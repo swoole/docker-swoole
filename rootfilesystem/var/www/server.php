@@ -7,16 +7,16 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 
-$http = new Server("0.0.0.0", 9501);
+$http = new Server('0.0.0.0', 9501);
 
 $http->on(
-    "start",
+    'start',
     function (Server $http) {
         echo "Swoole HTTP server is started.\n";
     }
 );
 $http->on(
-    "request",
+    'request',
     function (Request $request, Response $response) {
         $response->end("Hello, World!\n");
     }
