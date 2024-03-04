@@ -16,7 +16,7 @@ use Swoole\Docker\Dockerfile;
  */
 class DockerfileTest extends TestCase
 {
-    public function dataGetPhpMajorVersion(): array
+    public static function dataGetPhpMajorVersion(): array
     {
         return [
             [
@@ -52,7 +52,7 @@ class DockerfileTest extends TestCase
         );
     }
 
-    public function dataIsValidSwooleVersion(): array
+    public static function dataIsValidSwooleVersion(): array
     {
         return [
             [

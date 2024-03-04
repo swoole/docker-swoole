@@ -21,7 +21,7 @@ jobs:
         name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.2
           tools: composer:v2
           coverage: none
 
@@ -35,8 +35,8 @@ jobs:
 
       -
         name: Run syntax checks
-        run: ./vendor/bin/phpcs --standard=PSR12 bin/generate-dockerfiles.php src tests
+        run: ./vendor/bin/php-cs-fixer fix -q --dry-run
 
       -
         name: Run unit tests
-        run: vendor/bin/phpunit
+        run: ./vendor/bin/phpunit
