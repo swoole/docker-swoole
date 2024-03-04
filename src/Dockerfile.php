@@ -6,19 +6,18 @@ namespace Swoole\Docker;
 
 use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Class Dockerfile
- *
- * @package Swoole\Docker
  */
 class Dockerfile
 {
     protected const ALPINE = 'alpine';
+
     protected const CLI = 'cli';
 
     protected const VERSION_NIGHTLY = 'nightly';
@@ -44,7 +43,6 @@ class Dockerfile
     /**
      * Dockerfile constructor.
      *
-     * @param string $swooleVersion
      * @throws Exception
      */
     public function __construct(string $swooleVersion)
@@ -52,7 +50,8 @@ class Dockerfile
         $this
             ->setBasePath(dirname(__DIR__))
             ->setSwooleVersion($swooleVersion)
-            ->setConfig(Yaml::parseFile("{$this->getConfigFilePath()}"));
+            ->setConfig(Yaml::parseFile("{$this->getConfigFilePath()}"))
+        ;
     }
 
     /**
@@ -71,10 +70,6 @@ class Dockerfile
     }
 
     /**
-     * @param string $phpVersion
-     * @param string $type
-     * @param bool $save
-     * @return string
      * @throws Exception
      * @throws LoaderError
      * @throws RuntimeError
@@ -84,7 +79,8 @@ class Dockerfile
     {
         $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath()), ['autoescape' => false]))
             ->load($this->getTemplateFile($type))
-            ->render($this->getContext($phpVersion));
+            ->render($this->getContext($phpVersion))
+        ;
 
         if ($save) {
             $dockerFileDir = $this->getDockerFileDir($type, $phpVersion);
@@ -98,17 +94,12 @@ class Dockerfile
         return $dockerFile;
     }
 
-    /**
-     * @return string
-     */
     public function getBasePath(): string
     {
         return $this->basePath;
     }
 
     /**
-     * @param string $basePath
-     * @return Dockerfile
      * @throws Exception
      */
     public function setBasePath(string $basePath): self
@@ -122,18 +113,11 @@ class Dockerfile
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSwooleVersion(): string
     {
         return $this->swooleVersion;
     }
 
-    /**
-     * @param string $swooleVersion
-     * @return Dockerfile
-     */
     public function setSwooleVersion(string $swooleVersion): self
     {
         $this->swooleVersion = $swooleVersion;
@@ -141,18 +125,11 @@ class Dockerfile
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getConfig(): array
     {
         return $this->config;
     }
 
-    /**
-     * @param array $config
-     * @return Dockerfile
-     */
     public function setConfig(array $config): self
     {
         $this->config = $config;
@@ -160,24 +137,18 @@ class Dockerfile
         return $this;
     }
 
-    /**
-     * @param string $phpVersion
-     * @return string
-     */
     protected function getPhpMajorVersion(string $phpVersion): string
     {
         return preg_replace('/^(\d+\.\d+).*$/', '$1', $phpVersion);
     }
 
     /**
-     * @param string $type
      * @param string $phpVersion Needed only when creating Dockerfiles for a released version of Swoole.
-     * @return string
      */
     protected function getDockerFileDir(string $type, string $phpVersion): string
     {
         return sprintf(
-            "%s/dockerfiles/%s/php%s/%s",
+            '%s/dockerfiles/%s/php%s/%s',
             $this->getBasePath(),
             $this->getSwooleVersion(),
             $this->getPhpMajorVersion($phpVersion),
@@ -186,7 +157,6 @@ class Dockerfile
     }
 
     /**
-     * @return string
      * @throws Exception
      */
     protected function getConfigFilePath(): string
@@ -200,19 +170,11 @@ class Dockerfile
         return $file;
     }
 
-    /**
-     * @param string $swooleVersion
-     * @return string
-     */
     protected function getConfigFilePathBySwooleVersion(string $swooleVersion): string
     {
         return "{$this->getBasePath()}/config/{$swooleVersion}.yml";
     }
 
-    /**
-     * @param string $swooleVersion
-     * @return bool
-     */
     protected function isValidSwooleVersion(string $swooleVersion): bool
     {
         return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
@@ -257,7 +219,7 @@ class Dockerfile
 
     protected function getTemplateFile(string $type): string
     {
-        return (self::ALPINE == $type) ? 'Dockerfile.alpine.twig' : 'Dockerfile.cli.twig';
+        return ($type == self::ALPINE) ? 'Dockerfile.alpine.twig' : 'Dockerfile.cli.twig';
     }
 
     protected function getAlpineVersion(string $phpVersion): string

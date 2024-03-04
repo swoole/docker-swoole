@@ -3,12 +3,12 @@
 
 declare(strict_types=1);
 
-$http = new Swoole\Http\Server("0.0.0.0", intval($_ENV['HTTP_PORT'] ?? 9501));
+$http = new Swoole\Http\Server('0.0.0.0', intval($_ENV['HTTP_PORT'] ?? 9501));
 $http->on(
-    "request",
+    'request',
     function (Swoole\Http\Request $request, Swoole\Http\Response $response) use ($http) {
         $response->end(
-            <<<EOT
+            <<<'EOT'
                 <pre>
                 In this example we launch a second HTTP server at port 9502 with Supervisord in the container started.
                 You may check following URLs to see if both web servers work as should:

@@ -6,19 +6,16 @@ namespace Swoole\Tests\Docker;
 
 use CrowdStar\Reflection\Reflection;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
 use Swoole\Docker\Dockerfile;
 
 /**
  * Class DockerfileTest
  *
- * @package Swoole\Tests\Docker
+ * @internal
+ * @coversNothing
  */
 class DockerfileTest extends TestCase
 {
-    /**
-     * @return array
-     */
     public function dataGetPhpMajorVersion(): array
     {
         return [
@@ -37,11 +34,8 @@ class DockerfileTest extends TestCase
 
     /**
      * @dataProvider dataGetPhpMajorVersion
-     * @covers Dockerfile::getPhpMajorVersion
-     * @param string $expected
-     * @param string $phpVersion
-     * @param string $message
-     * @throws ReflectionException
+     * @covers \Swoole\Docker\Dockerfile::getPhpMajorVersion
+     * @throws \ReflectionException
      */
     public function testGetPhpMajorVersion(string $expected, string $phpVersion, string $message): void
     {
@@ -58,9 +52,6 @@ class DockerfileTest extends TestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public function dataIsValidSwooleVersion(): array
     {
         return [
@@ -145,11 +136,8 @@ class DockerfileTest extends TestCase
 
     /**
      * @dataProvider dataIsValidSwooleVersion
-     * @covers Dockerfile::isValidSwooleVersion
-     * @param bool $expected
-     * @param string $imageTag
-     * @param string $message
-     * @throws ReflectionException
+     * @covers \Swoole\Docker\Dockerfile::isValidSwooleVersion
+     * @throws \ReflectionException
      */
     public function testIsValidSwooleVersion(bool $expected, string $imageTag, string $message): void
     {
