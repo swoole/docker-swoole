@@ -156,6 +156,7 @@ Here is a list of the examples under folder "_examples/_":
     * **21-supervisord-tasks**: to show how to run Supervisord program(s) when launching a one-off command with Docker. Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/21-supervisord-tasks) file included to see how to run the example.
     * **22-supervisord-enable-program**: to show how to enable program(s) in Supervisord program.
     * **23-supervisord-disable-program**: to show how to disable Supervisord program(s).
+    * **[24-supervisord-gracefully-shutdown](examples/24-supervisord-gracefully-shutdown)**: how to gracefully stop Swoole servers (managed by `supervisord`) in Docker containers.
 * Debugging:
     * **30-debug-with-gdb**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/30-debug-with-gdb) file included to see how to debug your PHP code with _gdb_.
     * **31-debug-with-valgrind**: Please check the [README](https://github.com/swoole/docker-swoole/tree/master/examples/31-debug-with-valgrind) file included to see how to debug your PHP code with _Valgrind_.
