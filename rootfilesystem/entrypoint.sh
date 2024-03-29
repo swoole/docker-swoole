@@ -28,13 +28,20 @@ done
 #   UserWarning: Supervisord is running as root and it is searching for its configuration file in default locations...
 if [[ "SERVICE" == "${BOOT_MODE}" ]] ; then
     if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
-        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
+        exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n # Run supervisord in the foreground.
     else
         tail -f /dev/null
     fi
 else
     if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
-        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf # Run supervisord in the background.
+
+        # To gracefully stop supervisord and its child processes, we can use following trap commands. However, they are
+        # not tested yet, and thus are commented out.
+        # supervisordPid="$!"
+        # trap "kill -SIGTERM ${supervisordPid} && wait ${supervisordPid}" SIGTERM
+        # trap "kill -SIGTERM ${supervisordPid} && wait ${supervisordPid}" SIGINT
+        # trap "kill -SIGTERM ${supervisordPid} && wait ${supervisordPid}" SIGKILL
     fi
 
     if [[ "${1}" =~ ^(ba|)sh$ ]] ; then
