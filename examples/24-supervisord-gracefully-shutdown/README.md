@@ -1,7 +1,9 @@
 # Gracefully Stop Swoole Servers In Docker Containers
 
-In this example, we will demonstrate how to gracefully stop Swoole servers in a Docker container. Note that we use
-`supervisord` to manage these Swoole servers in Docker containers.
+In this example, we will demonstrate how to perform a graceful shutdown of Swoole servers within a Docker container using the `phpswoole/swoole` image.  Key points to note include:
+
+* The `supervisord` program is utilized for managing Swoole servers within Docker containers of the `phpswoole/swoole` image.
+* Graceful shutdown capabilities are supported starting from Swoole version 5.1.2 and later in the `phpswoole/swoole` Docker image.
 
 ## How To Gracefully Stop Supervisord Programs In Docker Container
 
