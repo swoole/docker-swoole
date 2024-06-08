@@ -14,6 +14,7 @@ RUN \
     apt-get update  && \
     apt-get install -y \
         libcurl4-openssl-dev       \
+        libbrotli-dev              \
         libpq-dev                  \
         libssl-dev                 \
         supervisor                 \
@@ -29,6 +30,7 @@ RUN \
     install-swoole.sh 5.1.3 \
         --enable-mysqlnd      \
         --enable-swoole-pgsql \
+        --enable-brotli       \
         --enable-openssl      \
         --enable-sockets --enable-swoole-curl && \
     mkdir -p /var/log/supervisor && \

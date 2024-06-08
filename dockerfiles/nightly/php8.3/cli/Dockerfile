@@ -22,6 +22,7 @@ RUN \
 # @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
         inotify-tools              \
         libcurl4-openssl-dev       \
+        libbrotli-dev              \
         libpq-dev                  \
         libssl-dev                 \
         supervisor                 \
@@ -37,6 +38,7 @@ RUN \
     install-swoole.sh master \
         --enable-mysqlnd      \
         --enable-swoole-pgsql \
+        --enable-brotli       \
         --enable-openssl      \
         --enable-sockets --enable-swoole-curl && \
     mkdir -p /var/log/supervisor && \

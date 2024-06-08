@@ -76,6 +76,7 @@ Table of Contents
 
 ### Changed
 - Upgrade _Composer_ from 2.6.6 to 2.7.6.
+- Enabled Brotli support in Swoole.
 
 ## 5.1.2
 
