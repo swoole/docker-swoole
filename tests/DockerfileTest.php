@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Swoole\Tests\Docker;
 
 use CrowdStar\Reflection\Reflection;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Swoole\Docker\Dockerfile;
 
@@ -14,6 +16,8 @@ use Swoole\Docker\Dockerfile;
  * @internal
  * @coversNothing
  */
+#[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
+#[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
 {
     public static function dataGetPhpMajorVersion(): array
@@ -33,10 +37,9 @@ class DockerfileTest extends TestCase
     }
 
     /**
-     * @dataProvider dataGetPhpMajorVersion
-     * @covers \Swoole\Docker\Dockerfile::getPhpMajorVersion
      * @throws \ReflectionException
      */
+    #[DataProvider('dataGetPhpMajorVersion')]
     public function testGetPhpMajorVersion(string $expected, string $phpVersion, string $message): void
     {
         self::assertSame(
@@ -135,10 +138,9 @@ class DockerfileTest extends TestCase
     }
 
     /**
-     * @dataProvider dataIsValidSwooleVersion
-     * @covers \Swoole\Docker\Dockerfile::isValidSwooleVersion
      * @throws \ReflectionException
      */
+    #[DataProvider('dataIsValidSwooleVersion')]
     public function testIsValidSwooleVersion(bool $expected, string $imageTag, string $message): void
     {
         self::assertSame(
