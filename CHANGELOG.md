@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 5.1](#swoole-51)
+   * [5.1.4](#514)
    * [5.1.3](#513)
    * [5.1.2](#512)
    * [5.1.1](#511)
@@ -71,6 +72,11 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 5.1
+
+## 5.1.4
+
+### Changed
+- Upgrade _Composer_ from 2.7.7 to 2.7.8.
 
 ## 5.1.3
 
