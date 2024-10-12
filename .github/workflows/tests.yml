@@ -15,19 +15,19 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       -
         name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.2
           tools: composer:v2
           coverage: none
 
       -
         name: Install dependencies
-        uses: nick-invision/retry@v1
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
@@ -39,4 +39,4 @@ jobs:
 
       -
         name: Run unit tests
-        run: vendor/bin/phpunit
+        run: ./vendor/bin/phpunit

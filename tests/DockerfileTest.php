@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace Swoole\Tests\Docker;
 
 use CrowdStar\Reflection\Reflection;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
 use Swoole\Docker\Dockerfile;
 
 /**
  * Class DockerfileTest
  *
- * @package Swoole\Tests\Docker
+ * @internal
+ * @coversNothing
  */
+#[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
+#[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function dataGetPhpMajorVersion(): array
+    public static function dataGetPhpMajorVersion(): array
     {
         return [
             [
@@ -36,13 +37,9 @@ class DockerfileTest extends TestCase
     }
 
     /**
-     * @dataProvider dataGetPhpMajorVersion
-     * @covers Dockerfile::getPhpMajorVersion
-     * @param string $expected
-     * @param string $phpVersion
-     * @param string $message
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
+    #[DataProvider('dataGetPhpMajorVersion')]
     public function testGetPhpMajorVersion(string $expected, string $phpVersion, string $message): void
     {
         self::assertSame(
@@ -58,10 +55,7 @@ class DockerfileTest extends TestCase
         );
     }
 
-    /**
-     * @return array
-     */
-    public function dataIsValidSwooleVersion(): array
+    public static function dataIsValidSwooleVersion(): array
     {
         return [
             [
@@ -144,13 +138,9 @@ class DockerfileTest extends TestCase
     }
 
     /**
-     * @dataProvider dataIsValidSwooleVersion
-     * @covers Dockerfile::isValidSwooleVersion
-     * @param bool $expected
-     * @param string $imageTag
-     * @param string $message
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
+    #[DataProvider('dataIsValidSwooleVersion')]
     public function testIsValidSwooleVersion(bool $expected, string $imageTag, string $message): void
     {
         self::assertSame(
