@@ -65,7 +65,8 @@ Table of Contents
 ## 4.8.13
 
 ### Changed
-- Upgrade _Composer_ from 2.2.18 to 2.2.21.
+- Upgrade _Composer_ from 2.2.18 to 2.8.1.
+- Alpine images are built with Alpine Linux 3.20 for PHP 8.1 and PHP 8.2.
 
 ## 4.8.12
 

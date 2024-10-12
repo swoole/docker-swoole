@@ -1,4 +1,4 @@
-FROM php:8.1.16-cli
+FROM php:8.1.30-cli
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM            xterm-color
@@ -12,7 +12,7 @@ RUN \
     set -ex && \
     curl -sfL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     chmod +x /usr/bin/composer                                                                     && \
-    composer self-update 2.2.21                                                    && \
+    composer self-update 2.8.1                                                    && \
     apt-get update              && \
     apt-get install -y             \
         libcurl4-openssl-dev       \
