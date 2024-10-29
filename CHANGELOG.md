@@ -78,7 +78,7 @@ Table of Contents
 
 ### Changed
 - Upgrade PHP extension _Redis_ from 6.0.2 to 6.1.0.
-- Upgrade _Composer_ from 2.7.8 to 2.8.1.
+- Upgrade _Composer_ from 2.7.8 to 2.8.2.
 
 ## 5.1.4
 
