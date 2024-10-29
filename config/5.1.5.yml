@@ -5,11 +5,11 @@ status: "under development"
 php:
   - "8.0.30"
   - "8.1.30"
-  - "8.2.24"
-  - "8.3.12"
+  - "8.2.25"
+  - "8.3.13"
 image:
   composer:
-    version: "2.8.1"
+    version: "2.8.2"
   php_extensions:
     redis:
       version: "6.1.0"
