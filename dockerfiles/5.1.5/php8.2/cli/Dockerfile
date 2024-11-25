@@ -1,4 +1,4 @@
-FROM php:8.2.25-cli
+FROM php:8.2.26-cli
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
@@ -6,7 +6,7 @@ ENV TERM=xterm-color
 ARG DEV_MODE
 ENV DEV_MODE=$DEV_MODE
 
-COPY --from=composer:2.8.2 /usr/bin/composer /usr/bin/
+COPY --from=composer:2.8.3 /usr/bin/composer /usr/bin/
 COPY ./rootfilesystem/ /
 
 RUN \
