@@ -281,6 +281,7 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
+| PHP 8.4 | [php8.4](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/cli/Dockerfile) | [php8.4-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/cli/Dockerfile) | [php8.4-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/alpine/Dockerfile) |
 | PHP 8.3 | [php8.3](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.3/cli/Dockerfile) | [php8.3-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.3/cli/Dockerfile) | [php8.3-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.3/alpine/Dockerfile) |
 | PHP 8.2 | [php8.2](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/cli/Dockerfile) | [php8.2-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/cli/Dockerfile) | [php8.2-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/alpine/Dockerfile) |
 | PHP 8.1 | [php8.1](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/cli/Dockerfile) | [php8.1-dev](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/cli/Dockerfile) | [php8.1-alpine](https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/alpine/Dockerfile) |

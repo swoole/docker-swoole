@@ -32,6 +32,7 @@ class Dockerfile
         '8.1' => '3.20',
         '8.2' => '3.20',
         '8.3' => '3.20',
+        '8.4' => '3.20',
     ];
 
     protected string $basePath;
