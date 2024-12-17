@@ -1,6 +1,8 @@
 Table of Contents
 =================
 
+* [Swoole 6.0](#swoole-60)
+   * [6.0.0](#600)
 * [Swoole 5.1](#swoole-51)
    * [5.1.6](#516)
    * [5.1.5](#515)
@@ -72,6 +74,13 @@ Table of Contents
    * [4.4.5](#445)
 * [Swoole 4.3](#swoole-43)
    * [4.3.6](#436)
+
+# Swoole 6.0
+
+## 6.0.0
+
+### Changed
+- Upgrade _Composer_ from 2.8.3 to 2.8.4.
 
 # Swoole 5.1
 
