@@ -41,6 +41,6 @@ jobs:
         with:
           context: .
           file: dockerfiles/nightly/php${{ matrix.php }}/cli/Dockerfile
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le
+          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
           tags: phpswoole/swoole:php${{ matrix.php }}
