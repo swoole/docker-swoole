@@ -1,10 +1,13 @@
 name: Build Nightly Alpine Images Manually
 
 on:
+  push:
+    branches:
+      - platforms
   workflow_dispatch:
 
 jobs:
-  build_nightly_images:
+  build_nightly_images_manually:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
