@@ -28,6 +28,7 @@ RUN \
 {%~ endif %}
         libbrotli-dev              \
         libpq-dev                  \
+        libsqlite3-dev             \
         libssl-dev                 \
         supervisor                 \
         unzip                      \
@@ -52,10 +53,11 @@ RUN \
     {%~ endfor %}
 {%~ endif %}
     install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %} \
-        --enable-mysqlnd      \
-        --enable-swoole-pgsql \
-        --enable-brotli       \
-        --enable-openssl      \
+        --enable-mysqlnd       \
+        --enable-swoole-pgsql  \
+        --enable-swoole-sqlite \
+        --enable-brotli        \
+        --enable-openssl       \
         --enable-sockets {% if option_curl == true  %}--enable-swoole-curl {% endif %}{% if option_json == true  %}--enable-swoole-json {% endif %}&& \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
