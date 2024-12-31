@@ -77,6 +77,9 @@ Table of Contents
 
 ## 5.1.6
 
+### Changed
+- Enabled SQLite support in Swoole.
+
 ## 5.1.5
 
 ### Changed
