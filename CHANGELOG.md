@@ -81,10 +81,14 @@ Table of Contents
 
 ### Changed
 - Upgrade _Composer_ from 2.8.3 to 2.8.4.
+- Enabled SQLite support in Swoole.
 
 # Swoole 5.1
 
 ## 5.1.6
+
+### Changed
+- Enabled SQLite support in Swoole.
 
 ## 5.1.5
 
