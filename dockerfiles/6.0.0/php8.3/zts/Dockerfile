@@ -1,4 +1,4 @@
-FROM php:8.3.14-zts
+FROM php:8.3.15-zts
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
