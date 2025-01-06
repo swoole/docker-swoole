@@ -1,4 +1,4 @@
-FROM php:8.1.31-cli
+FROM php:8.3.14-zts
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
@@ -29,6 +29,7 @@ RUN \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
     install-swoole.sh 6.0.0 \
+        --enable-swoole-thread \
         --enable-swoole-curl   \
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \

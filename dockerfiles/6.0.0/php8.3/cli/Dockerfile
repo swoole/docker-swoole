@@ -29,12 +29,13 @@ RUN \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
     install-swoole.sh 6.0.0 \
+        --enable-swoole-curl   \
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \
         --enable-swoole-sqlite \
         --enable-brotli        \
         --enable-openssl       \
-        --enable-sockets --enable-swoole-curl && \
+        --enable-sockets    && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 

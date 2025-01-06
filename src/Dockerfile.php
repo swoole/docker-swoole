@@ -20,6 +20,14 @@ class Dockerfile
 
     protected const CLI = 'cli';
 
+    protected const ZTS = 'zts';
+
+    protected const TYPES = [
+        self::ALPINE,
+        self::CLI,
+        self::ZTS,
+    ];
+
     protected const VERSION_NIGHTLY = 'nightly';
 
     protected const ALPINE_VERSIONS = [
@@ -64,7 +72,7 @@ class Dockerfile
     public function render(): void
     {
         foreach ($this->getConfig()['php'] as $phpVersion) {
-            foreach ([self::ALPINE, self::CLI] as $type) {
+            foreach (self::TYPES as $type) {
                 $this->generateDockerFile($phpVersion, $type, true);
             }
         }
@@ -80,7 +88,7 @@ class Dockerfile
     {
         $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath()), ['autoescape' => false]))
             ->load($this->getTemplateFile($type))
-            ->render($this->getContext($phpVersion))
+            ->render($this->getContext($type, $phpVersion))
         ;
 
         if ($save) {
@@ -144,6 +152,7 @@ class Dockerfile
     }
 
     /**
+     * @param value-of<Dockerfile::TYPES> $type
      * @param string $phpVersion Needed only when creating Dockerfiles for a released version of Swoole.
      */
     protected function getDockerFileDir(string $type, string $phpVersion): string
@@ -182,9 +191,9 @@ class Dockerfile
     }
 
     /**
-     * @see https://github.com/swoole/swoole-src/releases/tag/v4.5.7
+     * @param value-of<Dockerfile::TYPES> $type
      */
-    protected function getContext(string $phpVersion): array
+    protected function getContext(string $type, string $phpVersion): array
     {
         if (
             ($this->getSwooleVersion() === self::VERSION_NIGHTLY)
@@ -210,6 +219,7 @@ class Dockerfile
             $this->getConfig()['image'],
             [
                 'php_version'    => $phpVersion,
+                'image_type'     => $type,
                 'alpine_version' => $this->getAlpineVersion($phpVersion),
                 'swoole_version' => $this->getSwooleVersion(),
                 'option_curl'    => $optionCurl,
@@ -218,9 +228,12 @@ class Dockerfile
         );
     }
 
+    /**
+     * @param value-of<Dockerfile::TYPES> $type
+     */
     protected function getTemplateFile(string $type): string
     {
-        return ($type == self::ALPINE) ? 'Dockerfile.alpine.twig' : 'Dockerfile.cli.twig';
+        return ($type == self::ALPINE) ? 'Dockerfile.alpine.twig' : 'Dockerfile.twig';
     }
 
     protected function getAlpineVersion(string $phpVersion): string

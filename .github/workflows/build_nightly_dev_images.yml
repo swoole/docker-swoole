@@ -13,6 +13,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ["8.1", "8.2", "8.3", "8.4"]
+        image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
 
     steps:
       -
@@ -40,8 +41,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: dockerfiles/nightly/php${{ matrix.php }}/cli/Dockerfile
+          file: dockerfiles/nightly/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
-          tags: phpswoole/swoole:php${{ matrix.php }}-dev
+          tags: phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }}-dev
           build-args: DEV_MODE=true

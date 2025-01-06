@@ -31,12 +31,14 @@ RUN \
     curl -sfL https://github.com/swoole/swoole-src/archive/{% if swoole_version == "nightly" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
+{% if option_curl == true %}{{ "        --enable-swoole-curl   \\\n" }}{% endif %}
+{% if option_json == true %}{{ "        --enable-swoole-json   \\\n" }}{% endif %}
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \
         --enable-swoole-sqlite \
         --enable-brotli        \
         --enable-openssl       \
-        --enable-sockets {% if option_curl == true  %}--enable-swoole-curl {% endif %}{% if option_json == true  %}--enable-swoole-json {% endif %}&& \
+        --enable-sockets    && \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \

@@ -1,4 +1,4 @@
-FROM php:{{ php_version }}-cli
+FROM php:{{ php_version }}-{{ image_type }}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
@@ -53,12 +53,15 @@ RUN \
     {%~ endfor %}
 {%~ endif %}
     install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %} \
+{% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
+{% if option_curl == true %}{{ "        --enable-swoole-curl   \\\n" }}{% endif %}
+{% if option_json == true %}{{ "        --enable-swoole-json   \\\n" }}{% endif %}
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \
         --enable-swoole-sqlite \
         --enable-brotli        \
         --enable-openssl       \
-        --enable-sockets {% if option_curl == true  %}--enable-swoole-curl {% endif %}{% if option_json == true  %}--enable-swoole-json {% endif %}&& \
+        --enable-sockets    && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 

@@ -1,4 +1,4 @@
-FROM php:8.1.31-cli
+FROM php:8.3-zts
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
@@ -13,6 +13,14 @@ RUN \
     set -ex && \
     apt-get update  && \
     apt-get install -y \
+# The auto-reloading feature is supported for non-Alpine images only.
+#
+# Package "inotify-tools" is pre-installed in latest non-Alpine images. For versioned non-Alpine images, it will be
+# installed automatically when needed. For details, please check script "autoreload.sh" and example "00-autoreload".
+#
+# @see https://github.com/swoole/docker-swoole/blob/master/rootfilesystem/usr/local/boot/autoreload.sh
+# @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
+        inotify-tools              \
         libcurl4-openssl-dev       \
         libbrotli-dev              \
         libpq-dev                  \
@@ -28,7 +36,8 @@ RUN \
     pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.1.0 && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
-    install-swoole.sh 6.0.0 \
+    install-swoole.sh master \
+        --enable-swoole-thread \
         --enable-swoole-curl   \
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \

@@ -14,6 +14,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ["8.1", "8.2", "8.3", "8.4"]
+        image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
 
     name: The dev image for PHP ${{ matrix.php }}
 
@@ -68,14 +69,14 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le
           push: true
           tags: |
-            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}-dev
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-dev
-            phpswoole/swoole:latest-dev
+            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}${{ matrix.image.postfix }}-dev
+            phpswoole/swoole:latest${{ matrix.image.postfix }}-dev
           build-args: DEV_MODE=true
 
       -
@@ -84,13 +85,13 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le
           push: true
           tags: |
-            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}-dev
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}${{ matrix.image.postfix }}-dev
           build-args: DEV_MODE=true
 
       -
@@ -99,10 +100,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/cli/Dockerfile
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
           tags: |
-            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
+            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
           build-args: DEV_MODE=true
