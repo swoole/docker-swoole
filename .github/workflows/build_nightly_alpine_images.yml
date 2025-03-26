@@ -2,7 +2,7 @@ name: Build Nightly Alpine Images
 
 on:
   schedule:
-    - cron: '47 4 * * *'
+    - cron: '47 13 * * *'
   workflow_dispatch:
 
 jobs:

@@ -2,7 +2,7 @@ name: Build Nightly Dev Images
 
 on:
   schedule:
-    - cron: '47 4 * * *'
+    - cron: '47 11 * * *'
   workflow_dispatch:
 
 jobs:
