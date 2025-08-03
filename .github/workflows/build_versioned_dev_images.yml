@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_versioned_dev_images:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04-arm
     if: github.repository == 'swoole/docker-swoole'
     strategy:
       fail-fast: true
