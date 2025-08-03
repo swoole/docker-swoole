@@ -1,6 +1,6 @@
 FROM php:8.3-cli-alpine3.20
 
-COPY --from=composer:2.8.6 /usr/bin/composer /usr/bin/
+COPY --from=composer:2.8.10 /usr/bin/composer /usr/bin/
 
 RUN \
     set -ex && \
@@ -10,7 +10,7 @@ RUN \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
-    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.1.0 && \
+    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.2.0 && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
     docker-php-ext-install sockets && \
