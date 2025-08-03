@@ -20,6 +20,25 @@ use Swoole\Docker\Dockerfile;
 #[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
 {
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataGetPhpMajorVersion')]
+    public function testGetPhpMajorVersion(string $expected, string $phpVersion, string $message): void
+    {
+        self::assertSame(
+            $expected,
+            Reflection::callMethod(
+                $this->getMockBuilder(Dockerfile::class)->disableOriginalConstructor()->getMock(),
+                'getPhpMajorVersion',
+                [
+                    $phpVersion,
+                ]
+            ),
+            $message
+        );
+    }
+
     public static function dataGetPhpMajorVersion(): array
     {
         return [
@@ -39,16 +58,16 @@ class DockerfileTest extends TestCase
     /**
      * @throws \ReflectionException
      */
-    #[DataProvider('dataGetPhpMajorVersion')]
-    public function testGetPhpMajorVersion(string $expected, string $phpVersion, string $message): void
+    #[DataProvider('dataIsValidSwooleVersion')]
+    public function testIsValidSwooleVersion(bool $expected, string $imageTag, string $message): void
     {
         self::assertSame(
             $expected,
             Reflection::callMethod(
                 $this->getMockBuilder(Dockerfile::class)->disableOriginalConstructor()->getMock(),
-                'getPhpMajorVersion',
+                'isValidSwooleVersion',
                 [
-                    $phpVersion,
+                    $imageTag,
                 ]
             ),
             $message
@@ -135,24 +154,5 @@ class DockerfileTest extends TestCase
                 'leading zero(s) found in the patch part',
             ],
         ];
-    }
-
-    /**
-     * @throws \ReflectionException
-     */
-    #[DataProvider('dataIsValidSwooleVersion')]
-    public function testIsValidSwooleVersion(bool $expected, string $imageTag, string $message): void
-    {
-        self::assertSame(
-            $expected,
-            Reflection::callMethod(
-                $this->getMockBuilder(Dockerfile::class)->disableOriginalConstructor()->getMock(),
-                'isValidSwooleVersion',
-                [
-                    $imageTag,
-                ]
-            ),
-            $message
-        );
     }
 }
