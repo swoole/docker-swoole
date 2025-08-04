@@ -6,6 +6,7 @@ Table of Contents
    * [6.0.1](#601)
    * [6.0.0](#600)
 * [Swoole 5.1](#swoole-51)
+   * [5.1.8](#518)
    * [5.1.7](#517)
    * [5.1.6](#516)
    * [5.1.5](#515)
@@ -97,6 +98,11 @@ Table of Contents
 - Enabled SQLite support in Swoole.
 
 # Swoole 5.1
+
+## 5.1.8
+
+### Changed
+- Upgrade _Composer_ from 2.8.5 to 2.8.10.
 
 ## 5.1.7
 
