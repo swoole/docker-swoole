@@ -1,4 +1,4 @@
-FROM php:8.2.28-cli
+FROM php:8.2.29-cli
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
@@ -6,7 +6,7 @@ ENV TERM=xterm-color
 ARG DEV_MODE
 ENV DEV_MODE=$DEV_MODE
 
-COPY --from=composer:2.8.6 /usr/bin/composer /usr/bin/
+COPY --from=composer:2.8.12 /usr/bin/composer /usr/bin/
 COPY ./rootfilesystem/ /
 
 RUN \
@@ -25,7 +25,7 @@ RUN \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
-    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.1.0 && \
+    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.2.0 && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
     install-swoole.sh 6.0.2 \
