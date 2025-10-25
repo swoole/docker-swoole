@@ -26,6 +26,7 @@ RUN \
         libpq-dev                  \
         libsqlite3-dev             \
         libssl-dev                 \
+        liburing-dev               \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
@@ -39,6 +40,7 @@ RUN \
     install-swoole.sh master \
         --enable-swoole-thread \
         --enable-swoole-curl   \
+        --enable-iouring       \
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \
         --enable-swoole-sqlite \

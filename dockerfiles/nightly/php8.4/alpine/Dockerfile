@@ -6,7 +6,7 @@ RUN \
     set -ex && \
     apk update && \
     apk add --no-cache libstdc++ libpq && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev liburing-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
@@ -20,6 +20,7 @@ RUN \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
         --enable-swoole-curl   \
+        --enable-iouring       \
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \
         --enable-swoole-sqlite \

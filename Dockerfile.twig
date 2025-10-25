@@ -30,6 +30,7 @@ RUN \
         libpq-dev                  \
         libsqlite3-dev             \
         libssl-dev                 \
+        liburing-dev               \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
@@ -56,6 +57,7 @@ RUN \
 {% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
 {% if option_curl == true %}{{ "        --enable-swoole-curl   \\\n" }}{% endif %}
 {% if option_json == true %}{{ "        --enable-swoole-json   \\\n" }}{% endif %}
+        --enable-iouring       \
         --enable-mysqlnd       \
         --enable-swoole-pgsql  \
         --enable-swoole-sqlite \
