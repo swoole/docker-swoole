@@ -19,14 +19,14 @@ RUN \
     curl -sfL https://github.com/swoole/swoole-src/archive/master.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
-        --enable-swoole-curl   \
-        --enable-iouring       \
-        --enable-mysqlnd       \
-        --enable-swoole-pgsql  \
-        --enable-swoole-sqlite \
-        --enable-brotli        \
-        --enable-openssl       \
-        --enable-sockets    && \
+        --enable-brotli \
+        --enable-iouring \
+        --enable-mysqlnd \
+        --enable-openssl \
+        --enable-sockets \
+        --enable-swoole-curl \
+        --enable-swoole-pgsql \
+        --enable-swoole-sqlite && \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \

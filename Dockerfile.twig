@@ -23,9 +23,7 @@ RUN \
 # @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
         inotify-tools              \
 {%~ endif %}
-{%~ if option_curl == true  %}
         libcurl4-openssl-dev       \
-{%~ endif %}
         libbrotli-dev              \
         libpq-dev                  \
         libsqlite3-dev             \
@@ -55,15 +53,14 @@ RUN \
 {%~ endif %}
     install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %} \
 {% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
-{% if option_curl == true %}{{ "        --enable-swoole-curl   \\\n" }}{% endif %}
-{% if option_json == true %}{{ "        --enable-swoole-json   \\\n" }}{% endif %}
-        --enable-iouring       \
-        --enable-mysqlnd       \
-        --enable-swoole-pgsql  \
-        --enable-swoole-sqlite \
-        --enable-brotli        \
-        --enable-openssl       \
-        --enable-sockets    && \
+        --enable-brotli \
+        --enable-iouring \
+        --enable-mysqlnd \
+        --enable-openssl \
+        --enable-sockets \
+        --enable-swoole-curl \
+        --enable-swoole-pgsql \
+        --enable-swoole-sqlite && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 

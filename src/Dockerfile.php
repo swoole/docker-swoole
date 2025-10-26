@@ -195,26 +195,6 @@ class Dockerfile
      */
     protected function getContext(string $type, string $phpVersion): array
     {
-        if (
-            ($this->getSwooleVersion() === self::VERSION_NIGHTLY)
-            || (version_compare($this->getSwooleVersion(), '4.6.0-alpha') >= 0)
-        ) {
-            $optionCurl = ($phpVersion != '8.0.0');
-        } else {
-            $optionCurl = false;
-        }
-
-        if ($this->getSwooleVersion() === self::VERSION_NIGHTLY) {
-            $optionJson = false;
-        } elseif (
-            (version_compare($this->getSwooleVersion(), '4.5.7') >= 0)
-            && (version_compare($this->getSwooleVersion(), '5.0.0') < 0)
-        ) {
-            $optionJson = true;
-        } else {
-            $optionJson = false;
-        }
-
         return array_merge(
             $this->getConfig()['image'],
             [
@@ -222,8 +202,6 @@ class Dockerfile
                 'image_type'     => $type,
                 'alpine_version' => $this->getAlpineVersion($phpVersion),
                 'swoole_version' => $this->getSwooleVersion(),
-                'option_curl'    => $optionCurl,
-                'option_json'    => $optionJson,
             ]
         );
     }
