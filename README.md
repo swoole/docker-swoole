@@ -21,6 +21,7 @@ Table of Contents
 * [Image Variants](#image-variants)
 * [Supported Tags and Respective Dockerfile Links](#supported-tags-and-respective-dockerfile-links)
    * [Versioned images](#versioned-images-based-on-stable-releases-of-swoole)
+      * [Swoole 6.1](#swoole-61)
       * [Swoole 6.0](#swoole-60)
       * [Swoole 5.1](#swoole-51)
       * [Swoole 5.0](#swoole-50)
@@ -204,6 +205,15 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 ## Versioned images (based on stable releases of Swoole)
 
+### Swoole 6.1
+
+| PHP Versions | Default Images | Dev Images | ZTS Images | Alpine Images |
+|-|-|-|-|-|
+| PHP 8.4 | [6.1.0-php8.4][6.1-php8.4]<br />[6.1-php8.4] | [6.1.0-php8.4-dev][6.1-php8.4]<br />[6.1-php8.4-dev][6.1-php8.4] | [6.1.0-php8.4-zts][6.1-php8.4-zts]<br />[6.1-php8.4-zts] | [6.1.0-php8.4-alpine][6.1-php8.4-alpine]<br />[6.1-php8.4-alpine] |
+| PHP 8.3 | [6.1.0-php8.3][6.1-php8.3]<br />[6.1-php8.3]<br />[6.1][6.1-php8.3] | [6.1.0-php8.3-dev][6.1-php8.3]<br />[6.1-php8.3-dev][6.1-php8.3]<br />[6.1-dev][6.1-php8.3] | [6.1.0-php8.3-zts][6.1-php8.3-zts]<br />[6.1-php8.3-zts]<br />[6.1-zts][6.1-php8.3-zts] | [6.1.0-php8.3-alpine][6.1-php8.3-alpine]<br />[6.1-php8.3-alpine]<br />[6.1-alpine][6.1-php8.3-alpine] |
+| PHP 8.2 | [6.1.0-php8.2][6.1-php8.2]<br />[6.1-php8.2] | [6.1.0-php8.2-dev][6.1-php8.2]<br />[6.1-php8.2-dev][6.1-php8.2] | [6.1.0-php8.2-zts][6.1-php8.2-zts]<br />[6.1-php8.2-zts] | [6.1.0-php8.2-alpine][6.1-php8.2-alpine]<br />[6.1-php8.2-alpine] |
+| PHP 8.1 | [6.1.0-php8.1][6.1-php8.1]<br />[6.1-php8.1] | [6.1.0-php8.1-dev][6.1-php8.1]<br />[6.1-php8.1-dev][6.1-php8.1] | [6.1.0-php8.1-zts][6.1-php8.1-zts]<br />[6.1-php8.1-zts] | [6.1.0-php8.1-alpine][6.1-php8.1-alpine]<br />[6.1-php8.1-alpine] |
+
 ### Swoole 6.0
 
 | PHP Versions | Default Images | Dev Images | ZTS Images | Alpine Images |
@@ -284,6 +294,18 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.8-php8.2-dev -f d
 * Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://ea.com).
 * Thanks to [Blackfire](https://blackfire.io) for providing free open-source subscription for their awesome profiling tool.
 
+[6.1-php8.4]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.4/cli/Dockerfile
+[6.1-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.4/zts/Dockerfile
+[6.1-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.4/alpine/Dockerfile
+[6.1-php8.3]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.3/cli/Dockerfile
+[6.1-php8.3-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.3/zts/Dockerfile
+[6.1-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.3/alpine/Dockerfile
+[6.1-php8.2]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.2/cli/Dockerfile
+[6.1-php8.2-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.2/zts/Dockerfile
+[6.1-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.2/alpine/Dockerfile
+[6.1-php8.1]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.1/cli/Dockerfile
+[6.1-php8.1-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.1/zts/Dockerfile
+[6.1-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.1.0/php8.1/alpine/Dockerfile
 [6.0-php8.4]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.2/php8.4/cli/Dockerfile
 [6.0-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.2/php8.4/zts/Dockerfile
 [6.0-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.2/php8.4/alpine/Dockerfile
