@@ -18,6 +18,7 @@ RUN \
         libpq-dev                  \
         libsqlite3-dev             \
         libssl-dev                 \
+        liburing-dev               \
         supervisor                 \
         unzip                      \
         zlib1g-dev                 \
@@ -30,13 +31,14 @@ RUN \
     docker-php-ext-enable redis && \
     install-swoole.sh 6.0.2 \
         --enable-swoole-thread \
-        --enable-swoole-curl   \
-        --enable-mysqlnd       \
-        --enable-swoole-pgsql  \
-        --enable-swoole-sqlite \
-        --enable-brotli        \
-        --enable-openssl       \
-        --enable-sockets    && \
+        --enable-brotli \
+        --enable-iouring \
+        --enable-mysqlnd \
+        --enable-openssl \
+        --enable-sockets \
+        --enable-swoole-curl \
+        --enable-swoole-pgsql \
+        --enable-swoole-sqlite && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
