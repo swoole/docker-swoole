@@ -1,6 +1,8 @@
 Table of Contents
 =================
 
+* [Swoole 6.1](#swoole-61)
+   * [6.1.0](#610)
 * [Swoole 6.0](#swoole-60)
    * [6.0.2](#602)
    * [6.0.1](#601)
@@ -79,12 +81,20 @@ Table of Contents
 * [Swoole 4.3](#swoole-43)
    * [4.3.6](#436)
 
+# Swoole 6.1
+
+## 6.1.0
+
+### Changed
+- **Enabled option _--enable-swoole-stdext_ and _--enable-zstd_ when installing Swoole.**
+
 # Swoole 6.0
 
 ## 6.0.2
 
 ### Changed
-- Upgrade _Composer_ from 2.8.5 to 2.8.6.
+- **Enabled option _--enable-iouring_ when installing Swoole.**
+- Upgrade _Composer_ from 2.8.5 to 2.8.12.
 
 ## 6.0.1
 
@@ -102,7 +112,7 @@ Table of Contents
 ## 5.1.8
 
 ### Changed
-- Upgrade _Composer_ from 2.8.5 to 2.8.10.
+- Upgrade _Composer_ from 2.8.5 to 2.8.12.
 
 ## 5.1.7
 

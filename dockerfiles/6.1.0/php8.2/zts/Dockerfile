@@ -38,7 +38,9 @@ RUN \
         --enable-sockets \
         --enable-swoole-curl \
         --enable-swoole-pgsql \
-        --enable-swoole-sqlite && \
+        --enable-swoole-sqlite \
+        --enable-swoole-stdext \
+        --enable-zstd && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
