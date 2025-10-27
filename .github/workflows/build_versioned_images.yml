@@ -50,11 +50,7 @@ jobs:
             echo "major_version=${major_version}" >> $GITHUB_OUTPUT
 
             if [ ${{ matrix.php }} == '8.3' ] ; then
-              if [ ${major_version} == '5.1' ] ; then
-                echo "image_type=latest" >> $GITHUB_OUTPUT
-              else
-                echo "image_type=major" >> $GITHUB_OUTPUT
-              fi
+              echo "image_type=major" >> $GITHUB_OUTPUT
             else
               echo "image_type=default" >> $GITHUB_OUTPUT
             fi

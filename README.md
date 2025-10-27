@@ -21,6 +21,7 @@ Table of Contents
 * [Image Variants](#image-variants)
 * [Supported Tags and Respective Dockerfile Links](#supported-tags-and-respective-dockerfile-links)
    * [Versioned images](#versioned-images-based-on-stable-releases-of-swoole)
+      * [Swoole 6.1](#swoole-61)
       * [Swoole 6.0](#swoole-60)
       * [Swoole 5.1](#swoole-51)
       * [Swoole 5.0](#swoole-50)
@@ -170,7 +171,7 @@ The `phpswoole/swoole` images come in three flavors, each designed for a specifi
 * `phpswoole/swoole:latest`
 * `phpswoole/swoole:5.1`
 * `phpswoole/swoole:5.1-php8.2`
-* `phpswoole/swoole:5.1.7-php8.2`
+* `phpswoole/swoole:5.1.8-php8.2`
 
 This variant is based on the _php:cli_ images, with a few changes. It uses _Supervisord_ to manage booting processes, and has _Composer_ preinstalled.
 
@@ -181,7 +182,7 @@ Since Swoole 6.0.0, there is a Zend Thread Safety (ZTS) version of the image ava
 * `phpswoole/swoole:latest-dev`
 * `phpswoole/swoole:5.1-dev`
 * `phpswoole/swoole:5.1-php8.2-dev`
-* `phpswoole/swoole:5.1.7-php8.2-dev`
+* `phpswoole/swoole:5.1.8-php8.2-dev`
 
 This variant is very similar to the previous one, but it has extra tools added for testing, debugging, and monitoring purpose,
 including [gdb](https://www.gnu.org/s/gdb), git, lsof, [strace](https://strace.io), [tcpdump](https://www.tcpdump.org), [Valgrind](http://www.valgrind.org), and vim.
@@ -193,53 +194,62 @@ Since Swoole 6.0.0, there is a Zend Thread Safety (ZTS) version of the image ava
 * `phpswoole/swoole:latest-alpine`
 * `phpswoole/swoole:5.1-alpine`
 * `phpswoole/swoole:5.1-php8.2-alpine`
-* `phpswoole/swoole:5.1.7-php8.2-alpine`
+* `phpswoole/swoole:5.1.8-php8.2-alpine`
 
 You can use this variant in the same way as using the _php:alpine_ image, except that we changed the default working directory to _/var/www_.
 Also, we have _Composer_ preinstalled in the image.
 
-Note: We don't have development tools built in for Alpine images. There is no Docker images like `phpswoole/swoole:5.1.7-php8.2-alpine-dev`.
+Note: We don't have development tools built in for Alpine images. There is no Docker images like `phpswoole/swoole:5.1.8-php8.2-alpine-dev`.
 
 # Supported Tags and Respective `Dockerfile` Links
 
 ## Versioned images (based on stable releases of Swoole)
 
+### Swoole 6.1
+
+| PHP Versions | Default Images | Dev Images | ZTS Images | Alpine Images |
+|-|-|-|-|-|
+| PHP 8.4 | [6.1.0-php8.4][6.1-php8.4]<br />[6.1-php8.4]<br />[6.1][6.1-php8.4]<br />[latest][6.1-php8.4] | [6.1.0-php8.4-dev][6.1-php8.4]<br />[6.1-php8.4-dev][6.1-php8.4]<br />[6.1-dev][6.1-php8.4]<br />[latest-dev][6.1-php8.4] | [6.1.0-php8.4-zts][6.1-php8.4-zts]<br />[6.1-php8.4-zts]<br />[6.1-zts][6.1-php8.4-zts]<br />[latest-zts][6.1-php8.4-zts] | [6.1.0-php8.4-alpine][6.1-php8.4-alpine]<br />[6.1-php8.4-alpine]<br />[6.1-alpine][6.1-php8.4-alpine]<br />[latest-alpine][6.1-php8.4-alpine] |
+| PHP 8.3 | [6.1.0-php8.3][6.1-php8.3]<br />[6.1-php8.3] | [6.1.0-php8.3-dev][6.1-php8.3]<br />[6.1-php8.3-dev][6.1-php8.3] | [6.1.0-php8.3-zts][6.1-php8.3-zts]<br />[6.1-php8.3-zts] | [6.1.0-php8.3-alpine][6.1-php8.3-alpine]<br />[6.1-php8.3-alpine] |
+| PHP 8.2 | [6.1.0-php8.2][6.1-php8.2]<br />[6.1-php8.2] | [6.1.0-php8.2-dev][6.1-php8.2]<br />[6.1-php8.2-dev][6.1-php8.2] | [6.1.0-php8.2-zts][6.1-php8.2-zts]<br />[6.1-php8.2-zts] | [6.1.0-php8.2-alpine][6.1-php8.2-alpine]<br />[6.1-php8.2-alpine] |
+| PHP 8.1 | [6.1.0-php8.1][6.1-php8.1]<br />[6.1-php8.1] | [6.1.0-php8.1-dev][6.1-php8.1]<br />[6.1-php8.1-dev][6.1-php8.1] | [6.1.0-php8.1-zts][6.1-php8.1-zts]<br />[6.1-php8.1-zts] | [6.1.0-php8.1-alpine][6.1-php8.1-alpine]<br />[6.1-php8.1-alpine] |
+
 ### Swoole 6.0
 
 | PHP Versions | Default Images | Dev Images | ZTS Images | Alpine Images |
 |-|-|-|-|-|
-| PHP 8.4 | [6.0.1-php8.4][6.0-php8.4]<br />[6.0-php8.4] | [6.0.1-php8.4-dev][6.0-php8.4]<br />[6.0-php8.4-dev][6.0-php8.4] | [6.0.1-php8.4-zts][6.0-php8.4-zts]<br />[6.0-php8.4-zts] | [6.0.1-php8.4-alpine][6.0-php8.4-alpine]<br />[6.0-php8.4-alpine] |
-| PHP 8.3 | [6.0.1-php8.3][6.0-php8.3]<br />[6.0-php8.3]<br />[6.0][6.0-php8.3] | [6.0.1-php8.3-dev][6.0-php8.3]<br />[6.0-php8.3-dev][6.0-php8.3]<br />[6.0-dev][6.0-php8.3] | [6.0.1-php8.3-zts][6.0-php8.3-zts]<br />[6.0-php8.3-zts]<br />[6.0-zts][6.0-php8.3-zts] | [6.0.1-php8.3-alpine][6.0-php8.3-alpine]<br />[6.0-php8.3-alpine]<br />[6.0-alpine][6.0-php8.3-alpine] |
-| PHP 8.2 | [6.0.1-php8.2][6.0-php8.2]<br />[6.0-php8.2] | [6.0.1-php8.2-dev][6.0-php8.2]<br />[6.0-php8.2-dev][6.0-php8.2] | [6.0.1-php8.2-zts][6.0-php8.2-zts]<br />[6.0-php8.2-zts] | [6.0.1-php8.2-alpine][6.0-php8.2-alpine]<br />[6.0-php8.2-alpine] |
-| PHP 8.1 | [6.0.1-php8.1][6.0-php8.1]<br />[6.0-php8.1] | [6.0.1-php8.1-dev][6.0-php8.1]<br />[6.0-php8.1-dev][6.0-php8.1] | [6.0.1-php8.1-zts][6.0-php8.1-zts]<br />[6.0-php8.1-zts] | [6.0.1-php8.1-alpine][6.0-php8.1-alpine]<br />[6.0-php8.1-alpine] |
+| PHP 8.4 | [6.0.2-php8.4][6.0-php8.4]<br />[6.0-php8.4]<br />[6.0][6.0-php8.4] | [6.0.2-php8.4-dev][6.0-php8.4]<br />[6.0-php8.4-dev][6.0-php8.4]<br />[6.0-dev][6.0-php8.4] | [6.0.2-php8.4-zts][6.0-php8.4-zts]<br />[6.0-php8.4-zts]<br />[6.0-zts][6.0-php8.4-zts] | [6.0.2-php8.4-alpine][6.0-php8.4-alpine]<br />[6.0-php8.4-alpine]<br />[6.0-alpine][6.0-php8.4-alpine] |
+| PHP 8.3 | [6.0.2-php8.3][6.0-php8.3]<br />[6.0-php8.3] | [6.0.2-php8.3-dev][6.0-php8.3]<br />[6.0-php8.3-dev][6.0-php8.3] | [6.0.2-php8.3-zts][6.0-php8.3-zts]<br />[6.0-php8.3-zts] | [6.0.2-php8.3-alpine][6.0-php8.3-alpine]<br />[6.0-php8.3-alpine] |
+| PHP 8.2 | [6.0.2-php8.2][6.0-php8.2]<br />[6.0-php8.2] | [6.0.2-php8.2-dev][6.0-php8.2]<br />[6.0-php8.2-dev][6.0-php8.2] | [6.0.2-php8.2-zts][6.0-php8.2-zts]<br />[6.0-php8.2-zts] | [6.0.2-php8.2-alpine][6.0-php8.2-alpine]<br />[6.0-php8.2-alpine] |
+| PHP 8.1 | [6.0.2-php8.1][6.0-php8.1]<br />[6.0-php8.1] | [6.0.2-php8.1-dev][6.0-php8.1]<br />[6.0-php8.1-dev][6.0-php8.1] | [6.0.2-php8.1-zts][6.0-php8.1-zts]<br />[6.0-php8.1-zts] | [6.0.2-php8.1-alpine][6.0-php8.1-alpine]<br />[6.0-php8.1-alpine] |
 
 ### Swoole 5.1
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
-| PHP 8.3 | [5.1.7-php8.3][5.1-php8.3]<br />[5.1-php8.3]<br />[5.1][5.1-php8.3]<br />[latest][5.1-php8.3] | [5.1.7-php8.3-dev][5.1-php8.3]<br />[5.1-php8.3-dev][5.1-php8.3]<br />[5.1-dev][5.1-php8.3]<br />[latest-dev][5.1-php8.3] | [5.1.7-php8.3-alpine][5.1-php8.3-alpine]<br />[5.1-php8.3-alpine]<br />[5.1-alpine][5.1-php8.3-alpine]<br />[latest-alpine][5.1-php8.3-alpine] |
-| PHP 8.2 | [5.1.7-php8.2][5.1-php8.2]<br />[5.1-php8.2] | [5.1.7-php8.2-dev][5.1-php8.2]<br />[5.1-php8.2-dev][5.1-php8.2] | [5.1.7-php8.2-alpine][5.1-php8.2-alpine]<br />[5.1-php8.2-alpine] |
-| PHP 8.1 | [5.1.7-php8.1][5.1-php8.1]<br />[5.1-php8.1] | [5.1.7-php8.1-dev][5.1-php8.1]<br />[5.1-php8.1-dev][5.1-php8.1] | [5.1.7-php8.1-alpine][5.1-php8.1-alpine]<br />[5.1-php8.1-alpine] |
-| PHP 8.0 | [5.1.7-php8.0][5.1-php8.0]<br />[5.1-php8.0] | [5.1.7-php8.0-dev][5.1-php8.0]<br />[5.1-php8.0-dev][5.1-php8.0] | [5.1.7-php8.0-alpine][5.1-php8.0-alpine]<br />[5.1-php8.0-alpine] |
+| PHP 8.3 | [5.1.8-php8.3][5.1-php8.3]<br />[5.1-php8.3]<br />[5.1][5.1-php8.3] | [5.1.8-php8.3-dev][5.1-php8.3]<br />[5.1-php8.3-dev][5.1-php8.3]<br />[5.1-dev][5.1-php8.3] | [5.1.8-php8.3-alpine][5.1-php8.3-alpine]<br />[5.1-php8.3-alpine]<br />[5.1-alpine][5.1-php8.3-alpine] |
+| PHP 8.2 | [5.1.8-php8.2][5.1-php8.2]<br />[5.1-php8.2] | [5.1.8-php8.2-dev][5.1-php8.2]<br />[5.1-php8.2-dev][5.1-php8.2] | [5.1.8-php8.2-alpine][5.1-php8.2-alpine]<br />[5.1-php8.2-alpine] |
+| PHP 8.1 | [5.1.8-php8.1][5.1-php8.1]<br />[5.1-php8.1] | [5.1.8-php8.1-dev][5.1-php8.1]<br />[5.1-php8.1-dev][5.1-php8.1] | [5.1.8-php8.1-alpine][5.1-php8.1-alpine]<br />[5.1-php8.1-alpine] |
+| PHP 8.0 | [5.1.8-php8.0][5.1-php8.0]<br />[5.1-php8.0] | [5.1.8-php8.0-dev][5.1-php8.0]<br />[5.1-php8.0-dev][5.1-php8.0] | [5.1.8-php8.0-alpine][5.1-php8.0-alpine]<br />[5.1-php8.0-alpine] |
 
 ### Swoole 5.0
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
-| PHP 8.2 | [5.0.3-php8.2][5.0-php8.2]<br />[5.0-php8.2] | [5.0.3-php8.2-dev][5.0-php8.2]<br />[5.0-php8.2-dev][5.0-php8.2] | [5.0.3-php8.2-alpine][5.0-php8.2-alpine]<br />[5.0-php8.2-alpine] |
-| PHP 8.1 | [5.0.3-php8.1][5.0-php8.1]<br />[5.0-php8.1]<br />[5.0][5.0-php8.1] | [5.0.3-php8.1-dev][5.0-php8.1]<br />[5.0-php8.1-dev][5.0-php8.1]<br />[5.0-dev][5.0-php8.1] | [5.0.3-php8.1-alpine][5.0-php8.1-alpine]<br />[5.0-php8.1-alpine]<br />[5.0-alpine][5.0-php8.1-alpine] |
-| PHP 8.0 | [5.0.3-php8.0][5.0-php8.0]<br />[5.0-php8.0] | [5.0.3-php8.0-dev][5.0-php8.0]<br />[5.0-php8.0-dev][5.0-php8.0]| [5.0.3-php8.0-alpine][5.0-php8.0-alpine]<br />[5.0-php8.0-alpine] |
+| PHP 8.2 | 5.0.3-php8.2<br />5.0-php8.2 | 5.0.3-php8.2-dev<br />5.0-php8.2-dev| 5.0.3-php8.2-alpine<br />5.0-php8.2-alpine |
+| PHP 8.1 | 5.0.3-php8.1<br />5.0-php8.1<br />5.0 | 5.0.3-php8.1-dev<br />5.0-php8.1-dev<br />5.0-dev | 5.0.3-php8.1-alpine<br />5.0-php8.1-alpine<br />5.0-alpine |
+| PHP 8.0 | 5.0.3-php8.0<br />5.0-php8.0 | 5.0.3-php8.0-dev<br />5.0-php8.0-dev| 5.0.3-php8.0-alpine<br />5.0-php8.0-alpine |
 
 ### Swoole 4.8
 
 | PHP Versions | Default Images | Dev Images | Alpine Images |
 |-|-|-|-|
-| PHP 8.2 | [4.8.13-php8.2][4.8-php8.2]<br />[4.8-php8.2] | [4.8.13-php8.2-dev][4.8-php8.2]<br />[4.8-php8.2-dev][4.8-php8.2] | [4.8.13-php8.2-alpine][4.8-php8.2-alpine]<br />[4.8-php8.2-alpine] |
-| PHP 8.1 | [4.8.13-php8.1][4.8-php8.1]<br />[4.8-php8.1] | [4.8.13-php8.1-dev][4.8-php8.1]<br />[4.8-php8.1-dev][4.8-php8.1] | [4.8.13-php8.1-alpine][4.8-php8.1-alpine]<br />[4.8-php8.1-alpine] |
-| PHP 8.0 | [4.8.13-php8.0][4.8-php8.0]<br />[4.8-php8.0]<br />[4.8][4.8-php8.0] | [4.8.13-php8.0-dev][4.8-php8.0]<br />[4.8-php8.0-dev][4.8-php8.0]<br />[4.8-dev][4.8-php8.0]| [4.8.13-php8.0-alpine][4.8-php8.0-alpine]<br />[4.8-php8.0-alpine]<br />[4.8-alpine][4.8-php8.0-alpine] |
-| PHP 7.4 | [4.8.13-php7.4][4.8-php7.4]<br />[4.8-php7.4] | [4.8.13-php7.4-dev][4.8-php7.4]<br />[4.8-php7.4-dev][4.8-php7.4] | [4.8.13-php7.4-alpine][4.8-php7.4-alpine]<br />[4.8-php7.4-alpine] |
-| PHP 7.3 | [4.8.13-php7.3][4.8-php7.3]<br />[4.8-php7.3] | [4.8.13-php7.3-dev][4.8-php7.3]<br />[4.8-php7.3-dev][4.8-php7.3] | [4.8.13-php7.3-alpine][4.8-php7.3-alpine]<br />[4.8-php7.3-alpine] |
-| PHP 7.2 | [4.8.13-php7.2][4.8-php7.2]<br />[4.8-php7.2] | [4.8.13-php7.2-dev][4.8-php7.2]<br />[4.8-php7.2-dev][4.8-php7.2] | [4.8.13-php7.2-alpine][4.8-php7.2-alpine]<br />[4.8-php7.2-alpine] |
+| PHP 8.2 | 4.8.13-php8.2<br />4.8-php8.2 | 4.8.13-php8.2-dev<br />4.8-php8.2-dev | 4.8.13-php8.2-alpine<br />4.8-php8.2-alpine |
+| PHP 8.1 | 4.8.13-php8.1<br />4.8-php8.1 | 4.8.13-php8.1-dev<br />4.8-php8.1-dev | 4.8.13-php8.1-alpine<br />4.8-php8.1-alpine |
+| PHP 8.0 | 4.8.13-php8.0<br />4.8-php8.0<br />4.8 | 4.8.13-php8.0-dev<br />4.8-php8.0-dev<br />4.8-dev| 4.8.13-php8.0-alpine<br />4.8-php8.0-alpine<br />4.8-alpine |
+| PHP 7.4 | 4.8.13-php7.4<br />4.8-php7.4 | 4.8.13-php7.4-dev<br />4.8-php7.4-dev | 4.8.13-php7.4-alpine<br />4.8-php7.4-alpine |
+| PHP 7.3 | 4.8.13-php7.3<br />4.8-php7.3 | 4.8.13-php7.3-dev<br />4.8-php7.3-dev | 4.8.13-php7.3-alpine<br />4.8-php7.3-alpine |
+| PHP 7.2 | 4.8.13-php7.2<br />4.8-php7.2 | 4.8.13-php7.2-dev<br />4.8-php7.2-dev | 4.8.13-php7.2-alpine<br />4.8-php7.2-alpine |
 
 ## Nightly images (built daily using the master branch of [swoole-src](https://github.com/swoole/swoole-src))
 
@@ -261,22 +271,22 @@ follow these three steps.
 
 ```bash
 ./bin/generate-dockerfiles.php nightly # Generate dockerfiles to build images from the master branch of Swoole.
-./bin/generate-dockerfiles.php 5.1.7   # Generate dockerfiles to build images for Swoole 5.1.7.
+./bin/generate-dockerfiles.php 5.1.8   # Generate dockerfiles to build images for Swoole 5.1.8.
 ```
 
 **3**. Build Docker images with commands like:
 
 ```bash
 docker build -t phpswoole/swoole:php8.2              -f dockerfiles/nightly/php8.2/cli/Dockerfile   .
-docker build -t phpswoole/swoole:5.1.7-php8.2        -f dockerfiles/5.1.7/php8.2/cli/Dockerfile    .
-docker build -t phpswoole/swoole:5.1.7-php8.2-alpine -f dockerfiles/5.1.7/php8.2/alpine/Dockerfile .
+docker build -t phpswoole/swoole:5.1.8-php8.2        -f dockerfiles/5.1.8/php8.2/cli/Dockerfile    .
+docker build -t phpswoole/swoole:5.1.8-php8.2-alpine -f dockerfiles/5.1.8/php8.2/alpine/Dockerfile .
 ```
 
 To build development images (where extra tools are included), add an argument _DEV_MODE_:
 
 ```bash
 docker build --build-arg DEV_MODE=true -t phpswoole/swoole:php8.2-dev       -f dockerfiles/nightly/php8.2/cli/Dockerfile .
-docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.7-php8.2-dev -f dockerfiles/5.1.7/php8.2/cli/Dockerfile  .
+docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.8-php8.2-dev -f dockerfiles/5.1.8/php8.2/cli/Dockerfile  .
 ```
 
 # Credits
@@ -284,44 +294,38 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.7-php8.2-dev -f d
 * Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://ea.com).
 * Thanks to [Blackfire](https://blackfire.io) for providing free open-source subscription for their awesome profiling tool.
 
-[6.0-php8.4]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.4/cli/Dockerfile
-[6.0-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.4/zts/Dockerfile
-[6.0-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.4/alpine/Dockerfile
-[6.0-php8.3]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.3/cli/Dockerfile
-[6.0-php8.3-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.3/zts/Dockerfile
-[6.0-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.3/alpine/Dockerfile
-[6.0-php8.2]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.2/cli/Dockerfile
-[6.0-php8.2-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.2/zts/Dockerfile
-[6.0-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.2/alpine/Dockerfile
-[6.0-php8.1]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.1/cli/Dockerfile
-[6.0-php8.1-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.1/zts/Dockerfile
-[6.0-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/6.0.1/php8.1/alpine/Dockerfile
-[5.1-php8.3]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.3/cli/Dockerfile
-[5.1-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.3/alpine/Dockerfile
-[5.1-php8.2]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.2/cli/Dockerfile
-[5.1-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.2/alpine/Dockerfile
-[5.1-php8.1]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.1/cli/Dockerfile
-[5.1-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.1/alpine/Dockerfile
-[5.1-php8.0]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.0/cli/Dockerfile
-[5.1-php8.0-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.7/dockerfiles/5.1.7/php8.0/alpine/Dockerfile
-[5.0-php8.2]: https://github.com/swoole/docker-swoole/blob/5.0.3/dockerfiles/5.0.3/php8.2/cli/Dockerfile
-[5.0-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/5.0.3/dockerfiles/5.0.3/php8.2/alpine/Dockerfile
-[5.0-php8.1]: https://github.com/swoole/docker-swoole/blob/5.0.3/dockerfiles/5.0.3/php8.1/cli/Dockerfile
-[5.0-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/5.0.3/dockerfiles/5.0.3/php8.1/alpine/Dockerfile
-[5.0-php8.0]: https://github.com/swoole/docker-swoole/blob/5.0.3/dockerfiles/5.0.3/php8.0/cli/Dockerfile
-[5.0-php8.0-alpine]: https://github.com/swoole/docker-swoole/blob/5.0.3/dockerfiles/5.0.3/php8.0/alpine/Dockerfile
-[4.8-php8.2]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php8.2/cli/Dockerfile
-[4.8-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php8.2/alpine/Dockerfile
-[4.8-php8.1]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php8.1/cli/Dockerfile
-[4.8-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php8.1/alpine/Dockerfile
-[4.8-php8.0]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php8.0/cli/Dockerfile
-[4.8-php8.0-alpine]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php8.0/alpine/Dockerfile
-[4.8-php7.4]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php7.4/cli/Dockerfile
-[4.8-php7.4-alpine]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php7.4/alpine/Dockerfile
-[4.8-php7.3]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php7.3/cli/Dockerfile
-[4.8-php7.3-alpine]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php7.3/alpine/Dockerfile
-[4.8-php7.2]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php7.2/cli/Dockerfile
-[4.8-php7.2-alpine]: https://github.com/swoole/docker-swoole/blob/4.8.13/dockerfiles/4.8.13/php7.2/alpine/Dockerfile
+[6.1-php8.4]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.4/cli/Dockerfile
+[6.1-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.4/zts/Dockerfile
+[6.1-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.4/alpine/Dockerfile
+[6.1-php8.3]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.3/cli/Dockerfile
+[6.1-php8.3-zts]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.3/zts/Dockerfile
+[6.1-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.3/alpine/Dockerfile
+[6.1-php8.2]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.2/cli/Dockerfile
+[6.1-php8.2-zts]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.2/zts/Dockerfile
+[6.1-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.2/alpine/Dockerfile
+[6.1-php8.1]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.1/cli/Dockerfile
+[6.1-php8.1-zts]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.1/zts/Dockerfile
+[6.1-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/6.1.0/dockerfiles/6.1.0/php8.1/alpine/Dockerfile
+[6.0-php8.4]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.4/cli/Dockerfile
+[6.0-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.4/zts/Dockerfile
+[6.0-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.4/alpine/Dockerfile
+[6.0-php8.3]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.3/cli/Dockerfile
+[6.0-php8.3-zts]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.3/zts/Dockerfile
+[6.0-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.3/alpine/Dockerfile
+[6.0-php8.2]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.2/cli/Dockerfile
+[6.0-php8.2-zts]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.2/zts/Dockerfile
+[6.0-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.2/alpine/Dockerfile
+[6.0-php8.1]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.1/cli/Dockerfile
+[6.0-php8.1-zts]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.1/zts/Dockerfile
+[6.0-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/6.0.2/dockerfiles/6.0.2/php8.1/alpine/Dockerfile
+[5.1-php8.3]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.3/cli/Dockerfile
+[5.1-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.3/alpine/Dockerfile
+[5.1-php8.2]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.2/cli/Dockerfile
+[5.1-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.2/alpine/Dockerfile
+[5.1-php8.1]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.1/cli/Dockerfile
+[5.1-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.1/alpine/Dockerfile
+[5.1-php8.0]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.0/cli/Dockerfile
+[5.1-php8.0-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.0/alpine/Dockerfile
 [nightly-php8.4]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/cli/Dockerfile
 [nightly-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/zts/Dockerfile
 [nightly-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/alpine/Dockerfile
