@@ -20,7 +20,6 @@ RUN \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     docker-php-ext-configure swoole \
         --enable-brotli \
-        --enable-iouring \
         --enable-mysqlnd \
         --enable-openssl \
         --enable-sockets \

@@ -93,7 +93,6 @@ Table of Contents
 ## 6.0.2
 
 ### Changed
-- **Enabled option _--enable-iouring_ when installing Swoole.**
 - Upgrade _Composer_ from 2.8.5 to 2.8.12.
 
 ## 6.0.1

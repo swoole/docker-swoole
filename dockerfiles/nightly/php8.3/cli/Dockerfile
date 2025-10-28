@@ -39,7 +39,6 @@ RUN \
     docker-php-ext-enable redis && \
     install-swoole.sh master \
         --enable-brotli \
-        --enable-iouring \
         --enable-mysqlnd \
         --enable-openssl \
         --enable-sockets \

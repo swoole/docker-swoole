@@ -40,7 +40,6 @@ RUN \
     install-swoole.sh master \
         --enable-swoole-thread \
         --enable-brotli \
-        --enable-iouring \
         --enable-mysqlnd \
         --enable-openssl \
         --enable-sockets \
