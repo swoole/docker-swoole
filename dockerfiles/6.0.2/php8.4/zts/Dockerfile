@@ -32,7 +32,6 @@ RUN \
     install-swoole.sh 6.0.2 \
         --enable-swoole-thread \
         --enable-brotli \
-        --enable-iouring \
         --enable-mysqlnd \
         --enable-openssl \
         --enable-sockets \
