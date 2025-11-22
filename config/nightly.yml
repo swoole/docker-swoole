@@ -9,10 +9,10 @@ php:
   - "8.4"
 image:
   composer:
-    version: "2.8.12"
+    version: "2.9.2"
   inotify: true
   php_extensions:
     redis:
-      version: "6.2.0"
+      version: "6.3.0"
       configureoptions: "enable-redis-igbinary=\"no\" enable-redis-lzf=\"no\" enable-redis-zstd=\"no\""
       enabled: true
