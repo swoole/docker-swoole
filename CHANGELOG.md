@@ -2,6 +2,8 @@ Table of Contents
 =================
 
 * [Swoole 6.1](#swoole-61)
+   * [6.1.2](#612)
+   * [6.1.1](#611)
    * [6.1.0](#610)
 * [Swoole 6.0](#swoole-60)
    * [6.0.2](#602)
@@ -83,6 +85,14 @@ Table of Contents
 
 # Swoole 6.1
 
+## 6.1.2
+
+## 6.1.1
+
+### Changed
+- Upgrade PHP extension _Redis_ from 6.2.0 to 6.3.0.
+- Upgrade _Composer_ from 2.8.12 to 2.9.2.
+
 ## 6.1.0
 
 ### Changed
@@ -93,6 +103,7 @@ Table of Contents
 ## 6.0.2
 
 ### Changed
+- Upgrade PHP extension _Redis_ from 6.1.0 to 6.2.0.
 - Upgrade _Composer_ from 2.8.5 to 2.8.12.
 
 ## 6.0.1
