@@ -90,6 +90,9 @@ Table of Contents
 
 ## 6.1.5
 
+### Changed
+- Upgrade _Composer_ from 2.9.2 to 2.9.3.
+
 ## 6.1.4
 
 ## 6.1.3

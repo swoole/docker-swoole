@@ -9,7 +9,7 @@ php:
   - "8.4.16"
 image:
   composer:
-    version: "2.9.2"
+    version: "2.9.3"
   php_extensions:
     redis:
       version: "6.3.0"
