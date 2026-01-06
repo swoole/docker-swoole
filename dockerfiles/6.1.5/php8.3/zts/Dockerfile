@@ -29,11 +29,10 @@ RUN \
     pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.3.0 && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable redis && \
-    install-swoole.sh 6.1.5 \
+    install-swoole.sh 6.1.5 --enable-openssl \
         --enable-swoole-thread \
         --enable-brotli \
         --enable-mysqlnd \
-        --enable-openssl \
         --enable-sockets \
         --enable-swoole-curl \
         --enable-swoole-pgsql \

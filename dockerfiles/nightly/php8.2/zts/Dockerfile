@@ -41,7 +41,6 @@ RUN \
         --enable-swoole-thread \
         --enable-brotli \
         --enable-mysqlnd \
-        --enable-openssl \
         --enable-sockets \
         --enable-swoole-curl \
         --enable-swoole-pgsql \

@@ -21,7 +21,6 @@ RUN \
     docker-php-ext-configure swoole \
         --enable-brotli \
         --enable-mysqlnd \
-        --enable-openssl \
         --enable-sockets \
         --enable-swoole-curl \
         --enable-swoole-pgsql \

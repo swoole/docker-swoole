@@ -40,7 +40,6 @@ RUN \
     install-swoole.sh master \
         --enable-brotli \
         --enable-mysqlnd \
-        --enable-openssl \
         --enable-sockets \
         --enable-swoole-curl \
         --enable-swoole-pgsql \
