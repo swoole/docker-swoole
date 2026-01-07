@@ -258,7 +258,6 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 | PHP 8.4 | [php8.4][nightly-php8.4] | [php8.4-dev][nightly-php8.4] | [php8.4-zts][nightly-php8.4-zts] | [php8.4-alpine][nightly-php8.4-alpine] |
 | PHP 8.3 | [php8.3][nightly-php8.3] | [php8.3-dev][nightly-php8.3] | [php8.3-zts][nightly-php8.3-zts] | [php8.3-alpine][nightly-php8.3-alpine] |
 | PHP 8.2 | [php8.2][nightly-php8.2] | [php8.2-dev][nightly-php8.2] | [php8.2-zts][nightly-php8.2-zts] | [php8.2-alpine][nightly-php8.2-alpine] |
-| PHP 8.1 | [php8.1][nightly-php8.1] | [php8.1-dev][nightly-php8.1] | [php8.1-zts][nightly-php8.1-zts] | [php8.1-alpine][nightly-php8.1-alpine] |
 
 # Build Images Manually
 
