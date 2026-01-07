@@ -255,6 +255,7 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 | PHP Versions | Default Images | Dev Images | ZTS Images| Alpine Images |
 |-|-|-|-|-|
+| PHP 8.5 | [php8.5][nightly-php8.5] | [php8.5-dev][nightly-php8.5] | [php8.5-zts][nightly-php8.5-zts] | [php8.5-alpine][nightly-php8.5-alpine] |
 | PHP 8.4 | [php8.4][nightly-php8.4] | [php8.4-dev][nightly-php8.4] | [php8.4-zts][nightly-php8.4-zts] | [php8.4-alpine][nightly-php8.4-alpine] |
 | PHP 8.3 | [php8.3][nightly-php8.3] | [php8.3-dev][nightly-php8.3] | [php8.3-zts][nightly-php8.3-zts] | [php8.3-alpine][nightly-php8.3-alpine] |
 | PHP 8.2 | [php8.2][nightly-php8.2] | [php8.2-dev][nightly-php8.2] | [php8.2-zts][nightly-php8.2-zts] | [php8.2-alpine][nightly-php8.2-alpine] |
@@ -325,6 +326,9 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.8-php8.2-dev -f d
 [5.1-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.1/alpine/Dockerfile
 [5.1-php8.0]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.0/cli/Dockerfile
 [5.1-php8.0-alpine]: https://github.com/swoole/docker-swoole/blob/5.1.8/dockerfiles/5.1.8/php8.0/alpine/Dockerfile
+[nightly-php8.5]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.5/cli/Dockerfile
+[nightly-php8.5-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.5/zts/Dockerfile
+[nightly-php8.5-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.5/alpine/Dockerfile
 [nightly-php8.4]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/cli/Dockerfile
 [nightly-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/zts/Dockerfile
 [nightly-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.4/alpine/Dockerfile
@@ -334,6 +338,3 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.8-php8.2-dev -f d
 [nightly-php8.2]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/cli/Dockerfile
 [nightly-php8.2-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/zts/Dockerfile
 [nightly-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.2/alpine/Dockerfile
-[nightly-php8.1]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/cli/Dockerfile
-[nightly-php8.1-zts]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/zts/Dockerfile
-[nightly-php8.1-alpine]: https://github.com/swoole/docker-swoole/blob/master/dockerfiles/nightly/php8.1/alpine/Dockerfile
