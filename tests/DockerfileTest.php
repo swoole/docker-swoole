@@ -29,7 +29,7 @@ class DockerfileTest extends TestCase
         self::assertSame(
             $expected,
             Reflection::callMethod(
-                $this->getMockBuilder(Dockerfile::class)->disableOriginalConstructor()->getMock(),
+                $this->getStubBuilder(Dockerfile::class)->disableOriginalConstructor()->getStub(),
                 'getPhpMajorVersion',
                 [
                     $phpVersion,
@@ -64,7 +64,7 @@ class DockerfileTest extends TestCase
         self::assertSame(
             $expected,
             Reflection::callMethod(
-                $this->getMockBuilder(Dockerfile::class)->disableOriginalConstructor()->getMock(),
+                $this->getStubBuilder(Dockerfile::class)->disableOriginalConstructor()->getStub(),
                 'isValidSwooleVersion',
                 [
                     $imageTag,
