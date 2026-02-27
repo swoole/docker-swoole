@@ -6,7 +6,7 @@ ENV TERM=xterm-color
 ARG DEV_MODE
 ENV DEV_MODE=$DEV_MODE
 
-COPY --from=composer:2.9.3 /usr/bin/composer /usr/bin/
+COPY --from=composer:2.9.5 /usr/bin/composer /usr/bin/
 COPY ./rootfilesystem/ /
 
 RUN \
