@@ -51,7 +51,7 @@ RUN \
         {%~ endif %}
     {%~ endfor %}
 {%~ endif %}
-    install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }} --enable-openssl{% endif %} \
+    install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %} \
 {% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
         --enable-brotli \
         --enable-mysqlnd \
