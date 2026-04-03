@@ -57,10 +57,12 @@ RUN \
         --enable-mysqlnd \
         --enable-sockets \
         --enable-swoole-curl \
+        --enable-swoole-ftp \
         --enable-swoole-pgsql \
         --enable-swoole-sqlite \
         --enable-swoole-stdext \
-        --enable-zstd && \
+        --enable-zstd \
+        --with-swoole-ssh2 && \
     mkdir -p /var/log/supervisor && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 

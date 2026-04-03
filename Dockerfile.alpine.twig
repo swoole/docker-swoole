@@ -5,7 +5,7 @@ COPY --from=composer:{{ composer.version }} /usr/bin/composer /usr/bin/
 RUN \
     set -ex && \
     apk update && \
-    apk add --no-cache libstdc++ libpq liburing-dev && \
+    apk add --no-cache libstdc++ libpq libssh2-dev liburing-dev && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
@@ -35,10 +35,12 @@ RUN \
         --enable-mysqlnd \
         --enable-sockets \
         --enable-swoole-curl \
+        --enable-swoole-ftp \
         --enable-swoole-pgsql \
         --enable-swoole-sqlite \
         --enable-swoole-stdext \
-        --enable-zstd && \
+        --enable-zstd \
+        --with-swoole-ssh2 && \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \
