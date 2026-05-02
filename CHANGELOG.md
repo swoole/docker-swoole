@@ -97,6 +97,7 @@ Table of Contents
 
 ### Changed
 - **Enabled option _--enable-swoole-ftp_ and _--with-swoole-ssh2_ when installing Swoole.**
+- Upgrade _Composer_ from 2.9.5 to 2.9.7.
 
 # Swoole 6.1
 
