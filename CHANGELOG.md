@@ -1,7 +1,10 @@
 Table of Contents
 =================
 
+* [Swoole 6.2](#swoole-62)
+   * [6.2.0](#620)
 * [Swoole 6.1](#swoole-61)
+   * [6.1.8](#618)
    * [6.1.7](#617)
    * [6.1.6](#616)
    * [6.1.5](#615)
@@ -88,7 +91,19 @@ Table of Contents
 * [Swoole 4.3](#swoole-43)
    * [4.3.6](#436)
 
+# Swoole 6.2
+
+## 6.2.0
+
+### Changed
+- **Enabled option _--enable-swoole-ftp_ and _--with-swoole-ssh2_ when installing Swoole.**
+
 # Swoole 6.1
+
+## 6.1.8
+
+### Changed
+- Upgrade _Composer_ from 2.9.5 to 2.9.7.
 
 ## 6.1.7
 
