@@ -1,6 +1,6 @@
 FROM php:8.5-cli-alpine3.23
 
-COPY --from=composer:2.9.7 /usr/bin/composer /usr/bin/
+COPY --from=composer:2.9.8 /usr/bin/composer /usr/bin/
 
 RUN \
     set -ex && \
