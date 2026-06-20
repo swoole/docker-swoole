@@ -50,6 +50,8 @@ class Dockerfile
 
     protected array $config;
 
+    private ?Environment $twig = null;
+
     /**
      * Dockerfile constructor.
      *
@@ -74,34 +76,14 @@ class Dockerfile
     {
         foreach ($this->getConfig()['php'] as $phpVersion) {
             foreach (self::TYPES as $type) {
-                $this->generateDockerFile($phpVersion, $type, true);
+                $content = $this->renderToString($phpVersion, $type);
+                $dir     = $this->getDockerFileDir($type, $phpVersion);
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0777, true);
+                }
+                file_put_contents("{$dir}/Dockerfile", $content);
             }
         }
-    }
-
-    /**
-     * @throws Exception
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function generateDockerFile(string $phpVersion, string $type, bool $save = false): string
-    {
-        $dockerFile = (new Environment(new FilesystemLoader($this->getBasePath()), ['autoescape' => false]))
-            ->load($this->getTemplateFile($type))
-            ->render($this->getContext($type, $phpVersion))
-        ;
-
-        if ($save) {
-            $dockerFileDir = $this->getDockerFileDir($type, $phpVersion);
-            if (!file_exists($dockerFileDir)) {
-                mkdir($dockerFileDir, 0777, true);
-            }
-
-            file_put_contents("{$dockerFileDir}/Dockerfile", $dockerFile);
-        }
-
-        return $dockerFile;
     }
 
     public function getBasePath(): string
@@ -130,6 +112,10 @@ class Dockerfile
 
     public function setSwooleVersion(string $swooleVersion): self
     {
+        if ($swooleVersion !== self::VERSION_NIGHTLY && !$this->isValidSwooleVersion($swooleVersion)) {
+            throw new Exception("Invalid Swoole version '{$swooleVersion}'.");
+        }
+
         $this->swooleVersion = $swooleVersion;
 
         return $this;
@@ -196,15 +182,20 @@ class Dockerfile
      */
     protected function getContext(string $type, string $phpVersion): array
     {
-        return array_merge(
+        $context = array_merge(
             $this->getConfig()['image'],
             [
                 'php_version'    => $phpVersion,
                 'image_type'     => $type,
-                'alpine_version' => $this->getAlpineVersion($phpVersion),
                 'swoole_version' => $this->getSwooleVersion(),
             ]
         );
+
+        if ($type === self::ALPINE) {
+            $context['alpine_version'] = $this->getAlpineVersion($phpVersion);
+        }
+
+        return $context;
     }
 
     /**
@@ -217,11 +208,27 @@ class Dockerfile
 
     protected function getAlpineVersion(string $phpVersion): string
     {
-        $phpMajorVersion = preg_replace('/^(\d+\.\d+).*$/', '$1', $phpVersion);
+        $phpMajorVersion = $this->getPhpMajorVersion($phpVersion);
         if (!array_key_exists($phpMajorVersion, self::ALPINE_VERSIONS)) {
             throw new Exception("No matching version of Alpine found for PHP {$phpVersion}.");
         }
 
         return self::ALPINE_VERSIONS[$phpMajorVersion];
+    }
+
+    private function renderToString(string $phpVersion, string $type): string
+    {
+        return $this->getTwig()
+            ->load($this->getTemplateFile($type))
+            ->render($this->getContext($type, $phpVersion))
+        ;
+    }
+
+    private function getTwig(): Environment
+    {
+        return $this->twig ??= new Environment(
+            new FilesystemLoader($this->getBasePath()),
+            ['autoescape' => false]
+        );
     }
 }

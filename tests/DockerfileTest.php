@@ -155,4 +155,24 @@ class DockerfileTest extends TestCase
             ],
         ];
     }
+
+    #[DataProvider('dataSetSwooleVersionThrows')]
+    public function testSetSwooleVersionThrows(string $invalidVersion): void
+    {
+        $this->expectException(\Swoole\Docker\Exception::class);
+        (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setSwooleVersion($invalidVersion)
+        ;
+    }
+
+    public static function dataSetSwooleVersionThrows(): array
+    {
+        return [
+            [''],
+            ['not-a-version'],
+            ['4.3'],
+            ['04.3.6'],
+        ];
+    }
 }
