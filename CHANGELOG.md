@@ -102,6 +102,7 @@ Table of Contents
 - Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
 - Reduce final image size by dropping build-only dependencies.
 - Test Docker images before publishing them.
+- Upgrade _Composer_ from 2.9.8 to 2.10.2.
 
 ## 6.2.1
 
@@ -123,7 +124,7 @@ Table of Contents
 - Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
 - Reduce final image size by dropping build-only dependencies.
 - Test Docker images before publishing them.
-- Upgrade _Composer_ from 2.9.7 to 2.9.8.
+- Upgrade _Composer_ from 2.9.7 to 2.10.2.
 
 ## 6.1.8
 
