@@ -63,22 +63,43 @@ check_command_output() {
 
 echo "Testing Docker image ${IMAGE} ..."
 
+# Features like FTP and SSH2 are supported since Swoole 6.2.0 only.
+#
+# NOTE: The version is parsed from the extension information instead of a "php -r" command, because the entrypoint
+# of non-Alpine images performs word splitting on commands not started with "sh" or "bash" (for ECS support),
+# breaking quoted arguments that contain spaces.
+SWOOLE_VERSION=$(docker run --rm "${IMAGE}" php --ri swoole | grep -E "^Version => " | head -n 1 | awk '{print $3}' || true)
+if [[ -z "${SWOOLE_VERSION}" ]] ; then
+    echo "[FAIL] unable to detect the Swoole version in Docker image ${IMAGE}."
+    exit 1
+fi
+echo "Swoole version detected: ${SWOOLE_VERSION}"
+
+patterns=(
+    "Swoole => enabled"
+    "coroutine => enabled"
+    "curl-native => enabled"
+    "openssl => OpenSSL"
+    "mysqlnd => enabled"
+    "coroutine_odbc => enabled"
+    "coroutine_pgsql => enabled"
+    "coroutine_sqlite => enabled"
+    "brotli => "
+    "zstd => "
+)
+if [[ "$(printf '%s\n' "6.2.0" "${SWOOLE_VERSION}" | sort -V | head -n 1)" == "6.2.0" ]] ; then
+    patterns+=(
+        "FTP support => enabled"
+        "SSH2 support => enabled"
+        "libssh2 banner => "
+    )
+fi
+
 # The extension information also proves that the Swoole extension loads without errors (e.g., no missing shared
 # libraries), and that it was compiled with the expected features enabled.
 check_command_output \
     "Swoole is installed correctly, with expected features enabled" \
-    "Swoole => enabled" \
-    "coroutine => enabled" \
-    "curl-native => enabled" \
-    "SSH2 support => enabled" \
-    "libssh2 banner => " \
-    "openssl => OpenSSL" \
-    "mysqlnd => enabled" \
-    "coroutine_odbc => enabled" \
-    "coroutine_pgsql => enabled" \
-    "coroutine_sqlite => enabled" \
-    "brotli => " \
-    "zstd => " \
+    "${patterns[@]}" \
     -- php --ri swoole
 
 check_command_output "Redis is installed correctly" "Redis Support => enabled" -- php --ri redis

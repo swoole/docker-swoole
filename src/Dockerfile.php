@@ -178,6 +178,18 @@ class Dockerfile
     }
 
     /**
+     * Whether the Swoole version is 6.2.0 or later (including nightly, which builds the master branch of Swoole).
+     *
+     * Swoole 6.2.0 removed configure option "--enable-openssl" (OpenSSL support is always compiled in since then),
+     * and added configure options "--enable-swoole-ftp" and "--with-swoole-ssh2".
+     */
+    protected function isSwoole620OrLater(): bool
+    {
+        return ($this->getSwooleVersion() === self::VERSION_NIGHTLY)
+            || version_compare($this->getSwooleVersion(), '6.2.0', '>=');
+    }
+
+    /**
      * @param value-of<Dockerfile::TYPES> $type
      */
     protected function getContext(string $type, string $phpVersion): array
@@ -185,9 +197,10 @@ class Dockerfile
         $context = array_merge(
             $this->getConfig()['image'],
             [
-                'php_version'    => $phpVersion,
-                'image_type'     => $type,
-                'swoole_version' => $this->getSwooleVersion(),
+                'php_version'         => $phpVersion,
+                'image_type'          => $type,
+                'swoole_version'      => $this->getSwooleVersion(),
+                'swoole_620_or_later' => $this->isSwoole620OrLater(),
             ]
         );
 

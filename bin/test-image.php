@@ -78,9 +78,18 @@ check('Swoole thread support matches the PHP build', function (): void {
     );
 });
 
-check('SSH2 functions of Swoole are available', function (): void {
-    expect(function_exists('ssh2_connect'), 'function "ssh2_connect" does not exist');
-});
+// SSH2 support is provided by Swoole 6.2.0+ only (built with option "--with-swoole-ssh2").
+$hasSsh2Support = version_compare(swoole_version(), '6.2.0', '>=');
+
+if ($hasSsh2Support) {
+    check('SSH2 functions of Swoole are available', function (): void {
+        expect(function_exists('ssh2_connect'), 'function "ssh2_connect" does not exist');
+    });
+} else {
+    check('SSH2 functions of Swoole are not available (Swoole 6.1.x and earlier)', function (): void {
+        expect(!function_exists('ssh2_connect'), 'function "ssh2_connect" should not exist');
+    });
+}
 
 // Enable runtime hooks before starting the event loop, so that curl and other blocking APIs used below are
 // coroutine-aware.
@@ -214,22 +223,27 @@ Coroutine\run(function (): void {
         $server->close();
     });
 
-    // There is no SSH server running inside the image; instead, we start a TCP server speaking a different protocol
-    // for the SSH client to talk to. A functioning libssh2 performs the banner exchange (through the coroutine-aware
-    // socket layer) and then fails gracefully; a broken build would crash the process or hang the event loop instead.
-    $tcpServer = new Coroutine\Server(HTTP_HOST, TCP_PORT);
-    $tcpServer->handle(function (Coroutine\Server\Connection $conn): void {
-        $conn->send("NOT-AN-SSH-SERVER\r\n");
-        $conn->close();
-    });
-    Coroutine::create(function () use ($tcpServer): void {
-        $tcpServer->start();
-    });
+    if (version_compare(swoole_version(), '6.2.0', '>=')) {
+        // There is no SSH server running inside the image; instead, we start a TCP server speaking a different
+        // protocol for the SSH client to talk to. A functioning libssh2 performs the banner exchange (through the
+        // coroutine-aware socket layer) and then fails gracefully; a broken build would crash the process or hang
+        // the event loop instead.
+        $tcpServer = new Coroutine\Server(HTTP_HOST, TCP_PORT);
+        $tcpServer->handle(function (Coroutine\Server\Connection $conn): void {
+            $conn->send("NOT-AN-SSH-SERVER\r\n");
+            $conn->close();
+        });
+        Coroutine::create(function () use ($tcpServer): void {
+            $tcpServer->start();
+        });
 
-    check('SSH2 functions of Swoole work in coroutines', function (): void {
-        $session = @ssh2_connect(HTTP_HOST, TCP_PORT);
-        expect($session === false, 'an SSH handshake against a non-SSH server should fail gracefully');
-    });
+        check('SSH2 functions of Swoole work in coroutines', function (): void {
+            $session = @ssh2_connect(HTTP_HOST, TCP_PORT);
+            expect($session === false, 'an SSH handshake against a non-SSH server should fail gracefully');
+        });
+
+        $tcpServer->shutdown();
+    }
 
     check('the ODBC driver of PDO works in coroutines', function (): void {
         // Swoole provides the PDO_ODBC driver when compiled with option "--with-swoole-odbc". There is no ODBC data
@@ -244,7 +258,6 @@ Coroutine\run(function (): void {
         }
     });
 
-    $tcpServer->shutdown();
     $server->shutdown();
     Timer::clear($watchdog);
 });

@@ -6,8 +6,8 @@ RUN \
     set -ex && \
 # Keep only the runtime shared libraries in the final image; the matching "-dev" packages (headers) are
 # installed as part of the temporary ".build-deps" virtual package and removed once Swoole is built.
-    apk add --no-cache libstdc++ libpq libssh2 liburing unixodbc && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev libssh2-dev liburing-dev unixodbc-dev && \
+    apk add --no-cache libstdc++ libpq{% if swoole_620_or_later %} libssh2{% endif %} liburing unixodbc && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev{% if swoole_620_or_later %} libssh2-dev{% endif %} liburing-dev unixodbc-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
 {%~ if php_extensions is not empty %}
@@ -31,18 +31,22 @@ RUN \
     mkdir /usr/src/php/ext/swoole && \
     curl -sfL https://github.com/swoole/swoole-src/archive/{% if swoole_version == "nightly" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
-    docker-php-ext-configure swoole \
+{# Option --enable-openssl was removed in Swoole 6.2.0 (OpenSSL support is always compiled in since then), while
+   options --enable-swoole-ftp and --with-swoole-ssh2 were added in Swoole 6.2.0. #}
+    docker-php-ext-configure swoole{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
         --enable-brotli \
         --enable-mysqlnd \
         --enable-sockets \
         --enable-swoole-curl \
+{%~ if swoole_620_or_later %}
         --enable-swoole-ftp \
+{%~ endif %}
         --enable-swoole-pgsql \
         --enable-swoole-sqlite \
         --enable-swoole-stdext \
         --enable-zstd \
-        --with-swoole-odbc=unixODBC,/usr \
-        --with-swoole-ssh2 && \
+        --with-swoole-odbc=unixODBC,/usr{% if swoole_620_or_later %} \
+        --with-swoole-ssh2{% endif %} && \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \

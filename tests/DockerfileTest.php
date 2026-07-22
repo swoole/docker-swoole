@@ -17,9 +17,69 @@ use Swoole\Docker\Dockerfile;
  * @coversNothing
  */
 #[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
+#[CoversMethod(Dockerfile::class, 'isSwoole620OrLater')]
 #[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
 {
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataIsSwoole620OrLater')]
+    public function testIsSwoole620OrLater(bool $expected, string $swooleVersion, string $message): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setSwooleVersion($swooleVersion)
+        ;
+        self::assertSame($expected, Reflection::callMethod($dockerfile, 'isSwoole620OrLater'), $message);
+    }
+
+    public static function dataIsSwoole620OrLater(): array
+    {
+        return [
+            [
+                true,
+                'nightly',
+                'nightly images build the master branch of Swoole',
+            ],
+            [
+                true,
+                '6.2.0',
+                'the first version with FTP and SSH2 support, and without option --enable-openssl',
+            ],
+            [
+                true,
+                '6.2.1',
+                'a patch version after 6.2.0',
+            ],
+            [
+                true,
+                '6.10.0',
+                'a minor version # over 10 (must not be compared as a string)',
+            ],
+            [
+                true,
+                '7.0.0',
+                'a major version after 6.x',
+            ],
+            [
+                false,
+                '6.1.8',
+                'a 6.1.x version',
+            ],
+            [
+                false,
+                '6.1.99',
+                'a large 6.1.x patch version (must not be compared as a string)',
+            ],
+            [
+                false,
+                '5.1.7',
+                'a 5.x version',
+            ],
+        ];
+    }
+
     /**
      * @throws \ReflectionException
      */

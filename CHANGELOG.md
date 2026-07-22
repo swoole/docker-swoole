@@ -110,7 +110,11 @@ Table of Contents
 ## 6.1.8
 
 ### Changed
-- Upgrade _Composer_ from 2.9.5 to 2.9.7.
+- **Swoole 6.1.x images are now built from the _master_ branch of this repository; branch _6.1.x_ is deprecated.**
+- Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
+- Reduce final image size by dropping build-only dependencies.
+- Test Docker images before publishing them.
+- Upgrade _Composer_ from 2.9.5 to 2.9.8.
 
 ## 6.1.7
 

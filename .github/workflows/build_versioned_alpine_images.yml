@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ["8.2", "8.3", "8.4", "8.5"]
+        php: ["8.1", "8.2", "8.3", "8.4", "8.5"]
 
     name: The Alpine image for PHP ${{ matrix.php }}
 
@@ -45,6 +45,12 @@ jobs:
 
           branch_name=${GITHUB_REF##*/}
           echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
+
+          # Not every Swoole version builds for every PHP version in the matrix (e.g., Swoole 6.1.x images are for
+          # PHP 8.1 to PHP 8.4). Skip the build if no Dockerfile was generated for this combination.
+          if [ ! -f "$(pwd)/dockerfiles/${branch_name}/php${{ matrix.php }}/alpine/Dockerfile" ] ; then
+            echo "dockerfile_missing=true" >> $GITHUB_OUTPUT
+          fi
           if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
             major_version=${branch_name%.*}
             echo "major_version=${major_version}" >> $GITHUB_OUTPUT
@@ -64,7 +70,7 @@ jobs:
 
       -
         name: Build Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine for testing
-        if: steps.params.outputs.released_already != 'true'
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -75,12 +81,12 @@ jobs:
 
       -
         name: Test Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
-        if: steps.params.outputs.released_already != 'true'
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
         run: ./bin/test-image.sh phpswoole/swoole:test
 
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'latest'
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' && steps.params.outputs.image_type == 'latest'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -95,7 +101,7 @@ jobs:
 
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'major'
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' && steps.params.outputs.image_type == 'major'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -109,7 +115,7 @@ jobs:
 
       -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'default'
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' && steps.params.outputs.image_type == 'default'
         uses: docker/build-push-action@v5
         with:
           context: .
