@@ -64,6 +64,23 @@ jobs:
           fi
 
       -
+        name: Build Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev for testing
+        if: steps.params.outputs.released_already != 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
+          load: true
+          push: false
+          tags: phpswoole/swoole:test
+          build-args: DEV_MODE=true
+
+      -
+        name: Test Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}${{ matrix.image.postfix }}-dev
+        if: steps.params.outputs.released_already != 'true'
+        run: ./bin/test-image.sh phpswoole/swoole:test
+
+      -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-dev (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.image_type == 'latest'
         uses: docker/build-push-action@v5
