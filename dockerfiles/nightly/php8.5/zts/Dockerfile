@@ -11,7 +11,7 @@ COPY ./rootfilesystem/ /
 
 RUN \
     set -ex && \
-    apt-get update  && \
+    apt-get update && \
     apt-get install -y \
 # The auto-reloading feature is supported for non-Alpine images only.
 #
@@ -50,6 +50,20 @@ RUN \
         --enable-zstd \
         --with-swoole-ssh2 && \
     mkdir -p /var/log/supervisor && \
+# For non-development images, purge the build-only "-dev" packages (headers/static libraries) to reduce
+# the final image size. The runtime shared libraries they depend on are left untouched (no autoremove is
+# run), so the compiled PHP extensions keep working. For development images (DEV_MODE=true) these headers
+# are kept intentionally, alongside the retained Swoole source code, so Swoole can be recompiled/debugged.
+    if [ "${DEV_MODE}" != "true" ] ; then \
+        apt-get purge -y \
+            libbrotli-dev            \
+            libcurl4-openssl-dev     \
+            liburing-dev             \
+            libpq-dev                \
+            libsqlite3-dev           \
+            libssl-dev               \
+            zlib1g-dev ; \
+    fi && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
 
 ENTRYPOINT ["/entrypoint.sh"]
