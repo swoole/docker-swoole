@@ -5,6 +5,7 @@ Table of Contents
    * [6.2.1](#621)
    * [6.2.0](#620)
 * [Swoole 6.1](#swoole-61)
+   * [6.1.9](#619)
    * [6.1.8](#618)
    * [6.1.7](#617)
    * [6.1.6](#616)
@@ -107,14 +108,19 @@ Table of Contents
 
 # Swoole 6.1
 
-## 6.1.8
+## 6.1.9
 
 ### Changed
 - **Swoole 6.1.x images are now built from the _master_ branch of this repository; branch _6.1.x_ is deprecated.**
 - Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
 - Reduce final image size by dropping build-only dependencies.
 - Test Docker images before publishing them.
-- Upgrade _Composer_ from 2.9.5 to 2.9.8.
+- Upgrade _Composer_ from 2.9.7 to 2.9.8.
+
+## 6.1.8
+
+### Changed
+- Upgrade _Composer_ from 2.9.5 to 2.9.7.
 
 ## 6.1.7
 

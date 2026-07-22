@@ -1,0 +1,64 @@
+FROM php:8.3.31-cli
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TERM=xterm-color
+
+ARG DEV_MODE
+ENV DEV_MODE=$DEV_MODE
+
+COPY --from=composer:2.9.8 /usr/bin/composer /usr/bin/
+COPY ./rootfilesystem/ /
+
+RUN \
+    set -ex && \
+    apt-get update && \
+    apt-get install -y \
+        libcurl4-openssl-dev       \
+        libbrotli-dev              \
+        libpq-dev                  \
+        libsqlite3-dev             \
+        libssl-dev                 \
+        liburing-dev               \
+        supervisor                 \
+        unixodbc-dev               \
+        unzip                      \
+        zlib1g-dev                 \
+        --no-install-recommends && \
+# PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
+    docker-php-ext-install pdo_mysql && \
+    pecl channel-update pecl.php.net && \
+    pecl install --configureoptions 'enable-redis-igbinary="no" enable-redis-lzf="no" enable-redis-zstd="no"' redis-6.3.0 && \
+# PHP extension Redis is included since 4.8.12+ and 5.0.1+.
+    docker-php-ext-enable redis && \
+    install-swoole.sh 6.1.9 --enable-openssl \
+        --enable-brotli \
+        --enable-mysqlnd \
+        --enable-sockets \
+        --enable-swoole-curl \
+        --enable-swoole-pgsql \
+        --enable-swoole-sqlite \
+        --enable-swoole-stdext \
+        --enable-zstd \
+        --with-swoole-odbc=unixODBC,/usr && \
+    mkdir -p /var/log/supervisor && \
+# For non-development images, purge the build-only "-dev" packages (headers/static libraries) to reduce
+# the final image size. The runtime shared libraries they depend on are left untouched (no autoremove is
+# run), so the compiled PHP extensions keep working. For development images (DEV_MODE=true) these headers
+# are kept intentionally, alongside the retained Swoole source code, so Swoole can be recompiled/debugged.
+    if [ "${DEV_MODE}" != "true" ] ; then \
+        apt-get purge -y \
+            libbrotli-dev            \
+            libcurl4-openssl-dev     \
+            liburing-dev             \
+            libpq-dev                \
+            libsqlite3-dev           \
+            libssl-dev               \
+            unixodbc-dev             \
+            zlib1g-dev ; \
+    fi && \
+    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
+
+WORKDIR "/var/www/"
