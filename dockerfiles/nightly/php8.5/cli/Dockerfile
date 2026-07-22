@@ -28,6 +28,7 @@ RUN \
         libssl-dev                 \
         liburing-dev               \
         supervisor                 \
+        unixodbc-dev               \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
@@ -47,6 +48,7 @@ RUN \
         --enable-swoole-sqlite \
         --enable-swoole-stdext \
         --enable-zstd \
+        --with-swoole-odbc=unixODBC,/usr \
         --with-swoole-ssh2 && \
     mkdir -p /var/log/supervisor && \
 # For non-development images, purge the build-only "-dev" packages (headers/static libraries) to reduce
@@ -61,6 +63,7 @@ RUN \
             libpq-dev                \
             libsqlite3-dev           \
             libssl-dev               \
+            unixodbc-dev             \
             zlib1g-dev ; \
     fi && \
     rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static
