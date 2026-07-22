@@ -71,8 +71,9 @@ check('the Redis extension is loaded', function (): void {
 check('Swoole thread support matches the PHP build', function (): void {
     // Class "Swoole\Thread" exists if and only if Swoole is compiled with option "--enable-swoole-thread", which
     // requires a ZTS build of PHP; images of type "zts" are built that way, while "cli" and "alpine" images are not.
+    // Note: constant PHP_ZTS is an integer under PHP 8.3 and earlier, and a boolean under PHP 8.4+.
     expect(
-        class_exists(Swoole\Thread::class) === PHP_ZTS,
+        class_exists(Swoole\Thread::class) === (bool) PHP_ZTS,
         PHP_ZTS ? 'class "Swoole\Thread" is missing from the ZTS image' : 'class "Swoole\Thread" exists in a non-ZTS image',
     );
 });
