@@ -5,7 +5,9 @@ declare(strict_types=1);
 
 /**
  * Functional tests executed inside a Docker image built from this repository, verifying that the image is fully
- * functioning: PHP extensions are loaded, coroutines are scheduled properly, and the curl/SSH features of Swoole work.
+ * functioning: PHP extensions are loaded, coroutines are scheduled properly, TCP/UDP sockets work (through io_uring
+ * or not, depending on how Swoole was compiled and whether the runtime environment permits io_uring), and the
+ * curl/SSH features of Swoole work.
  *
  * This script is self-contained on purpose (no Composer dependencies), so that it can be mounted into and executed
  * inside any image built from this repository. It is driven by script ./bin/test-image.sh, but can also be executed
@@ -23,9 +25,11 @@ use Swoole\Process;
 use Swoole\Runtime;
 use Swoole\Timer;
 
-const HTTP_HOST = '127.0.0.1';
-const HTTP_PORT = 18080;
-const TCP_PORT  = 18081;
+const HTTP_HOST      = '127.0.0.1';
+const HTTP_PORT      = 18080;
+const TCP_PORT       = 18081;
+const TCP_ECHO_PORT  = 18082;
+const UDP_PORT       = 18083;
 
 // Abort the script if the functional tests hang, e.g., when a blocking call freezes the event loop.
 const WATCHDOG_TIMEOUT_MS = 60000;
@@ -142,7 +146,6 @@ Coroutine\run(function (): void {
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $body = curl_exec($ch);
         expect($body !== false, 'curl request failed: ' . curl_error($ch));
-        curl_close($ch);
         expect($body === 'pong', 'unexpected response body "' . var_export($body, true) . '" from the curl request');
     });
 
@@ -152,6 +155,62 @@ Coroutine\run(function (): void {
         expect($client->get('/ping'), 'the HTTP request failed: ' . $client->errMsg);
         expect($client->getBody() === 'pong', 'unexpected response body "' . var_export($client->getBody(), true) . '"');
         $client->close();
+    });
+
+    // The two raw socket tests below exercise the socket layer of Swoole directly (accept/connect/send/recv and
+    // sendto/recvfrom). When Swoole is compiled with option "--enable-uring-socket", socket operations go through
+    // io_uring when the runtime environment permits it, and fall back to the reactor (epoll) implementation
+    // otherwise; the tests must pass either way. Script ./bin/test-image.sh runs this file under both the default
+    // seccomp profile of Docker (io_uring blocked) and an unconfined one (io_uring allowed) to cover both paths.
+    check('raw TCP sockets echo data (accept/connect/send/recv)', function (): void {
+        $server = new Coroutine\Socket(AF_INET, SOCK_STREAM, 0);
+        expect($server->bind(HTTP_HOST, TCP_ECHO_PORT), 'failed to bind the TCP server socket: ' . $server->errMsg);
+        expect($server->listen(8), 'failed to listen on the TCP server socket: ' . $server->errMsg);
+        Coroutine::create(function () use ($server): void {
+            $conn = $server->accept(10);
+            if ($conn !== false) {
+                $data = $conn->recv(65536, 10);
+                if (!empty($data)) {
+                    $conn->send($data);
+                }
+                $conn->close();
+            }
+        });
+
+        $client = new Coroutine\Socket(AF_INET, SOCK_STREAM, 0);
+        expect($client->connect(HTTP_HOST, TCP_ECHO_PORT, 10), 'failed to connect to the TCP server: ' . $client->errMsg);
+        $payload = str_repeat('swoole', 512);
+        expect($client->send($payload, 10) === strlen($payload), 'failed to send data over TCP: ' . $client->errMsg);
+        $received = '';
+        while (strlen($received) < strlen($payload)) {
+            $chunk = $client->recv(65536, 10);
+            if (empty($chunk)) {
+                break;
+            }
+            $received .= $chunk;
+        }
+        expect($received === $payload, 'the data received over TCP does not match the data sent');
+        $client->close();
+        $server->close();
+    });
+
+    check('UDP sockets pass messages around (sendto/recvfrom)', function (): void {
+        $server = new Coroutine\Socket(AF_INET, SOCK_DGRAM, 0);
+        expect($server->bind(HTTP_HOST, UDP_PORT), 'failed to bind the UDP server socket: ' . $server->errMsg);
+        Coroutine::create(function () use ($server): void {
+            $peer = null;
+            $data = $server->recvfrom($peer, 10);
+            if (!empty($data) && !empty($peer)) {
+                $server->sendto($peer['address'], $peer['port'], strrev($data));
+            }
+        });
+
+        $client = new Coroutine\Socket(AF_INET, SOCK_DGRAM, 0);
+        expect($client->sendto(HTTP_HOST, UDP_PORT, 'swoole') !== false, 'failed to send a UDP message: ' . $client->errMsg);
+        $peer = null;
+        expect($client->recvfrom($peer, 10) === 'eloows', 'unexpected response received over UDP');
+        $client->close();
+        $server->close();
     });
 
     // There is no SSH server running inside the image; instead, we start a TCP server speaking a different protocol

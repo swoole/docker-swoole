@@ -84,13 +84,24 @@ check_command_output "Redis is installed correctly" "Redis Support => enabled" -
 
 check_command_output "Composer works" "Composer version" -- composer --version
 
-echo "Running functional tests inside the image ..."
-if docker run --rm -v "${CURRENT_SCRIPT_PATH}/test-image.php":/test-image.php:ro "${IMAGE}" php /test-image.php ; then
-    echo "[OK] functional tests"
-else
-    echo "[FAIL] functional tests"
-    FAILURES=$((FAILURES + 1))
-fi
+# The functional tests run twice: once under the default seccomp profile of Docker, which blocks the io_uring
+# syscalls (exercising the fallback code paths of Swoole), and once with io_uring allowed (exercising the io_uring
+# code paths, when Swoole is compiled with io_uring support). Both runs must pass.
+for mode in "default" "unconfined" ; do
+    if [[ "${mode}" == "unconfined" ]] ; then
+        security_opts=(--security-opt seccomp=unconfined)
+    else
+        security_opts=()
+    fi
+
+    echo "Running functional tests inside the image (seccomp profile: ${mode}) ..."
+    if docker run --rm "${security_opts[@]}" -v "${CURRENT_SCRIPT_PATH}/test-image.php":/test-image.php:ro "${IMAGE}" php /test-image.php ; then
+        echo "[OK] functional tests (seccomp profile: ${mode})"
+    else
+        echo "[FAIL] functional tests (seccomp profile: ${mode})"
+        FAILURES=$((FAILURES + 1))
+    fi
+done
 
 if [[ "${FAILURES}" -gt 0 ]] ; then
     echo "Docker image ${IMAGE}: ${FAILURES} check(s) failed."
