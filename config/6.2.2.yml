@@ -1,0 +1,17 @@
+# The YAML configuration file for generating Dockerfile of image phpswoole/swoole:6.2.2.
+# For technical details of the configuration file, please check comments and sample configurations in file /config.yml.
+#
+status: "under development"
+php:
+  - "8.2.31"
+  - "8.3.31"
+  - "8.4.21"
+  - "8.5.6"
+image:
+  composer:
+    version: "2.9.8"
+  php_extensions:
+    redis:
+      version: "6.3.0"
+      configureoptions: "enable-redis-igbinary=\"no\" enable-redis-lzf=\"no\" enable-redis-zstd=\"no\""
+      enabled: true

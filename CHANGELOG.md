@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 6.2](#swoole-62)
+   * [6.2.2](#622)
    * [6.2.1](#621)
    * [6.2.0](#620)
 * [Swoole 6.1](#swoole-61)
@@ -94,6 +95,13 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 6.2
+
+## 6.2.2
+
+### Changed
+- Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
+- Reduce final image size by dropping build-only dependencies.
+- Test Docker images before publishing them.
 
 ## 6.2.1
 
