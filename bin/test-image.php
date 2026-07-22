@@ -112,6 +112,19 @@ Coroutine\run(function (): void {
         expect($duration < 0.38, sprintf('two concurrent 0.2-second sleeps took %.3f seconds in total', $duration));
     });
 
+    check('file I/O works inside coroutines', function (): void {
+        // With SWOOLE_HOOK_FILE enabled, file operations inside a coroutine go through the async I/O layer of Swoole
+        // (io_uring when compiled in and permitted by the kernel/seccomp profile, or the thread pool otherwise).
+        $file = tempnam(sys_get_temp_dir(), 'swoole-test-');
+        $data = str_repeat('swoole', 1024);
+        try {
+            expect(file_put_contents($file, $data) === strlen($data), 'failed to write to a temporary file');
+            expect(file_get_contents($file) === $data, 'unexpected data read back from the temporary file');
+        } finally {
+            unlink($file);
+        }
+    });
+
     // Start an HTTP server (in a coroutine) to serve the curl and SSH tests below. Since the server runs in the same
     // process as the clients, any client call that is not coroutine-aware would block the event loop, preventing the
     // server from responding and thus failing the tests.
