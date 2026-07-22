@@ -231,6 +231,19 @@ Coroutine\run(function (): void {
         expect($session === false, 'an SSH handshake against a non-SSH server should fail gracefully');
     });
 
+    check('the ODBC driver of PDO works in coroutines', function (): void {
+        // Swoole provides the PDO_ODBC driver when compiled with option "--with-swoole-odbc". There is no ODBC data
+        // source available inside the image; connecting to a non-existing DSN exercises the unixODBC driver manager
+        // (through coroutine-aware code paths of Swoole), which should fail gracefully with an exception.
+        expect(in_array('odbc', PDO::getAvailableDrivers(), true), 'the ODBC driver of PDO is not available');
+        try {
+            new PDO('odbc:DSN=nonexistent_dsn_for_testing');
+            throw new Exception('connecting to a non-existing DSN should fail');
+        } catch (PDOException) {
+            // Expected: the DSN cannot be found. A broken build would crash the process instead.
+        }
+    });
+
     $tcpServer->shutdown();
     $server->shutdown();
     Timer::clear($watchdog);

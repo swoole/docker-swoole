@@ -74,6 +74,7 @@ check_command_output \
     "libssh2 banner => " \
     "openssl => OpenSSL" \
     "mysqlnd => enabled" \
+    "coroutine_odbc => enabled" \
     "coroutine_pgsql => enabled" \
     "coroutine_sqlite => enabled" \
     "brotli => " \
