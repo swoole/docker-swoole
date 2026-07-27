@@ -5,9 +5,8 @@ declare(strict_types=1);
 
 /**
  * Functional tests executed inside a Docker image built from this repository, verifying that the image is fully
- * functioning: PHP extensions are loaded, coroutines are scheduled properly, TCP/UDP sockets work (through io_uring
- * or not, depending on how Swoole was compiled and whether the runtime environment permits io_uring), and the
- * curl/SSH features of Swoole work.
+ * functioning: PHP extensions are loaded, coroutines are scheduled properly, TCP/UDP sockets work, and the curl/SSH
+ * features of Swoole work.
  *
  * This script is self-contained on purpose (no Composer dependencies), so that it can be mounted into and executed
  * inside any image built from this repository. It is driven by script ./bin/test-image.sh, but can also be executed
@@ -128,7 +127,7 @@ Coroutine\run(function (): void {
 
     check('file I/O works inside coroutines', function (): void {
         // With SWOOLE_HOOK_FILE enabled, file operations inside a coroutine go through the async I/O layer of Swoole
-        // (io_uring when compiled in and permitted by the kernel/seccomp profile, or the thread pool otherwise).
+        // (its thread pool).
         $file = tempnam(sys_get_temp_dir(), 'swoole-test-');
         $data = str_repeat('swoole', 1024);
         try {
@@ -168,10 +167,7 @@ Coroutine\run(function (): void {
     });
 
     // The two raw socket tests below exercise the socket layer of Swoole directly (accept/connect/send/recv and
-    // sendto/recvfrom). When Swoole is compiled with option "--enable-uring-socket", socket operations go through
-    // io_uring when the runtime environment permits it, and fall back to the reactor (epoll) implementation
-    // otherwise; the tests must pass either way. Script ./bin/test-image.sh runs this file under both the default
-    // seccomp profile of Docker (io_uring blocked) and an unconfined one (io_uring allowed) to cover both paths.
+    // sendto/recvfrom), which is backed by the reactor (epoll) implementation.
     check('raw TCP sockets echo data (accept/connect/send/recv)', function (): void {
         $server = new Coroutine\Socket(AF_INET, SOCK_STREAM, 0);
         expect($server->bind(HTTP_HOST, TCP_ECHO_PORT), 'failed to bind the TCP server socket: ' . $server->errMsg);
