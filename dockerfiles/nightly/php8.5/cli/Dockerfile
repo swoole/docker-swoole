@@ -26,7 +26,6 @@ RUN \
         libpq-dev                  \
         libsqlite3-dev             \
         libssl-dev                 \
-        liburing-dev               \
         supervisor                 \
         unixodbc-dev               \
         unzip                      \
@@ -59,7 +58,6 @@ RUN \
         apt-get purge -y \
             libbrotli-dev            \
             libcurl4-openssl-dev     \
-            liburing-dev             \
             libpq-dev                \
             libsqlite3-dev           \
             libssl-dev               \

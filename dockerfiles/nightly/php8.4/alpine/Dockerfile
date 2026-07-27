@@ -6,8 +6,8 @@ RUN \
     set -ex && \
 # Keep only the runtime shared libraries in the final image; the matching "-dev" packages (headers) are
 # installed as part of the temporary ".build-deps" virtual package and removed once Swoole is built.
-    apk add --no-cache libstdc++ libpq libssh2 liburing unixodbc && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev libssh2-dev liburing-dev unixodbc-dev && \
+    apk add --no-cache libstdc++ libpq libssh2 unixodbc && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev libssh2-dev unixodbc-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
