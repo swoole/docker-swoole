@@ -190,6 +190,21 @@ class Dockerfile
     }
 
     /**
+     * Whether configure option "--enable-swoole-stdext" is still supported.
+     *
+     * The stdext module was removed from the master branch of Swoole on 2026-09-02 (its PHP language extensions,
+     * e.g. strongly typed arrays and basic type methods, are now implemented by the typephp project instead), so
+     * nightly images, which build that branch, no longer support this option. All currently released versions of
+     * Swoole (up to and including 6.2.2) were built before that removal and still support it.
+     *
+     * @see https://github.com/swoole/swoole-src/commit/dbdf559f11
+     */
+    protected function isSwooleStdextSupported(): bool
+    {
+        return $this->getSwooleVersion() !== self::VERSION_NIGHTLY;
+    }
+
+    /**
      * @param value-of<Dockerfile::TYPES> $type
      */
     protected function getContext(string $type, string $phpVersion): array
@@ -197,10 +212,11 @@ class Dockerfile
         $context = array_merge(
             $this->getConfig()['image'],
             [
-                'php_version'         => $phpVersion,
-                'image_type'          => $type,
-                'swoole_version'      => $this->getSwooleVersion(),
-                'swoole_620_or_later' => $this->isSwoole620OrLater(),
+                'php_version'             => $phpVersion,
+                'image_type'              => $type,
+                'swoole_version'          => $this->getSwooleVersion(),
+                'swoole_620_or_later'     => $this->isSwoole620OrLater(),
+                'swoole_stdext_supported' => $this->isSwooleStdextSupported(),
             ]
         );
 

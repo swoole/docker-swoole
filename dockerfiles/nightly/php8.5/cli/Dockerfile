@@ -45,7 +45,6 @@ RUN \
         --enable-swoole-ftp \
         --enable-swoole-pgsql \
         --enable-swoole-sqlite \
-        --enable-swoole-stdext \
         --enable-zstd \
         --with-swoole-odbc=unixODBC,/usr \
         --with-swoole-ssh2 && \

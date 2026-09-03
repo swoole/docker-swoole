@@ -18,6 +18,7 @@ use Swoole\Docker\Dockerfile;
  */
 #[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
 #[CoversMethod(Dockerfile::class, 'isSwoole620OrLater')]
+#[CoversMethod(Dockerfile::class, 'isSwooleStdextSupported')]
 #[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
 {
@@ -76,6 +77,40 @@ class DockerfileTest extends TestCase
                 false,
                 '5.1.7',
                 'a 5.x version',
+            ],
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataIsSwooleStdextSupported')]
+    public function testIsSwooleStdextSupported(bool $expected, string $swooleVersion, string $message): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setSwooleVersion($swooleVersion)
+        ;
+        self::assertSame($expected, Reflection::callMethod($dockerfile, 'isSwooleStdextSupported'), $message);
+    }
+
+    public static function dataIsSwooleStdextSupported(): array
+    {
+        return [
+            [
+                false,
+                'nightly',
+                'nightly images build the master branch of Swoole, which dropped stdext support',
+            ],
+            [
+                true,
+                '6.2.2',
+                'the latest released version, built before stdext support was dropped',
+            ],
+            [
+                true,
+                '6.1.8',
+                'a 6.1.x version',
             ],
         ];
     }
