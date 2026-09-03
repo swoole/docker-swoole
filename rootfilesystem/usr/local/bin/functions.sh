@@ -90,7 +90,9 @@ function install()
     cd - # Last command in function download() is "cd -", so here we switch to the folder where the source code sits.
     cd "$1"
     phpize
-    ./configure "${@:3}"
+# Match docker-php-ext-configure's behavior (used for Alpine images): fail the build on any configure option no
+# longer recognized by the extension being installed, instead of silently ignoring it with just a warning.
+    ./configure --enable-option-checking=fatal "${@:3}"
     make -j$(nproc)
     make install
     make clean
