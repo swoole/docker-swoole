@@ -6,6 +6,7 @@ Table of Contents
    * [6.2.1](#621)
    * [6.2.0](#620)
 * [Swoole 6.1](#swoole-61)
+   * [6.1.10](#6110)
    * [6.1.9](#619)
    * [6.1.8](#618)
    * [6.1.7](#617)
@@ -116,6 +117,13 @@ Table of Contents
 - Upgrade _Composer_ from 2.9.5 to 2.9.7.
 
 # Swoole 6.1
+
+## 6.1.10
+
+### Changed
+- Remove io_uring support (_liburing_), which didn't work in Swoole Docker images.
+- Fail the build loudly instead of silently ignoring unrecognized Swoole configure options.
+- Upgrade _Composer_ from 2.10.2 to 2.10.3.
 
 ## 6.1.9
 
