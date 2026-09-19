@@ -42,6 +42,11 @@ jobs:
         name: Set up QEMU
         if: matrix.platform.emulated
         uses: docker/setup-qemu-action@v4
+        with:
+          # Pinned because the default is "latest": a QEMU release could otherwise change how the emulated
+          # architectures behave, or break them, with no commit in this repository. This is the image
+          # "latest" resolved to when it was pinned.
+          image: docker.io/tonistiigi/binfmt:qemu-v10.2.3
 
       -
         name: Set up Docker Buildx

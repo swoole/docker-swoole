@@ -46,6 +46,11 @@ jobs:
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v4
+        with:
+          # Pinned because the default is "latest": a QEMU release could otherwise change how the emulated
+          # architectures behave, or break them, with no commit in this repository. This is the image
+          # "latest" resolved to when it was pinned.
+          image: docker.io/tonistiigi/binfmt:qemu-v10.2.3
 
       -
         name: Set up Docker Buildx
@@ -71,10 +76,13 @@ jobs:
           tags: phpswoole/swoole:probe
 
       # Building only proves the extension compiles. Running it is what catches a library that is missing at runtime,
-      # which is the failure this workflow exists to find. Note the functional tests include timing assertions that
-      # can be flaky under emulation — read the log before calling such a failure a platform failure.
+      # which is the failure this workflow exists to find.
       -
         name: Test the image
+        env:
+          # Everything probed here is emulated, so the timings in the tests need room; without this they fail
+          # on how slow QEMU is rather than on whether the architecture works.
+          SWOOLE_TEST_TIME_FACTOR: 10
         run: ./bin/test-image.sh phpswoole/swoole:probe
 
       -

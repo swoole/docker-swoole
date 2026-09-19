@@ -111,7 +111,9 @@ check_command_output \
 check_command_output "Composer works" "Composer version" -- composer --version
 
 echo "Running functional tests inside the image ..."
-if docker run --rm -v "${CURRENT_SCRIPT_PATH}/test-image.php":/test-image.php:ro "${IMAGE}" php /test-image.php ; then
+# SWOOLE_TEST_TIME_FACTOR is forwarded rather than set here: only the caller knows whether the image is being run
+# on its own architecture or emulated, and the tests scale their timings by it.
+if docker run --rm -e SWOOLE_TEST_TIME_FACTOR -v "${CURRENT_SCRIPT_PATH}/test-image.php":/test-image.php:ro "${IMAGE}" php /test-image.php ; then
     echo "[OK] functional tests"
 else
     echo "[FAIL] functional tests"

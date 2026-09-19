@@ -30,8 +30,17 @@ const TCP_PORT       = 18081;
 const TCP_ECHO_PORT  = 18082;
 const UDP_PORT       = 18083;
 
+// Every timing below is multiplied by this. An emulated CPU architecture runs the same code orders of magnitude
+// slower than a native one, so a timing that comfortably passes on amd64 can fail under QEMU for reasons that have
+// nothing to do with the image. Callers running an emulated image set SWOOLE_TEST_TIME_FACTOR; it defaults to 1, so
+// native runs are unaffected. Values below 1 are ignored, since they could only make the tests flaky.
+define('TIME_FACTOR', max(1.0, (float) (getenv('SWOOLE_TEST_TIME_FACTOR') ?: '1')));
+
 // Abort the script if the functional tests hang, e.g., when a blocking call freezes the event loop.
-const WATCHDOG_TIMEOUT_MS = 60000;
+define('WATCHDOG_TIMEOUT_MS', (int) (60000 * TIME_FACTOR));
+
+// Timeout of the HTTP clients used below, in seconds.
+define('CLIENT_TIMEOUT', (int) ceil(10 * TIME_FACTOR));
 
 $failures = 0;
 
@@ -114,20 +123,29 @@ Coroutine\run(function (): void {
     });
 
     check('coroutines run concurrently', function (): void {
+        // Both the sleeps and the ceiling scale together, so that what is asserted stays the same: two sleeps that
+        // overlap take about as long as one, and roughly twice as long when they do not. Scaling only the ceiling
+        // would break the test rather than relax it — at a factor of 2 it would exceed the time two sequential
+        // sleeps take, and the test would pass whether or not they overlapped.
+        $sleep   = 0.2 * TIME_FACTOR;
+        $ceiling = 1.9 * $sleep;
+
         $start = microtime(true);
         $wg    = new Channel(2);
         for ($i = 0; $i < 2; $i++) {
-            Coroutine::create(function () use ($wg): void {
-                Coroutine::sleep(0.2);
+            Coroutine::create(function () use ($wg, $sleep): void {
+                Coroutine::sleep($sleep);
                 $wg->push(true);
             });
         }
-        $wg->pop(5);
-        $wg->pop(5);
+        $wg->pop(5 * TIME_FACTOR);
+        $wg->pop(5 * TIME_FACTOR);
         $duration = microtime(true) - $start;
-        // Two 0.2-second sleeps should take about 0.2 seconds in total when run concurrently, and 0.4 seconds or
-        // more when not.
-        expect($duration < 0.38, sprintf('two concurrent 0.2-second sleeps took %.3f seconds in total', $duration));
+
+        expect(
+            $duration < $ceiling,
+            sprintf('two concurrent %.3f-second sleeps took %.3f seconds in total, expected less than %.3f', $sleep, $duration, $ceiling),
+        );
     });
 
     check('file I/O works inside coroutines', function (): void {
@@ -157,7 +175,7 @@ Coroutine\run(function (): void {
     check('an HTTP request via the curl hook gets processed', function (): void {
         $ch = curl_init(sprintf('http://%s:%d/ping', HTTP_HOST, HTTP_PORT));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, CLIENT_TIMEOUT);
         $body = curl_exec($ch);
         expect($body !== false, 'curl request failed: ' . curl_error($ch));
         expect($body === 'pong', 'unexpected response body "' . var_export($body, true) . '" from the curl request');
@@ -165,7 +183,7 @@ Coroutine\run(function (): void {
 
     check('an HTTP request via Swoole\Coroutine\Http\Client gets processed', function (): void {
         $client = new Client(HTTP_HOST, HTTP_PORT);
-        $client->set(['timeout' => 10]);
+        $client->set(['timeout' => CLIENT_TIMEOUT]);
         expect($client->get('/ping'), 'the HTTP request failed: ' . $client->errMsg);
         expect($client->getBody() === 'pong', 'unexpected response body "' . var_export($client->getBody(), true) . '"');
         $client->close();
