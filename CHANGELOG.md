@@ -100,6 +100,10 @@ Table of Contents
 ## 6.2.2
 
 ### Changed
+- **Fix PHP extension _Swoole_ failing to load in the Alpine images for _ppc64le_ and _s390x_.**
+- Fail the build when PHP extension _Swoole_ cannot be loaded, so that a broken image is never published.
+- Build and test each architecture in its own CI job, natively where GitHub provides a runner for it, and pin
+  the QEMU emulators used to build the others.
 - **Build PHP extension _Redis_ with the _lzf_ and _zstd_ compressions enabled.**
 - List all configure options of PHP extension _Redis_ explicitly, instead of relying on PECL's prompt defaults.
 - Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
@@ -123,6 +127,10 @@ Table of Contents
 ## 6.1.10
 
 ### Changed
+- **Fix PHP extension _Swoole_ failing to load in the Alpine images for _ppc64le_ and _s390x_.**
+- Fail the build when PHP extension _Swoole_ cannot be loaded, so that a broken image is never published.
+- Build and test each architecture in its own CI job, natively where GitHub provides a runner for it, and pin
+  the QEMU emulators used to build the others.
 - **Build PHP extension _Redis_ with the _lzf_ and _zstd_ compressions enabled.**
 - List all configure options of PHP extension _Redis_ explicitly, instead of relying on PECL's prompt defaults.
 - Remove io_uring support (_liburing_), which didn't work in Swoole Docker images.
