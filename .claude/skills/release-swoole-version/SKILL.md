@@ -37,6 +37,21 @@ touches `config/nightly.yml` as well as the new version's config. Check that sec
 
 8. **Create the version branch** at that commit, without pushing: `git branch <new>`. Pushing it (which triggers the versioned build/release workflows) is left for a maintainer to do deliberately — see CLAUDE.md.
 
+## Re-releasing an existing version
+
+A fix that lands on `master` after a version branch was pushed does not reach that version's images until the
+branch itself is moved — the branch tip is what CI builds from. Version branches are pointers into `master`'s
+history, so this is a fast-forward:
+
+```bash
+git branch -f <version> master
+git push origin <version>
+```
+
+That re-runs the three versioned workflows and republishes every tag that version owns, floating ones included.
+Only do it while `config/<version>.yml` still says `status: "under development"`; a version marked `"released"`
+publishes nothing, which is the point of the flip.
+
 ## igbinary support (Swoole 6.3.0 and later)
 
 Images for **6.3.0 and later** ship extension _Redis_ built with the igbinary serializer, plus extension _igbinary_

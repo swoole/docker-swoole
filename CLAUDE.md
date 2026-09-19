@@ -66,8 +66,8 @@ Swoole cannot be loaded.
 8.1 through 8.5 on both Debian and Alpine, and the Composer images pulled in via `COPY --from`), and Swoole ships
 context-switching assembly for it. It is deliberately left out for now, for two reasons:
 
-- **Build time.** Everything except arm64 is emulated through QEMU, because all the workflows run on
-  `ubuntu-24.04-arm` runners. Adding a fifth architecture costs roughly a quarter more runner time per build, and
+- **Build time.** Everything except amd64 and arm64 is emulated through QEMU, since GitHub only offers runners
+  for those two architectures. Adding a fifth architecture costs roughly a quarter more runner time per build, and
   riscv64 emulates more slowly than the architectures already in the list.
 - **No one has asked for it.** The issue tracker has no request for riscv64, or for any other architecture.
 
