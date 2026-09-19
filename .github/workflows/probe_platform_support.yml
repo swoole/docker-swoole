@@ -1,0 +1,88 @@
+name: Probe Platform Support
+
+# Answers "could we publish images for this CPU architecture?" without publishing anything. Run it by hand from the
+# Actions tab, and record what it prints in the pull request or issue that asks for the architecture — the value of
+# this workflow is the recorded result, not the run.
+#
+# It builds on x86 runners because that is the best-trodden path for QEMU, and it exists because a local build cannot
+# answer the question completely: the runners pin nothing (every workflow here installs "tonistiigi/binfmt:latest"),
+# so an architecture can regress from a QEMU release with no commit in this repository.
+#
+# It probes both a Debian and an Alpine image on purpose. They differ where it matters: Swoole only ships
+# context-switching assembly for some CPUs and falls back to ucontext on the rest, which musl does not implement —
+# that is what left the ppc64le and s390x Alpine images unable to load Swoole at all.
+#
+# Defaults probe linux/riscv64, the one architecture that could be added today, against linux/ppc64le as a control:
+# a published architecture that is also emulated, so a failure there means the probe is broken rather than the
+# candidate. See "CPU architectures" in CLAUDE.md for why nothing else is a candidate.
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to probe, as a JSON array'
+        required: true
+        default: '["linux/ppc64le", "linux/riscv64"]'
+      php:
+        description: 'PHP version to probe'
+        required: true
+        default: '8.4'
+
+jobs:
+  probe:
+    name: ${{ matrix.platform }} (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    if: github.repository == 'swoole/docker-swoole'
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(inputs.platforms) }}
+        image: ["cli", "alpine"]
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v7
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # Not for pushing — nothing is pushed here — but an authenticated pull avoids Docker Hub's rate limit.
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Build Docker image for ${{ matrix.platform }}
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: dockerfiles/nightly/php${{ inputs.php }}/${{ matrix.image }}/Dockerfile
+          platforms: ${{ matrix.platform }}
+          load: true
+          push: false
+          tags: phpswoole/swoole:probe
+
+      # Building only proves the extension compiles. Running it is what catches a library that is missing at runtime,
+      # which is the failure this workflow exists to find. Note the functional tests include timing assertions that
+      # can be flaky under emulation — read the log before calling such a failure a platform failure.
+      -
+        name: Test the image
+        run: ./bin/test-image.sh phpswoole/swoole:probe
+
+      -
+        name: Report what was built
+        run: |
+          set -eu
+          echo "### ${{ matrix.platform }} (${{ matrix.image }}, PHP ${{ inputs.php }})" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          docker run --rm --platform ${{ matrix.platform }} phpswoole/swoole:probe \
+              sh -c 'php --ri swoole | grep -iE "^Version|coroutine =>"' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

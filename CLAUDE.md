@@ -72,7 +72,11 @@ context-switching assembly for it. It is deliberately left out for now, for two 
 - **No one has asked for it.** The issue tracker has no request for riscv64, or for any other architecture.
 
 Neither reason is permanent — add it if riscv64 hardware becomes common enough that users ask for it, or if the
-build stops being emulated. It is one extra entry in the `platform` matrix of each build workflow.
+build stops being emulated. It is one extra entry in the `platform` matrix of each build workflow, plus the matching
+`EXPECTED_DIGESTS` (`tests/WorkflowTest.php` fails if those two disagree). Before adding one, run the
+`Probe Platform Support` workflow from the Actions tab: it builds and runs a Debian and an Alpine image for the
+architecture without publishing anything, and record what it prints — an unrecorded experiment is why this question
+came up twice.
 
 No other architecture can be added. Swoole dropped 32-bit CPUs in 5.1, which rules out `linux/386`,
 `linux/arm/v5`, `linux/arm/v6` and `linux/arm/v7`: its `config.m4` still maps those CPUs to assembly files that
