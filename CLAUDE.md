@@ -50,6 +50,35 @@ This repository does not use git tags; Swoole versions are tracked entirely as g
 - Once the new version's images are confirmed working, a follow-up commit ("mark 6.2.1 as released") flips the *previous* version's `status` in its `config/<x.y.z>.yml` from `"under development"` to `"released"`, so it stops receiving floating tags like `latest` on any future rebuild.
 - Pushing version branches and cutting releases requires push access to this repository, so it's normally done by a maintainer. External contributors proposing a new version should do so via pull request against `master` and let a maintainer push the resulting branch.
 
+### CPU architectures
+
+Images are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and `linux/s390x`. The list is repeated in
+every build workflow under `.github/workflows/` — once per nightly workflow, and three times per versioned
+workflow (one per image type, since those push steps differ only in the tags they apply).
+
+`linux/riscv64` is the only architecture that *could* be added: every base image publishes it (the PHP images for
+8.1 through 8.5 on both Debian and Alpine, and the Composer images pulled in via `COPY --from`), and Swoole ships
+context-switching assembly for it. It is deliberately left out for now, for two reasons:
+
+- **Build time.** Everything except arm64 is emulated through QEMU, because all the workflows run on
+  `ubuntu-24.04-arm` runners. Adding a fifth architecture costs roughly a quarter more runner time per build, and
+  riscv64 emulates more slowly than the architectures already in the list.
+- **No one has asked for it.** The issue tracker has no request for riscv64, or for any other architecture.
+
+Neither reason is permanent — add it if riscv64 hardware becomes common enough that users ask for it, or if the
+build stops being emulated. It is a one-line change to each platform list.
+
+No other architecture can be added. Swoole dropped 32-bit CPUs in 5.1, which rules out `linux/386`,
+`linux/arm/v5`, `linux/arm/v6` and `linux/arm/v7`: its `config.m4` still maps those CPUs to assembly files that
+were deleted upstream, so `configure` succeeds and the build then fails on a missing source file. `linux/mips64le`
+has no PHP base image at all.
+
+Swoole only ships that assembly for some CPUs (x86_64, arm64, riscv64, mips64, loongarch64); on the others its
+coroutine scheduler falls back to `ucontext`, which musl does not implement. That is why the Alpine images install
+`libucontext` — without it the extension cannot be loaded on ppc64le or s390x. Each Dockerfile ends by asserting
+that extension Swoole actually loads, so an architecture that builds but cannot run fails the build instead of
+being published.
+
 ## Contributing
 
 - Non-release changes (templates, configs, `rootfilesystem/`, examples, tooling, docs) go through pull requests against `master`; `.github/workflows/tests.yml` runs `php-cs-fixer` and `phpunit` on every push and on PRs targeting `master`.
