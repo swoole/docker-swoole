@@ -43,7 +43,7 @@ Table of Contents
 * Support auto-reloading for local development.<sup>1</sup>
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup>
-* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ and _msgpack_ serializers are not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ images.<sup>3</sup>
+* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ and _msgpack_ serializers are not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ and 6.2.2+ images.<sup>3</sup>
 
 **NOTES**
 
@@ -97,8 +97,8 @@ RUN set -ex \
 ## Serializer and Compression Support in Extension Redis
 
 Extension _Redis_ is compiled with the _igbinary_ and _msgpack_ serializers disabled. The _lzf_ and _zstd_
-compressions are enabled in nightly images and in versioned images since 6.1.10+; in earlier versioned images no
-compression is available. You can check what a given image supports with:
+compressions are enabled in nightly images and in versioned images since 6.1.10+ and 6.2.2+; in earlier versioned
+images no compression is available. You can check what a given image supports with:
 
 ```bash
 # Tag "php8.4" is a nightly image; versioned tags like "latest" print no compression line yet.
