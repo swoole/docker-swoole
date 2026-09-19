@@ -102,7 +102,11 @@ check_command_output \
     "${patterns[@]}" \
     -- php --ri swoole
 
-check_command_output "Redis is installed correctly" "Redis Support => enabled" -- php --ri redis
+check_command_output \
+    "Redis is installed correctly, with the expected compressions enabled" \
+    "Redis Support => enabled" \
+    "Available compression => lzf, zstd" \
+    -- php --ri redis
 
 check_command_output "Composer works" "Composer version" -- composer --version
 

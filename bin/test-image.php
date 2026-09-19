@@ -62,9 +62,14 @@ check('the Swoole extension is loaded', function (): void {
     expect((bool) preg_match('/^\d+\.\d+\.\d+/', swoole_version()), 'unexpected Swoole version "' . swoole_version() . '"');
 });
 
-check('the Redis extension is loaded', function (): void {
+check('the Redis extension is loaded, with the expected compressions enabled', function (): void {
     expect(extension_loaded('redis'), 'extension "redis" is not loaded');
     expect(class_exists(Redis::class), 'class "Redis" does not exist');
+
+    // Extension Redis is built with the lzf and zstd compressions enabled, and with the igbinary and msgpack
+    // serializers disabled; see the "configureoptions" of extension "redis" in config/nightly.yml.
+    expect(defined('Redis::COMPRESSION_LZF'), 'extension "redis" is built without lzf compression support');
+    expect(defined('Redis::COMPRESSION_ZSTD'), 'extension "redis" is built without zstd compression support');
 });
 
 check('Swoole thread support matches the PHP build', function (): void {

@@ -16,6 +16,7 @@ Table of Contents
 * [Feature List](#feature-list)
 * [How to Use This Image](#how-to-use-this-image)
    * [How to Install More PHP Extensions](#how-to-install-more-php-extensions)
+   * [Serializer and Compression Support in Extension Redis](#serializer-and-compression-support-in-extension-redis)
    * [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions)
    * [More Examples](#more-examples)
 * [Image Variants](#image-variants)
@@ -42,12 +43,13 @@ Table of Contents
 * Support auto-reloading for local development.<sup>1</sup>
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup>
-* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> It's installed with default options.
+* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ and _msgpack_ serializers are not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images.<sup>3</sup>
 
 **NOTES**
 
 1. The auto-reloading feature is supported for non-Alpine images only.
 2. To disable extension _pdo_mysql_ and/or _Redis_, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
+3. For details, please check section [Serializer and Compression Support in Extension Redis](#serializer-and-compression-support-in-extension-redis).
 
 # How to Use This Image
 
@@ -91,6 +93,45 @@ RUN set -ex \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/src/php.tar.xz*
 ```
+
+## Serializer and Compression Support in Extension Redis
+
+Extension _Redis_ is compiled with the _igbinary_ and _msgpack_ serializers disabled. The _lzf_ and _zstd_
+compressions are enabled in nightly images; in versioned images no compression is available. You can check what a
+given image supports with:
+
+```bash
+# Tag "php8.4" is a nightly image; versioned tags like "latest" print no compression line yet.
+docker run --rm phpswoole/swoole:php8.4 php --ri redis | grep Available
+```
+
+```
+Available serializers => php, json
+Available compression => lzf, zstd
+```
+
+Serializers and compressions are opt-in at runtime: `Redis::OPT_SERIALIZER` defaults to `Redis::SERIALIZER_NONE` and
+`Redis::OPT_COMPRESSION` defaults to `Redis::COMPRESSION_NONE`, so none of them changes how your data is stored unless
+your application asks for it.
+
+To use `Redis::SERIALIZER_IGBINARY`, extension _Redis_ has to be rebuilt against extension _igbinary_. Installing
+_igbinary_ alone is not enough: helper scripts like
+[install-php-extensions](https://github.com/mlocati/docker-php-extension-installer) skip extensions that are already
+installed, so the bundled _Redis_ extension is left untouched. Remove it first, then reinstall both:
+
+```Dockerfile
+FROM phpswoole/swoole:latest
+
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN set -ex && \
+    rm -f "$(php-config --ini-dir)/docker-php-ext-redis.ini" && \
+    pecl uninstall redis && \
+    install-php-extensions igbinary redis
+```
+
+Note that extension _Redis_ built this way depends on extension _igbinary_: once rebuilt, it fails to load if
+_igbinary_ is disabled afterwards.
 
 ## Disable Installed/Enabled PHP Extensions
 

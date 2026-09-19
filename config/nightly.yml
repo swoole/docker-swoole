@@ -14,5 +14,12 @@ image:
   php_extensions:
     redis:
       version: "6.3.0"
-      configureoptions: "enable-redis-igbinary=\"no\" enable-redis-lzf=\"no\" enable-redis-zstd=\"no\""
+      # All six configure options declared by redis-6.3.0's package.xml are listed explicitly. Options omitted here
+      # are still prompted for by PECL and silently fall back to their package defaults, which makes the build
+      # non-deterministic and lets it drift whenever phpredis adds a new option.
+      #
+      # Compression support (lzf, zstd) is enabled: lzf is compiled from sources bundled with phpredis, and libzstd
+      # is already present in the base images. Neither adds a PHP extension, and Redis::OPT_COMPRESSION still
+      # defaults to Redis::COMPRESSION_NONE, so stored data is unaffected unless an application opts in.
+      configureoptions: "enable-redis-igbinary=\"no\" enable-redis-lzf=\"yes\" enable-redis-zstd=\"yes\" enable-redis-msgpack=\"no\" enable-redis-lz4=\"no\" with-liblz4=\"yes\""
       enabled: true
