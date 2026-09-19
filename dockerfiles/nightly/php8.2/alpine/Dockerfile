@@ -40,6 +40,11 @@ RUN \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \
-    apk del .build-deps
+    apk del .build-deps && \
+# Fail the build if the extension does not actually load. Swoole is compiled here for every target platform, and
+# a library that is missing at runtime (rather than at link time) produces a successful build but an image
+# whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
+# be asserted explicitly; the published ppc64le and s390x Alpine images shipped broken this way.
+    php -r 'exit(extension_loaded("swoole") ? 0 : 1);'
 
 WORKDIR "/var/www/"
