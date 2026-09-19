@@ -56,6 +56,8 @@ config, since step 3 copies an older config forward and will not bring igbinary 
    2026-09-18 `https://pecl.php.net/rest/r/igbinary/stable.txt` returned `3.2.17RC1`, and an unpinned
    `pecl install igbinary` installed that RC. From `https://pecl.php.net/rest/r/igbinary/allreleases.xml`, take the
    newest `<v>` **whose name has no `RC`/`alpha`/`beta` suffix** (3.2.16 at that time). Never leave it unpinned.
+   `https://api.github.com/repos/igbinary/igbinary/releases` is the reliable cross-check — its `prerelease` flag is
+   correct where PECL's is not.
 2. **Confirm igbinary builds on every PHP minor listed in `config/nightly.yml`**, the newest one especially — nightly
    builds them all, so one failure blocks every nightly push for that minor:
    ```bash
@@ -63,6 +65,25 @@ config, since step 3 copies an older config forward and will not bring igbinary 
        'apk add --no-cache --virtual .b $PHPIZE_DEPS >/dev/null && pecl install igbinary-3.2.16 >/dev/null 2>&1 && docker-php-ext-enable igbinary && php --ri igbinary'
    ```
    If the newest PHP minor fails, stop and report it instead of shipping a nightly that cannot build.
+
+   **Known blocker as of 2026-09-19 — re-check before assuming it still holds.** igbinary **3.2.16**, the newest
+   non-RC release, does **not** compile on PHP 8.5:
+
+   ```
+   src/php7/php_igbinary.h:35:10: fatal error: ext/standard/php_smart_string.h: No such file or directory
+   ```
+
+   That header was removed in PHP 8.5; support landed in igbinary PRs #403/#404 and ships in **3.2.17RC1**, which
+   builds cleanly there — the full chain (igbinary + redis with `enable-redis-igbinary="yes"`) was verified on
+   `php:8.5-cli-alpine` and printed `Available serializers => php, json, igbinary`. 3.2.16 is fine on PHP 8.2, 8.3
+   and 8.4.
+
+   Since `config/nightly.yml` builds 8.5, this forces a decision before Tier 1 can ship:
+   - **Preferred:** wait for 3.2.17 stable and pin that.
+   - Ship the RC deliberately, as a maintainer's call, documented in the release notes.
+   - Delay the igbinary change to a later patch release while 6.3.0 ships without it.
+
+   Do not silently pin the RC to get past the gate.
 
 ### Config changes
 
