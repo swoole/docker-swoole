@@ -100,6 +100,8 @@ Table of Contents
 ## 6.2.2
 
 ### Changed
+- **Build PHP extension _Redis_ with the _lzf_ and _zstd_ compressions enabled.**
+- List all configure options of PHP extension _Redis_ explicitly, instead of relying on PECL's prompt defaults.
 - Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
 - Reduce final image size by dropping build-only dependencies.
 - Test Docker images before publishing them.
@@ -121,6 +123,8 @@ Table of Contents
 ## 6.1.10
 
 ### Changed
+- **Build PHP extension _Redis_ with the _lzf_ and _zstd_ compressions enabled.**
+- List all configure options of PHP extension _Redis_ explicitly, instead of relying on PECL's prompt defaults.
 - Remove io_uring support (_liburing_), which didn't work in Swoole Docker images.
 - Fail the build loudly instead of silently ignoring unrecognized Swoole configure options.
 - Upgrade _Composer_ from 2.10.2 to 2.10.3.
