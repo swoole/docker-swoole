@@ -127,6 +127,21 @@ jobs:
           pattern: digests-php${{ matrix.php }}-alpine-*
           merge-multiple: true
 
+      # actions/download-artifact does not fail when its pattern matches only some of the expected artifacts, so
+      # completeness is checked here: without it a tag could be republished with an architecture missing. This runs
+      # before the registry login so that a short set fails cheaply, and before anything enters /tmp/digests, which
+      # does not exist at all when no artifact matched.
+      -
+        name: Verify that every platform produced a digest
+        run: |
+          set -eu
+          shopt -s nullglob
+          digests=(/tmp/digests/*)
+          if [ "${#digests[@]}" -ne "${EXPECTED_DIGESTS}" ] ; then
+              echo "::error::expected ${EXPECTED_DIGESTS} digests, found ${#digests[@]}: ${digests[*]##*/}"
+              exit 1
+          fi
+
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -143,14 +158,6 @@ jobs:
         working-directory: /tmp/digests
         run: |
           set -ex
-          # download-artifact does not fail on a partial match, so without this a tag could be published with
-          # an architecture missing.
-          found=$(find . -maxdepth 1 -type f | wc -l)
-          if [ "${found}" -ne "${EXPECTED_DIGESTS}" ] ; then
-              echo "expected ${EXPECTED_DIGESTS} digests, found ${found}" >&2
-              exit 1
-          fi
-
           docker buildx imagetools create \
             --tag phpswoole/swoole:php${{ matrix.php }}-alpine \
             $(printf 'phpswoole/swoole@sha256:%s ' *)
