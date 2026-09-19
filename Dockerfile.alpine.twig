@@ -6,8 +6,14 @@ RUN \
     set -ex && \
 # Keep only the runtime shared libraries in the final image; the matching "-dev" packages (headers) are
 # installed as part of the temporary ".build-deps" virtual package and removed once Swoole is built.
-    apk add --no-cache libstdc++ libpq{% if swoole_620_or_later %} libssh2{% endif %} unixodbc && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev{% if swoole_620_or_later %} libssh2-dev{% endif %} unixodbc-dev && \
+# Package "libucontext" provides the ucontext functions (getcontext/makecontext/swapcontext) that musl does not
+# implement. Swoole ships hand-written context-switching assembly for some CPUs only (x86_64, arm64, riscv64,
+# mips64, loongarch64); on every other architecture its coroutine scheduler falls back to ucontext, and without
+# this package the extension fails to load with "Error relocating swoole.so: getcontext: symbol not found".
+# That is what happened to the ppc64le and s390x Alpine images. It is installed unconditionally (the package is
+# built for all Alpine architectures) so the images keep working on any architecture Swoole has no assembly for.
+    apk add --no-cache libstdc++ libpq{% if swoole_620_or_later %} libssh2{% endif %} libucontext unixodbc && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev{% if swoole_620_or_later %} libssh2-dev{% endif %} libucontext-dev unixodbc-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
 {%~ if php_extensions is not empty %}
@@ -34,6 +40,7 @@ RUN \
 {# Option --enable-openssl was removed in Swoole 6.2.0 (OpenSSL support is always compiled in since then), while
    options --enable-swoole-ftp and --with-swoole-ssh2 were added in Swoole 6.2.0. Option --enable-swoole-stdext was
    removed from the master branch (and so from nightly images) on 2026-09-02. #}
+    export LDFLAGS="${LDFLAGS} -lucontext" && \
     docker-php-ext-configure swoole{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
         --enable-brotli \
         --enable-mysqlnd \
