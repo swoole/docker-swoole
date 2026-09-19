@@ -5,15 +5,25 @@ on:
     - cron: '47 9 * * *'
   workflow_dispatch:
 
+# Each platform is built by its own job, on a runner of that architecture where GitHub offers one, and pushed to the
+# registry by digest only. A final job joins those digests into one multi-architecture tag. Building linux/amd64 on
+# an x86 runner instead of emulating it on the arm64 runners keeps it native, which is both faster and the only way
+# the functional tests can run against it.
 jobs:
-  build_nightly_images:
-    runs-on: ubuntu-24.04-arm
+  build:
+    name: PHP ${{ matrix.php }} (${{ matrix.image.type }}) on ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.runner }}
     if: github.repository == 'swoole/docker-swoole'
     strategy:
       fail-fast: false
       matrix:
         php: ["8.2", "8.3", "8.4", "8.5"]
         image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
+        platform:
+          - {name: "linux/amd64",    slug: "amd64",   runner: "ubuntu-24.04",     emulated: false}
+          - {name: "linux/arm64/v8", slug: "arm64v8", runner: "ubuntu-24.04-arm", emulated: false}
+          - {name: "linux/ppc64le",  slug: "ppc64le", runner: "ubuntu-24.04-arm", emulated: true}
+          - {name: "linux/s390x",    slug: "s390x",   runner: "ubuntu-24.04-arm", emulated: true}
 
     steps:
       -
@@ -22,6 +32,7 @@ jobs:
 
       -
         name: Set up QEMU
+        if: matrix.platform.emulated
         uses: docker/setup-qemu-action@v4
 
       -
@@ -35,27 +46,92 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # The functional tests run the image, so they are only meaningful on a runner of the same architecture. Emulated
+      # platforms are covered by the assertion at the end of every Dockerfile, which fails the build if extension
+      # Swoole cannot be loaded.
       -
         name: Build Docker image phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }} for testing
+        if: ${{ !matrix.platform.emulated }}
         uses: docker/build-push-action@v7
         with:
           context: .
           file: dockerfiles/nightly/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
+          platforms: ${{ matrix.platform.name }}
           load: true
           push: false
           tags: phpswoole/swoole:test
 
       -
         name: Test Docker image phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }}
+        if: ${{ !matrix.platform.emulated }}
         run: ./bin/test-image.sh phpswoole/swoole:test
 
       -
-        name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}
+        name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }} by digest
         id: docker_build
         uses: docker/build-push-action@v7
         with:
           context: .
           file: dockerfiles/nightly/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
-          push: true
-          tags: phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }}
+          platforms: ${{ matrix.platform.name }}
+          outputs: type=image,name=phpswoole/swoole,push-by-digest=true,name-canonical=true,push=true
+
+      -
+        name: Export the digest
+        run: |
+          set -ex
+          mkdir -p /tmp/digests
+          touch "/tmp/digests/${DIGEST#sha256:}"
+        env:
+          DIGEST: ${{ steps.docker_build.outputs.digest }}
+
+      -
+        name: Upload the digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-php${{ matrix.php }}-${{ matrix.image.type }}-${{ matrix.platform.slug }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # This job runs only if every platform built, so a failed architecture can never be silently dropped from the tag.
+  merge:
+    name: PHP ${{ matrix.php }} (${{ matrix.image.type }})
+    needs: build
+    runs-on: ubuntu-24.04
+    if: github.repository == 'swoole/docker-swoole'
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.2", "8.3", "8.4", "8.5"]
+        image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
+
+    steps:
+      -
+        name: Download the digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-php${{ matrix.php }}-${{ matrix.image.type }}-*
+          merge-multiple: true
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Push Docker image phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }}
+        working-directory: /tmp/digests
+        run: |
+          set -ex
+          docker buildx imagetools create \
+            --tag phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }} \
+            $(printf 'phpswoole/swoole@sha256:%s ' *)
+          docker buildx imagetools inspect phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }}

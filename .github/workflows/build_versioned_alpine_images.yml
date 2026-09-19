@@ -6,16 +6,24 @@ on:
       - '[4-9].[0-9]+.[0-9]+'
       - '[4-9].[0-9]+.[0-9]+-?[a-zA-Z]**'
 
+# Each platform is built by its own job, on a runner of that architecture where GitHub offers one, and pushed to the
+# registry by digest only. A final job joins those digests into one multi-architecture tag. Building linux/amd64 on
+# an x86 runner instead of emulating it on the arm64 runners keeps it native, which is both faster and the only way
+# the functional tests can run against it.
 jobs:
-  build_versioned_alpine_images:
-    runs-on: ubuntu-24.04-arm
+  build:
+    name: PHP ${{ matrix.php }} (alpine) on ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.runner }}
     if: github.repository == 'swoole/docker-swoole'
     strategy:
       fail-fast: false
       matrix:
         php: ["8.1", "8.2", "8.3", "8.4", "8.5"]
-
-    name: The Alpine image for PHP ${{ matrix.php }}
+        platform:
+          - {name: "linux/amd64",    slug: "amd64",   runner: "ubuntu-24.04",     emulated: false}
+          - {name: "linux/arm64/v8", slug: "arm64v8", runner: "ubuntu-24.04-arm", emulated: false}
+          - {name: "linux/ppc64le",  slug: "ppc64le", runner: "ubuntu-24.04-arm", emulated: true}
+          - {name: "linux/s390x",    slug: "s390x",   runner: "ubuntu-24.04-arm", emulated: true}
 
     steps:
       -
@@ -24,6 +32,7 @@ jobs:
 
       -
         name: Set up QEMU
+        if: matrix.platform.emulated
         uses: docker/setup-qemu-action@v4
 
       -
@@ -51,6 +60,89 @@ jobs:
           if [ ! -f "$(pwd)/dockerfiles/${branch_name}/php${{ matrix.php }}/alpine/Dockerfile" ] ; then
             echo "dockerfile_missing=true" >> $GITHUB_OUTPUT
           fi
+          if ! egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
+            echo "released_already=true" >> $GITHUB_OUTPUT
+          fi
+
+      # The functional tests run the image, so they are only meaningful on a runner of the same architecture. Emulated
+      # platforms are covered by the assertion at the end of every Dockerfile, which fails the build if extension
+      # Swoole cannot be loaded.
+      -
+        name: Build Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine for testing
+        if: ${{ !matrix.platform.emulated && steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' }}
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
+          platforms: ${{ matrix.platform.name }}
+          load: true
+          push: false
+          tags: phpswoole/swoole:test
+
+      -
+        name: Test Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
+        if: ${{ !matrix.platform.emulated && steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' }}
+        run: ./bin/test-image.sh phpswoole/swoole:test
+
+      -
+        name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine by digest
+        id: docker_build
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
+          platforms: ${{ matrix.platform.name }}
+          outputs: type=image,name=phpswoole/swoole,push-by-digest=true,name-canonical=true,push=true
+
+      -
+        name: Export the digest
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        run: |
+          set -ex
+          mkdir -p /tmp/digests
+          touch "/tmp/digests/${DIGEST#sha256:}"
+        env:
+          DIGEST: ${{ steps.docker_build.outputs.digest }}
+
+      -
+        name: Upload the digest
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-php${{ matrix.php }}-alpine-${{ matrix.platform.slug }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # This job runs only if every platform built, so a failed architecture can never be silently dropped from the tags.
+  merge:
+    name: PHP ${{ matrix.php }} (alpine)
+    needs: build
+    runs-on: ubuntu-24.04
+    if: github.repository == 'swoole/docker-swoole'
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.1", "8.2", "8.3", "8.4", "8.5"]
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v7
+
+      -
+        name: Set output parameters
+        id: params
+        run: |
+          set -ex
+
+          branch_name=${GITHUB_REF##*/}
+          echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
+
+          if [ ! -f "$(pwd)/dockerfiles/${branch_name}/php${{ matrix.php }}/alpine/Dockerfile" ] ; then
+            echo "dockerfile_missing=true" >> $GITHUB_OUTPUT
+          fi
           if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
             major_version=${branch_name%.*}
             echo "major_version=${major_version}" >> $GITHUB_OUTPUT
@@ -69,59 +161,53 @@ jobs:
           fi
 
       -
-        name: Build Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine for testing
+        name: Download the digests
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
-        uses: docker/build-push-action@v7
+        uses: actions/download-artifact@v4
         with:
-          context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
-          load: true
-          push: false
-          tags: phpswoole/swoole:test
+          path: /tmp/digests
+          pattern: digests-php${{ matrix.php }}-alpine-*
+          merge-multiple: true
 
       -
-        name: Test Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
+        name: Set up Docker Buildx
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
-        run: ./bin/test-image.sh phpswoole/swoole:test
+        uses: docker/setup-buildx-action@v4
 
       -
-        name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' && steps.params.outputs.image_type == 'latest'
-        uses: docker/build-push-action@v7
+        name: Login to DockerHub
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        uses: docker/login-action@v4
         with:
-          context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
-          push: true
-          tags: |
-            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}-alpine
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-alpine
-            phpswoole/swoole:latest-alpine
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # The floating tags depend on the image type: "default" images only get the two version-specific tags, "major"
+      # images also get the tag for their minor series, and the "latest" image gets that plus the bare "latest" tag.
       -
-        name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' && steps.params.outputs.image_type == 'major'
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
-          push: true
-          tags: |
-            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}-alpine
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-alpine
+        name: Push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        working-directory: /tmp/digests
+        env:
+          BRANCH_NAME: ${{ steps.params.outputs.branch_name }}
+          MAJOR_VERSION: ${{ steps.params.outputs.major_version }}
+          IMAGE_TYPE: ${{ steps.params.outputs.image_type }}
+          POSTFIX: "-alpine"
+        run: |
+          set -ex
 
-      -
-        name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true' && steps.params.outputs.image_type == 'default'
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
-          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
-          push: true
-          tags: |
-            phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine
-            phpswoole/swoole:${{ steps.params.outputs.major_version }}-php${{ matrix.php }}-alpine
+          tags=(
+              "${BRANCH_NAME}-php${{ matrix.php }}${POSTFIX}"
+              "${MAJOR_VERSION}-php${{ matrix.php }}${POSTFIX}"
+          )
+          if [ "${IMAGE_TYPE}" = 'major' ] || [ "${IMAGE_TYPE}" = 'latest' ] ; then
+              tags+=( "${MAJOR_VERSION}${POSTFIX}" )
+          fi
+          if [ "${IMAGE_TYPE}" = 'latest' ] ; then
+              tags+=( "latest${POSTFIX}" )
+          fi
+
+          docker buildx imagetools create \
+              $(printf -- '--tag phpswoole/swoole:%s ' "${tags[@]}") \
+              $(printf 'phpswoole/swoole@sha256:%s ' *)
+          docker buildx imagetools inspect "phpswoole/swoole:${tags[0]}"

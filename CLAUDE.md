@@ -52,9 +52,15 @@ This repository does not use git tags; Swoole versions are tracked entirely as g
 
 ### CPU architectures
 
-Images are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and `linux/s390x`. The list is repeated in
-every build workflow under `.github/workflows/` — once per nightly workflow, and three times per versioned
-workflow (one per image type, since those push steps differ only in the tags they apply).
+Images are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and `linux/s390x`. Each build workflow under
+`.github/workflows/` declares them once, as a `platform` matrix dimension: every platform is built by its own job
+and pushed to the registry by digest, and a final `merge` job joins those digests into one multi-architecture tag.
+That job only runs if every platform built, so a failed architecture cannot be silently dropped from a tag.
+
+GitHub hosts x86 and arm64 runners, so those two are built natively and the rest are emulated with QEMU. The
+functional tests in `bin/test-image.sh` run the image, so they only run on the platforms that are native to their
+runner; the others are covered by the assertion at the end of every Dockerfile, which fails the build if extension
+Swoole cannot be loaded.
 
 `linux/riscv64` is the only architecture that *could* be added: every base image publishes it (the PHP images for
 8.1 through 8.5 on both Debian and Alpine, and the Composer images pulled in via `COPY --from`), and Swoole ships
@@ -66,7 +72,7 @@ context-switching assembly for it. It is deliberately left out for now, for two 
 - **No one has asked for it.** The issue tracker has no request for riscv64, or for any other architecture.
 
 Neither reason is permanent — add it if riscv64 hardware becomes common enough that users ask for it, or if the
-build stops being emulated. It is a one-line change to each platform list.
+build stops being emulated. It is one extra entry in the `platform` matrix of each build workflow.
 
 No other architecture can be added. Swoole dropped 32-bit CPUs in 5.1, which rules out `linux/386`,
 `linux/arm/v5`, `linux/arm/v6` and `linux/arm/v7`: its `config.m4` still maps those CPUs to assembly files that
