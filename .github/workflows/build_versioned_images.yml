@@ -6,6 +6,11 @@ on:
       - '[4-9].[0-9]+.[0-9]+'
       - '[4-9].[0-9]+.[0-9]+-?[a-zA-Z]**'
 
+env:
+  # Number of entries in the "platform" matrix below. The merge job refuses to publish a tag unless it collected
+  # exactly that many digests, so an architecture can never go missing from a published tag.
+  EXPECTED_DIGESTS: 4
+
 # Each platform is built by its own job, on a runner of that architecture where GitHub offers one, and pushed to the
 # registry by digest only. A final job joins those digests into one multi-architecture tag. Building linux/amd64 on
 # an x86 runner instead of emulating it on the arm64 runners keeps it native, which is both faster and the only way
@@ -20,6 +25,9 @@ jobs:
       matrix:
         php: ["8.1", "8.2", "8.3", "8.4", "8.5"]
         image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
+        # Keep "emulated" an unquoted YAML boolean: the steps below negate it, and a quoted "false" would
+        # be a non-empty string, so the negation would silently turn every one of them off. Keep the number
+        # of entries in sync with EXPECTED_DIGESTS above.
         platform:
           - {name: "linux/amd64",    slug: "amd64",   runner: "ubuntu-24.04",     emulated: false}
           - {name: "linux/arm64/v8", slug: "arm64v8", runner: "ubuntu-24.04-arm", emulated: false}
@@ -101,6 +109,7 @@ jobs:
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
         run: |
           set -ex
+          : "${DIGEST:?the build step produced no digest}"
           mkdir -p /tmp/digests
           touch "/tmp/digests/${DIGEST#sha256:}"
         env:
@@ -114,14 +123,19 @@ jobs:
           name: digests-php${{ matrix.php }}-${{ matrix.image.type }}-${{ matrix.platform.slug }}
           path: /tmp/digests/*
           if-no-files-found: error
+          overwrite: true
           retention-days: 1
 
-  # This job runs only if every platform built, so a failed architecture can never be silently dropped from the tags.
+  # Joins the per-platform digests into the multi-architecture tag(s).
   merge:
     name: PHP ${{ matrix.php }} (${{ matrix.image.type }})
     needs: build
     runs-on: ubuntu-24.04
-    if: github.repository == 'swoole/docker-swoole'
+    # Without "!cancelled()" a single failed build job would skip the whole merge matrix, so one flaky
+    # emulated platform would stop every tag in the run from being published — the previous pipeline only
+    # lost the tag it belonged to. The digest count checked below is what keeps that safe: a tag is still
+    # never published from an incomplete set of platforms.
+    if: ${{ !cancelled() && github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: false
       matrix:
@@ -207,6 +221,14 @@ jobs:
           fi
           if [ "${IMAGE_TYPE}" = 'latest' ] ; then
               tags+=( "latest${POSTFIX}" )
+          fi
+
+          # download-artifact does not fail on a partial match, so without this a tag could be published with
+          # an architecture missing.
+          found=$(find . -maxdepth 1 -type f | wc -l)
+          if [ "${found}" -ne "${EXPECTED_DIGESTS}" ] ; then
+              echo "expected ${EXPECTED_DIGESTS} digests, found ${found}" >&2
+              exit 1
           fi
 
           docker buildx imagetools create \
