@@ -4,9 +4,9 @@ name: Probe Platform Support
 # Actions tab, and record what it prints in the pull request or issue that asks for the architecture — the value of
 # this workflow is the recorded result, not the run.
 #
-# It builds on x86 runners because that is the best-trodden path for QEMU, and it exists because a local build cannot
-# answer the question completely: the runners pin nothing (every workflow here installs "tonistiigi/binfmt:latest"),
-# so an architecture can regress from a QEMU release with no commit in this repository.
+# It builds on x86 runners because that is the best-trodden path for QEMU. Every workflow here pins the emulators to
+# one "tonistiigi/binfmt" tag, so moving to a newer QEMU is a deliberate commit rather than something that happens on
+# its own — and this is where a candidate architecture, or a new pin, gets checked before it reaches a build.
 #
 # It probes both a Debian and an Alpine image on purpose. They differ where it matters: Swoole only ships
 # context-switching assembly for some CPUs and falls back to ucontext on the rest, which musl does not implement —

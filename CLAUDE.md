@@ -55,7 +55,8 @@ This repository does not use git tags; Swoole versions are tracked entirely as g
 Images are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and `linux/s390x`. Each build workflow under
 `.github/workflows/` declares them once, as a `platform` matrix dimension: every platform is built by its own job
 and pushed to the registry by digest, and a final `merge` job joins those digests into one multi-architecture tag.
-That job only runs if every platform built, so a failed architecture cannot be silently dropped from a tag.
+That job refuses to publish unless it collected a digest from every platform, so a failed architecture cannot be
+silently dropped from a tag.
 
 GitHub hosts x86 and arm64 runners, so those two are built natively and the rest are emulated with QEMU. The
 functional tests in `bin/test-image.sh` run the image, so they only run on the platforms that are native to their
