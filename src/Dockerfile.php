@@ -31,6 +31,11 @@ class Dockerfile
 
     protected const VERSION_NIGHTLY = 'nightly';
 
+    /**
+     * Folder of the Twig templates, relative to the base path. Templates include each other by paths relative to it.
+     */
+    protected const TEMPLATE_DIR = 'templates';
+
     protected const ALPINE_VERSIONS = [
         // PHP major version => Alpine version,
         '7.1' => '3.10',
@@ -362,7 +367,10 @@ class Dockerfile
     private function getTwig(): Environment
     {
         if ($this->twig === null) {
-            $this->twig = new Environment(new FilesystemLoader($this->getBasePath()), ['autoescape' => false]);
+            $this->twig = new Environment(
+                new FilesystemLoader("{$this->getBasePath()}/" . self::TEMPLATE_DIR),
+                ['autoescape' => false]
+            );
             // Quotes a value as one single argument of a shell command, e.g. the configure options of a PECL extension.
             $this->twig->addFilter(new TwigFilter('shell_arg', 'escapeshellarg'));
         }
