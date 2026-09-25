@@ -117,6 +117,16 @@ Table of Contents
   hostname resolved in coroutines instead of only to `dnsLookup()`; and `/etc/nsswitch.conf` is no longer consulted.
 - **Option _--enable-swoole-stdext_ is no longer used when installing Swoole**, since Swoole 6.3.0 removed the stdext
   module.
+- **Fix commands with arguments containing spaces or wildcards, e.g. `php -r 'echo "hello world";'`**: the
+  entrypoint of non-Alpine images split such arguments into words and expanded wildcards. A command given as one
+  single string (e.g. `"composer --version"`, as used in ECS) is still split into words.
+- **Fix auto-reloading**: it no longer leaves one _inotifywait_ process behind on each reload, and it now restarts
+  programs that stopped with an error (e.g. a syntax error) once the file is fixed.
+- Install package _inotify-tools_ in non-Alpine images, instead of when a container with auto-reloading enabled starts.
+- Stop containers right away when no Supervisor program is running (e.g. with `DISABLE_DEFAULT_SERVER=true`), instead
+  of being killed when Docker's stop timeout runs out.
+- Give the default Swoole server 8 seconds to stop (option `stopwaitsecs` of Supervisor), so that it stops before
+  Docker's default stop timeout of 10 seconds runs out.
 
 # Swoole 6.2
 

@@ -14,7 +14,7 @@
 set -e
 
 if [[ -z ${!1} ]] ; then
-    echo "Error: environment variable '{$1}' is empty."
+    echo "Error: environment variable '${1}' is empty."
     exit 1
 fi
 

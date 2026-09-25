@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ ! -z "$@" ]] ; then
+if [[ -n "$*" ]] ; then
     # The container is started to run some one-off command only.
     BOOT_MODE=TASK
 else
@@ -30,28 +30,26 @@ if [[ "SERVICE" == "${BOOT_MODE}" ]] ; then
     if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
         exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n # Run supervisord in the foreground.
     else
-        tail -f /dev/null
+        # No programs to run. Wait until the container is stopped, and exit right away when it is: as PID 1, a process
+        # without signal handlers (e.g., "tail -f /dev/null") ignores SIGTERM, so "docker stop" would have to kill it.
+        trap 'exit 0' TERM INT
+        sleep infinity &
+        wait
     fi
 else
     if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
         /usr/bin/supervisord -c /etc/supervisor/supervisord.conf # Run supervisord in the background.
-
-        # To gracefully stop supervisord and its child processes, we can use following trap commands. However, they are
-        # not tested yet, and thus are commented out.
-        # supervisordPid="$!"
-        # trap "kill -SIGTERM ${supervisordPid} && wait ${supervisordPid}" SIGTERM
-        # trap "kill -SIGTERM ${supervisordPid} && wait ${supervisordPid}" SIGINT
-        # trap "kill -SIGTERM ${supervisordPid} && wait ${supervisordPid}" SIGKILL
     fi
 
-    if [[ "${1}" =~ ^(ba|)sh$ ]] ; then
-        # To support Docker commands like following:
-        # docker run --rm phpswoole/swoole bash -c "composer --version"
-        # docker run --rm phpswoole/swoole   sh -c "composer --version"
-        exec "$@"
+    if [[ $# -eq 1 ]] ; then
+        # A command given as one single string is split into words, to support Docker commands invoked in ECS (via
+        # command "aws ecs run-task"), kind of like following:
+        #     docker run --rm phpswoole/swoole "composer --version"
+        exec $1
     else
-        # To support Docker commands invoked in ECS (via command "aws ecs run-task"), kind of like following:
-        # docker run --rm phpswoole/swoole "composer --version"
-        exec $@
+        # Arguments are passed through as they are, e.g.,
+        #     docker run --rm phpswoole/swoole bash -c "composer --version"
+        #     docker run --rm phpswoole/swoole php -r 'echo "hello world", PHP_EOL;'
+        exec "$@"
     fi
 fi

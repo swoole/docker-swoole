@@ -123,6 +123,13 @@ check_command_output \
 
 check_command_output "Composer works" "Composer version" -- composer --version
 
+# Arguments containing spaces or wildcards must reach the command unchanged; the entrypoint of non-Alpine images used to
+# split them into words and expand wildcards.
+check_command_output \
+    "Command arguments are passed through unchanged" \
+    '["hello world","*"]' \
+    -- php -r 'echo json_encode(array_slice($argv, 1)), PHP_EOL;' -- "hello world" '*'
+
 echo "Running functional tests inside the image ..."
 # SWOOLE_TEST_TIME_FACTOR is forwarded rather than set here: only the caller knows whether the image is being run
 # on its own architecture or emulated, and the tests scale their timings by it.

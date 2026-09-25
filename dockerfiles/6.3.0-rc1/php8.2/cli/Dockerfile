@@ -13,6 +13,15 @@ RUN \
     set -ex && \
     apt-get update && \
     apt-get install -y \
+# The auto-reloading feature is supported for non-Alpine images only.
+#
+# Package "inotify-tools" is pre-installed in nightly images and in 6.3.0-rc1+ images. For older versioned images, it
+# will be installed automatically when needed. For details, please check script "autoreload.sh" and example
+# "00-autoreload".
+#
+# @see https://github.com/swoole/docker-swoole/blob/master/rootfilesystem/usr/local/boot/autoreload.sh
+# @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
+        inotify-tools              \
         libcurl4-openssl-dev       \
         libbrotli-dev              \
         libc-ares-dev              \
