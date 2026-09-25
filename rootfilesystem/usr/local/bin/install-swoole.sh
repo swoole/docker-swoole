@@ -1,42 +1,37 @@
 #!/usr/bin/env bash
-# This script is used to install Swoole in the official Swoole image.
 #
-# How to use this script?
-#     ./install-swoole.sh [SWOOLE_VERSION] [Swoole installation options]
+# Download, build, install and enable Swoole from source code, e.g., to rebuild Swoole with different configure options
+# in an image derived from the official Swoole images.
+#
+# Usage:
+#     install-swoole.sh [SWOOLE_VERSION] [configure options of Swoole]
+#
+# SWOOLE_VERSION is a branch name ("master" by default), a tag (e.g., "6.2.3" or "v6.2.3"), or a full Git commit hash.
 # For example,
-#     ./install-swoole.sh
-#     ./install-swoole.sh master
-#     ./install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
-#     ./install-swoole.sh 5.0.0 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl
+#     install-swoole.sh
+#     install-swoole.sh master
+#     install-swoole.sh 6.2.3 --enable-mysqlnd --enable-sockets --enable-swoole-curl
+#     install-swoole.sh b8a876a4b3f285c9682dabd80ae1aa15932050f9 --enable-mysqlnd --enable-sockets
 #
-# The first parameter (SWOOLE_VERSION) should be a branch name, a tag or a Git commit number. For example,
-#     master                                   # To install Swoole with latest code from branch "master".
-#     b8a876a4b3f285c9682dabd80ae1aa15932050f9 # To install Swoole with code from a Git commit.
-#     4.5.10                                   # To install Swoole 4.5.10.
+# Configure options not recognized by the version of Swoole being built fail the build. For the options of a version,
+# please check file config.m4 in the source code of Swoole.
 #
-# You can specify other predefined variables if needed. For example, on macOS Mojave you may need to specify LDFLAGS,
-# CFLAGS and CPPFLAGS like following:
+# When environment variable DEV_MODE is set to "true", debugging tools (gdb, strace, valgrind, etc.) are installed too,
+# Swoole is built with debug and trace logging enabled, and its source code is kept in folder /usr/src/swoole-src.
 #
-#     LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/expat/lib"               \
-#     CFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include"   \
-#     CPPFLAGS="-I/usr/local/opt/openssl/include/ -I/usr/local/include -I/usr/local/opt/expat/include" \
-#     ./install-swoole.sh 4.5.10 --enable-http2 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl --enable-swoole-json
-#     ./install-swoole.sh 5.0.0 --enable-mysqlnd --enable-openssl --enable-sockets --enable-swoole-curl
+# PHP extension sockets is installed first if needed. The libraries that Swoole is built against (e.g., OpenSSL for
+# Swoole 6.2+, or libcurl for option --enable-swoole-curl) must be installed already, with their headers.
 #
-# Before using this script, you should have PHP extension sockets installed, and have packages like openssl installed
-# already.
 
 set -ex
 
 [[ -z "${SWOOLE_FUNCTIONS_LOADED}" ]] && . functions.sh
 
-if [[ ! -z ${1} ]] ; then
-    SWOOLE_VERSION=$1
-    shift 1 # Remove Swoole version # out from command line arguments.
-else
-    SWOOLE_VERSION=master
+SWOOLE_VERSION="${1:-master}"
+if [[ $# -gt 0 ]] ; then
+    shift 1 # Remove the Swoole version from the command line arguments.
 fi
-export SWOOLE_VERSION=$SWOOLE_VERSION
+export SWOOLE_VERSION
 
 # Get PHP extension sockets installed if needed.
 if ! php -m | grep -q sockets ; then
@@ -48,13 +43,15 @@ if ! php -m | grep -q sockets ; then
     fi
 fi
 
+DEV_OPTIONS=()
 if [[ "true" = "${DEV_MODE}" ]] ; then
+    apt-get update
     apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends
-    DEV_OPTIONS="--enable-debug-log --enable-trace-log"
-else
-    DEV_OPTIONS=""
+    DEV_OPTIONS=(--enable-debug-log --enable-trace-log)
 fi
-install swoole-src "${SWOOLE_VERSION}" "$@" ${DEV_OPTIONS}
+
+download "${SWOOLE_VERSION}"
+build "$@" "${DEV_OPTIONS[@]}"
 if hash docker-php-ext-enable 2>/dev/null ; then
     docker-php-ext-enable swoole
 else

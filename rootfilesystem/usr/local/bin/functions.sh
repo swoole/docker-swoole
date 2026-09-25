@@ -1,156 +1,59 @@
 #!/usr/bin/env bash
 #
-# Environment variables used during Swoole installation:
-#     * DEV_MODE
-#     * SWOOLE_SRC_DIR: Points to directory /usr/src/swoole-src.
-#     * SWOOLE_FUNCTIONS_LOADED: TRUE if this script has been loaded.
-#     * SWOOLE_VERSION: Could be one of following:
-#         * master                                   # "master" is a branch name.
-#         * v4.3.3                                   # "v4.3.3" is a tag.
-#         * e52c4b78b4a016fffb049490555a8858ca16edb6 # a full Git commit number.
+# Functions to download, build and install Swoole from source code, used by script install-swoole.sh.
+#
+# Environment variables used:
+#     * DEV_MODE: When set to "true", the source code of Swoole is kept after the installation.
+#     * SWOOLE_SRC_DIR: The folder the source code of Swoole is put in; set by function initSwooleDir() below.
+#     * SWOOLE_FUNCTIONS_LOADED: Set to "true" once this script has been loaded.
 #
 
-# Download a Swoole package from Github.
+# Download the source code of Swoole from GitHub into folder $SWOOLE_SRC_DIR, replacing anything already there.
 #
-# @param Swoole package name.
-# @param Version #.
+# @param The version to download: a branch name (e.g., "master"; the default), a tag with or without the leading "v"
+#        (e.g., "6.2.3", "v6.2.3" or "6.3.0-rc1"), or a full Git commit hash.
 function download()
 {
-    if [[ -z "${SWOOLE_SRC_DIR}" ]] ; then
-        echo "Error: environment variable SWOOLE_SRC_DIR is empty or not yet set."
+    local version="${1:-master}"
+    if [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-?[A-Za-z0-9]+)?$ ]] ; then
+        version="v${version}"
+    fi
+
+    local url="https://github.com/swoole/swoole-src/archive/${version}.tar.gz"
+    local archive
+    archive="$(mktemp)"
+    if ! curl -sSfL --retry 5 --retry-all-errors --connect-timeout 20 "${url}" -o "${archive}" ; then
+        echo "Error: failed to download from URL '${url}'."
+        rm -f "${archive}"
         exit 1
     fi
 
-    project_name=$1
-    if [[ "swoole-src" = "${project_name}" ]] ; then
-        if [[ ! -d "$(dirname "${SWOOLE_SRC_DIR}")" ]] ; then
-            echo "Error: Parent folder \"$(dirname "${SWOOLE_SRC_DIR}")\" does not exist."
-            exit 1
-        fi
-        cd "$(dirname "${SWOOLE_SRC_DIR}")"
-    else
-        if [[ ! -d "${SWOOLE_SRC_DIR}" ]] ; then
-            echo "Error: environment variable SWOOLE_SRC_DIR does not point to a valid folder at \"${SWOOLE_SRC_DIR}\"."
-            exit 1
-        fi
+    # The archive has a single top-level folder whose name depends on the version (e.g., "swoole-src-6.2.3"), so it is
+    # stripped rather than guessed.
+    rm -rf "${SWOOLE_SRC_DIR}"
+    mkdir -p "${SWOOLE_SRC_DIR}"
+    tar xzf "${archive}" --strip-components=1 -C "${SWOOLE_SRC_DIR}"
+    rm -f "${archive}"
+}
+
+# Build and install Swoole from the source code in folder $SWOOLE_SRC_DIR.
+#
+# @param The configure options. Options not recognized by the version of Swoole being built fail the build, same as
+#        with command docker-php-ext-configure.
+function build()
+{
+    (
         cd "${SWOOLE_SRC_DIR}"
-    fi
-
-    if [[ -z "$2" ]] ; then
-        version=master
-    else
-        version=$2
-    fi
-
-    if [[ "${version}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(\-?[A-Za-z0-9]+)?$ ]] ; then
-        download_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
-        unzipped_dir="${project_name}-${version#*v}"
-    elif [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-?[A-Za-z0-9]+)?$ ]] ; then
-        download_url="https://github.com/swoole/${project_name}/archive/v${version}.zip"
-        unzipped_dir="${project_name}-${version}"
-    else
-        download_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
-        unzipped_dir="${project_name}-${version}"
-    fi
-
-    if [[ -f temp.zip ]] ; then
-        rm -f temp.zip
-    fi
-    if [[ -d "${unzipped_dir}" ]] ; then
-        rm -rf "${unzipped_dir}"
-    fi
-    if [[ -d "${project_name}" ]] ; then
-        rm -rf "${project_name}"
-    fi
-
-    if ! curl -sSfL --retry 5 --retry-all-errors --connect-timeout 20 "${download_url}" -o temp.zip ; then
-        echo Error: failed to download from URL "${download_url}"
-        exit 1
-    fi
-    unzip -q temp.zip
-    if [[ ! -d "${unzipped_dir}" ]] ; then
-        echo "Error: top directory in the zip file downloaded from URL '${download_url}' is not '${unzipped_dir}'."
-        exit 1
-    fi
-    mv "${unzipped_dir}" "${project_name}"
-    rm -f temp.zip
-    cd -
-}
-
-# Install a Swoole package from source code.
-#
-# @param Swoole package name.
-# @param Version #.
-# @param Rest parameters are the configure options.
-function install()
-{
-    old_pwd="$(pwd)"
-
-    download "$1" "$2"
-    cd - # Last command in function download() is "cd -", so here we switch to the folder where the source code sits.
-    cd "$1"
-    phpize
-# Match docker-php-ext-configure's behavior (used for Alpine images): fail the build on any configure option no
-# longer recognized by the extension being installed, instead of silently ignoring it with just a warning.
-    ./configure --enable-option-checking=fatal "${@:3}"
-    make -j$(nproc)
-    make install
-    make clean
-
-    cd "${old_pwd}"
-}
-
-# Install PHP-X.
-#
-# @param Version #.
-function installPHPX()
-{
-    old_pwd="$(pwd)"
-
-    download phpx "$1"
-
-    cd - # Last command in function download() is "cd -", so here we switch to the folder where the source code sits.
-    cd phpx
-    # Build phpx (bin)
-    ./build.sh
-
-    # Build libphpx.so
-    cmake .
-    make -j$(nproc)
-    make install
-    make clean
-    # Workaround for error loading libphpx:
-    #   error while loading shared libraries: "libphpx.so: cannot open shared object file: No such file or directory"
-    # The system already has /usr/local/lib listed in /etc/ld.so.conf.d/libc.conf, so running `ldconfig` fixes the
-    # problem (another option is to use $LD_LIBRARY_PATH).
-    ldconfig
-
-    cd "${old_pwd}"
-}
-
-# Install given Swoole extension if its version # is specified.
-#
-# @param Swoole extension name. e.g., zookeeper.
-# @param Version #.
-function installExtUsingPHPX()
-{
-    old_pwd="$(pwd)"
-
-    echo "Installing Swoole extension ${1} ..."
-    download ext-"$1" "${2}"
-    cd - # Last command in function download() is "cd -", so here we switch to the folder where the source code sits.
-    cd ext-"$1"
-    ../phpx/bin/phpx build -v -d
-    ../phpx/bin/phpx install
-
-    cd "${old_pwd}"
+        phpize
+        ./configure --enable-option-checking=fatal "$@"
+        make -j"$(nproc)"
+        make install
+        make clean
+    )
 }
 
 function cleanupSwoole()
 {
-    if [[ -d "${SWOOLE_SRC_DIR}/phpx" ]] ; then
-        rm -rf "${SWOOLE_SRC_DIR}/phpx"
-    fi
     if [[ "true" = "${DEV_MODE}" ]] ; then
         echo "Swoole is installed for development purpose with source code included in folder \"${SWOOLE_SRC_DIR}\"."
     else

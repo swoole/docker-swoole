@@ -135,6 +135,9 @@ Table of Contents
   compiled in parallel.
 - Retry failed downloads of the Swoole source code.
 - Sign the images with cosign, and attach an SBOM, full build provenance and OCI labels to them.
+- **Remove scripts `install-swoole-ext.sh`, `install-phpx.sh` and `install-swoole-ext-zookeeper.sh`**, and examples 13
+  to 15 that used them: the Swoole extensions and PHP-X they installed are no longer maintained, and the scripts no
+  longer worked.
 
 # Swoole 6.2
 
