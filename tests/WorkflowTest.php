@@ -127,6 +127,41 @@ class WorkflowTest extends TestCase
     }
 
     /**
+     * The Dockerfiles have more than one stage (the first one downloads source code), so the base image recorded in the
+     * labels of an image must come from the last one. The command of the workflow step is run for real, against a
+     * nightly Dockerfile.
+     */
+    #[DataProvider('dataBuildWorkflows')]
+    public function testBaseImageIsReadFromTheLastStage(string $workflow): void
+    {
+        $steps = array_filter(
+            Yaml::parseFile($workflow)['jobs']['build']['steps'],
+            fn (array $step): bool => ($step['id'] ?? null) === 'base',
+        );
+        self::assertCount(1, $steps, "{$workflow} should have exactly one step reading the base image");
+
+        $command = strtr(reset($steps)['run'], [
+            '${{ steps.params.outputs.branch_name }}' => 'nightly',
+            '${{ matrix.php }}'                       => '8.4',
+            '${{ matrix.image.type }}'                => 'cli',
+        ]);
+        self::assertStringNotContainsString('${{', $command, "unexpected expression left in the command of {$workflow}");
+
+        $output = tempnam(sys_get_temp_dir(), 'github-output-');
+        try {
+            exec('cd ' . escapeshellarg(dirname(__DIR__)) . ' && GITHUB_OUTPUT=' . escapeshellarg($output) . ' bash -c ' . escapeshellarg($command), $lines, $status);
+            self::assertSame(0, $status, "the command reading the base image failed in {$workflow}");
+            self::assertMatchesRegularExpression(
+                '#^name=docker\.io/library/php:8\.4-(cli|zts|cli-alpine\d+\.\d+)$#',
+                trim(file_get_contents($output)),
+                "{$workflow} doesn't read the base image from the last stage of the Dockerfile",
+            );
+        } finally {
+            unlink($output);
+        }
+    }
+
+    /**
      * @return array<string, array{string}>
      */
     public static function dataBuildWorkflows(): array

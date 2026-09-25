@@ -86,7 +86,8 @@ jobs:
       -
         name: Read the base image of the Dockerfile
         id: base
-        run: echo "name=docker.io/library/$(awk 'toupper($1) == "FROM" { print $2; exit }' "dockerfiles/nightly/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile")" >> "$GITHUB_OUTPUT"
+        # The image is based on the last stage of the Dockerfile; the stages before it only prepare files for the build.
+        run: echo "name=docker.io/library/$(awk 'toupper($1) == "FROM" { base = $2 } END { print base }' "dockerfiles/nightly/php${{ matrix.php }}/${{ matrix.image.type }}/Dockerfile")" >> "$GITHUB_OUTPUT"
 
       -
         name: Build and push Docker image phpswoole/swoole:php${{ matrix.php }}${{ matrix.image.postfix }} by digest
