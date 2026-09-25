@@ -43,13 +43,13 @@ function download()
     fi
 
     if [[ "${version}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(\-?[A-Za-z0-9]+)?$ ]] ; then
-        downlaod_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
+        download_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
         unzipped_dir="${project_name}-${version#*v}"
     elif [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\-?[A-Za-z0-9]+)?$ ]] ; then
-        downlaod_url="https://github.com/swoole/${project_name}/archive/v${version}.zip"
+        download_url="https://github.com/swoole/${project_name}/archive/v${version}.zip"
         unzipped_dir="${project_name}-${version}"
     else
-        downlaod_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
+        download_url="https://github.com/swoole/${project_name}/archive/${version}.zip"
         unzipped_dir="${project_name}-${version}"
     fi
 
@@ -63,13 +63,13 @@ function download()
         rm -rf "${project_name}"
     fi
 
-    if ! curl -sfL "${downlaod_url}" -o temp.zip ; then
-        echo Error: failed to download from URL "${downlaod_url}"
+    if ! curl -sSfL --retry 5 --retry-all-errors --connect-timeout 20 "${download_url}" -o temp.zip ; then
+        echo Error: failed to download from URL "${download_url}"
         exit 1
     fi
-    unzip temp.zip
+    unzip -q temp.zip
     if [[ ! -d "${unzipped_dir}" ]] ; then
-        echo "Error: top directory in the zip file downloaded from URL '${downlaod_url}' is not '${unzipped_dir}'."
+        echo "Error: top directory in the zip file downloaded from URL '${download_url}' is not '${unzipped_dir}'."
         exit 1
     fi
     mv "${unzipped_dir}" "${project_name}"

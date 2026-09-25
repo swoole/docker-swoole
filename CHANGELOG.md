@@ -127,6 +127,13 @@ Table of Contents
   of being killed when Docker's stop timeout runs out.
 - Give the default Swoole server 8 seconds to stop (option `stopwaitsecs` of Supervisor), so that it stops before
   Docker's default stop timeout of 10 seconds runs out.
+- **Reduce the size of non-Alpine images by about 97 MB**, by stripping debugging symbols from the PHP extensions and
+  removing all packages that are only needed to build them. Running `apt-get autoremove` in a derived image no longer
+  removes shared libraries that the PHP extensions need. Development images (`-dev`) keep both.
+- Strip debugging symbols from PHP extensions _Redis_ and _igbinary_ in Alpine images too.
+- Build the images faster: Alpine images install `libpq-dev` instead of `postgresql-dev`, and PECL extensions are
+  compiled in parallel.
+- Retry failed downloads of the Swoole source code.
 
 # Swoole 6.2
 
