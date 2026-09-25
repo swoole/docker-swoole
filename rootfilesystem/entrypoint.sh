@@ -57,10 +57,12 @@ else
     /usr/bin/supervisord -c /etc/supervisor/supervisord.conf # Run supervisord in the background.
 
     # Standard input is passed on explicitly, since a command started in the background reads from /dev/null otherwise.
+    # Signals SIGINT and SIGQUIT are reset to their defaults too: a non-interactive shell starts background commands with
+    # both ignored, so Ctrl+C (forwarded below) wouldn't interrupt the command.
     if [[ $# -eq 1 ]] ; then
-        $1 <&0 &
+        ( trap - INT QUIT ; exec $1 ) <&0 &
     else
-        "$@" <&0 &
+        ( trap - INT QUIT ; exec "$@" ) <&0 &
     fi
     pid=$!
     trap 'kill -TERM "${pid}" 2>/dev/null' TERM
