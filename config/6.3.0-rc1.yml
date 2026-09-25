@@ -1,0 +1,35 @@
+# The YAML configuration file for generating Dockerfile of image phpswoole/swoole:6.3.0-rc1.
+# For technical details of the configuration file, please check comments and sample configurations in file /config.yml.
+#
+status: "under development"
+php:
+  - "8.2.34"
+  - "8.3.33"
+  - "8.4.26"
+  - "8.5.11"
+image:
+  composer:
+    version: "2.10.3"
+  php_extensions:
+    # Extension igbinary must be listed before extension Redis: phpredis's configure script needs the igbinary headers
+    # to build its igbinary serializer. igbinary 3.2.16, the latest stable release, doesn't compile on PHP 8.5 (it
+    # includes header ext/standard/php_smart_string.h, removed in PHP 8.5); support for PHP 8.5 is only available in
+    # 3.2.17RC1 so far.
+    igbinary:
+      version: "3.2.16"
+      version_overrides:
+        "8.5": "3.2.17RC1"
+      enabled: true
+    redis:
+      version: "6.3.0"
+      # All six configure options declared by redis-6.3.0's package.xml are listed explicitly. Options omitted here
+      # are still prompted for by PECL and silently fall back to their package defaults, which makes the build
+      # non-deterministic and lets it drift whenever phpredis adds a new option.
+      #
+      # The igbinary serializer is enabled; Redis::OPT_SERIALIZER still defaults to Redis::SERIALIZER_PHP.
+      #
+      # Compression support (lzf, zstd) is enabled: lzf is compiled from sources bundled with phpredis, and libzstd
+      # is already present in the base images. Neither adds a PHP extension, and Redis::OPT_COMPRESSION still
+      # defaults to Redis::COMPRESSION_NONE, so stored data is unaffected unless an application opts in.
+      configureoptions: "enable-redis-igbinary=\"yes\" enable-redis-lzf=\"yes\" enable-redis-zstd=\"yes\" enable-redis-msgpack=\"no\" enable-redis-lz4=\"no\" with-liblz4=\"yes\""
+      enabled: true

@@ -1,6 +1,8 @@
 Table of Contents
 =================
 
+* [Swoole 6.3](#swoole-63)
+   * [6.3.0-rc1](#630-rc1)
 * [Swoole 6.2](#swoole-62)
    * [6.2.3](#623)
    * [6.2.2](#622)
@@ -95,6 +97,18 @@ Table of Contents
    * [4.4.5](#445)
 * [Swoole 4.3](#swoole-43)
    * [4.3.6](#436)
+
+# Swoole 6.3
+
+## 6.3.0-rc1
+
+### Changed
+- **Build PHP extension _Redis_ with igbinary serializer support, and include PHP extension _igbinary_.** Code that
+  feature-detects `extension_loaded('igbinary')` now takes its igbinary path; extension _Redis_ also stops loading if
+  extension _igbinary_ is disabled afterwards. PHP extension _igbinary_ is 3.2.16 for PHP 8.4 and below, and
+  **3.2.17RC1 (a pre-release) for PHP 8.5**, since 3.2.16 doesn't compile on PHP 8.5.
+- **Option _--enable-swoole-stdext_ is no longer used when installing Swoole**, since Swoole 6.3.0 removed the stdext
+  module.
 
 # Swoole 6.2
 

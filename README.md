@@ -22,6 +22,7 @@ Table of Contents
 * [Image Variants](#image-variants)
 * [Supported Tags and Respective Dockerfile Links](#supported-tags-and-respective-dockerfile-links)
    * [Versioned images](#versioned-images-based-on-stable-releases-of-swoole)
+      * [Swoole 6.3](#swoole-63)
       * [Swoole 6.2](#swoole-62)
       * [Swoole 6.1](#swoole-61)
       * [Swoole 6.0](#swoole-60)
@@ -43,7 +44,7 @@ Table of Contents
 * Support auto-reloading for local development.<sup>1</sup>
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup>
-* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ and _msgpack_ serializers are not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ and 6.2.2+ images.<sup>3</sup>
+* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ serializer is enabled in nightly images and in 6.3.0-rc1+ images, while the _msgpack_ serializer is not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ and 6.2.2+ images.<sup>3</sup>
 
 **NOTES**
 
@@ -96,17 +97,19 @@ RUN set -ex \
 
 ## Serializer and Compression Support in Extension Redis
 
-Extension _Redis_ is compiled with the _igbinary_ and _msgpack_ serializers disabled. The _lzf_ and _zstd_
-compressions are enabled in nightly images and in versioned images since 6.1.10+ and 6.2.2+; in earlier versioned
-images no compression is available. You can check what a given image supports with:
+Extension _Redis_ is compiled with the _msgpack_ serializer disabled. The _igbinary_ serializer is enabled in nightly
+images and in versioned images since 6.3.0-rc1, which include extension _igbinary_ for that purpose; in earlier
+versioned images it is disabled. The _lzf_ and _zstd_ compressions are enabled in nightly images and in versioned
+images since 6.1.10+ and 6.2.2+; in earlier versioned images no compression is available. You can check what a given
+image supports with:
 
 ```bash
-# Tag "php8.4" is a nightly image; versioned tags like "latest" print no compression line yet.
+# Tag "php8.4" is a nightly image.
 docker run --rm phpswoole/swoole:php8.4 php --ri redis | grep Available
 ```
 
 ```
-Available serializers => php, json
+Available serializers => php, json, igbinary
 Available compression => lzf, zstd
 ```
 
@@ -114,7 +117,8 @@ Serializers and compressions are opt-in at runtime: `Redis::OPT_SERIALIZER` defa
 `Redis::OPT_COMPRESSION` defaults to `Redis::COMPRESSION_NONE`, so none of them changes how your data is stored unless
 your application asks for it.
 
-To use `Redis::SERIALIZER_IGBINARY`, extension _Redis_ has to be rebuilt against extension _igbinary_. Installing
+To use `Redis::SERIALIZER_IGBINARY` in images older than 6.3.0-rc1, or the _msgpack_ serializer in any image,
+extension _Redis_ has to be rebuilt against extension _igbinary_ (or _msgpack_). Installing
 _igbinary_ alone is not enough: helper scripts like
 [install-php-extensions](https://github.com/mlocati/docker-php-extension-installer) skip extensions that are already
 installed, so the bundled _Redis_ extension is left untouched. Remove it first, then reinstall both:
@@ -147,6 +151,11 @@ RUN set -ex && \
 ```
 
 Note that above commands will remove the corresponding configuration files for the extensions, but won't remove the extensions themselves.
+
+**WARNING**: In nightly images and in 6.3.0-rc1+ images, extension _Redis_ is built with the _igbinary_ serializer and
+depends on extension _igbinary_. Do not remove `docker-php-ext-igbinary.ini` while keeping extension _Redis_ enabled:
+extension _Redis_ then fails to load, with error `Cannot load module "redis" because required module "igbinary" is not
+loaded`.
 
 ## More Examples
 
@@ -247,6 +256,15 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 
 ## Versioned images (based on stable releases of Swoole)
 
+### Swoole 6.3
+
+| PHP Versions | Default Images | Dev Images | ZTS Images | Alpine Images |
+|-|-|-|-|-|
+| PHP 8.5 | [6.3.0-rc1-php8.5][6.3-php8.5]<br />[6.3-php8.5] | [6.3.0-rc1-php8.5-dev][6.3-php8.5]<br />[6.3-php8.5-dev][6.3-php8.5] | [6.3.0-rc1-php8.5-zts][6.3-php8.5-zts]<br />[6.3-php8.5-zts] | [6.3.0-rc1-php8.5-alpine][6.3-php8.5-alpine]<br />[6.3-php8.5-alpine] |
+| PHP 8.4 | [6.3.0-rc1-php8.4][6.3-php8.4]<br />[6.3-php8.4]<br />[6.3][6.3-php8.4] | [6.3.0-rc1-php8.4-dev][6.3-php8.4]<br />[6.3-php8.4-dev][6.3-php8.4]<br />[6.3-dev][6.3-php8.4] | [6.3.0-rc1-php8.4-zts][6.3-php8.4-zts]<br />[6.3-php8.4-zts]<br />[6.3-zts][6.3-php8.4-zts] | [6.3.0-rc1-php8.4-alpine][6.3-php8.4-alpine]<br />[6.3-php8.4-alpine]<br />[6.3-alpine][6.3-php8.4-alpine] |
+| PHP 8.3 | [6.3.0-rc1-php8.3][6.3-php8.3]<br />[6.3-php8.3] | [6.3.0-rc1-php8.3-dev][6.3-php8.3]<br />[6.3-php8.3-dev][6.3-php8.3] | [6.3.0-rc1-php8.3-zts][6.3-php8.3-zts]<br />[6.3-php8.3-zts] | [6.3.0-rc1-php8.3-alpine][6.3-php8.3-alpine]<br />[6.3-php8.3-alpine] |
+| PHP 8.2 | [6.3.0-rc1-php8.2][6.3-php8.2]<br />[6.3-php8.2] | [6.3.0-rc1-php8.2-dev][6.3-php8.2]<br />[6.3-php8.2-dev][6.3-php8.2] | [6.3.0-rc1-php8.2-zts][6.3-php8.2-zts]<br />[6.3-php8.2-zts] | [6.3.0-rc1-php8.2-alpine][6.3-php8.2-alpine]<br />[6.3-php8.2-alpine] |
+
 ### Swoole 6.2
 
 | PHP Versions | Default Images | Dev Images | ZTS Images | Alpine Images |
@@ -345,6 +363,18 @@ docker build --build-arg DEV_MODE=true -t phpswoole/swoole:5.1.8-php8.2-dev -f d
 * Current implementation borrows ideas from [Demin](https://github.com/deminy)'s work at [Glu Mobile](https://ea.com).
 * Thanks to [Blackfire](https://blackfire.io) for providing free open-source subscription for their awesome profiling tool.
 
+[6.3-php8.5]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.5/cli/Dockerfile
+[6.3-php8.5-zts]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.5/zts/Dockerfile
+[6.3-php8.5-alpine]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.5/alpine/Dockerfile
+[6.3-php8.4]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.4/cli/Dockerfile
+[6.3-php8.4-zts]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.4/zts/Dockerfile
+[6.3-php8.4-alpine]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.4/alpine/Dockerfile
+[6.3-php8.3]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.3/cli/Dockerfile
+[6.3-php8.3-zts]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.3/zts/Dockerfile
+[6.3-php8.3-alpine]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.3/alpine/Dockerfile
+[6.3-php8.2]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.2/cli/Dockerfile
+[6.3-php8.2-zts]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.2/zts/Dockerfile
+[6.3-php8.2-alpine]: https://github.com/swoole/docker-swoole/blob/6.3.0-rc1/dockerfiles/6.3.0-rc1/php8.2/alpine/Dockerfile
 [6.2-php8.5]: https://github.com/swoole/docker-swoole/blob/6.2.3/dockerfiles/6.2.3/php8.5/cli/Dockerfile
 [6.2-php8.5-zts]: https://github.com/swoole/docker-swoole/blob/6.2.3/dockerfiles/6.2.3/php8.5/zts/Dockerfile
 [6.2-php8.5-alpine]: https://github.com/swoole/docker-swoole/blob/6.2.3/dockerfiles/6.2.3/php8.5/alpine/Dockerfile

@@ -1,0 +1,71 @@
+FROM php:8.4.26-zts
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TERM=xterm-color
+
+ARG DEV_MODE
+ENV DEV_MODE=$DEV_MODE
+
+COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/
+COPY ./rootfilesystem/ /
+
+RUN \
+    set -ex && \
+    apt-get update && \
+    apt-get install -y \
+        libcurl4-openssl-dev       \
+        libbrotli-dev              \
+        libpq-dev                  \
+        libsqlite3-dev             \
+        libssl-dev                 \
+        supervisor                 \
+        unixodbc-dev               \
+        unzip                      \
+        zlib1g-dev                 \
+        --no-install-recommends && \
+# PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
+    docker-php-ext-install pdo_mysql && \
+    pecl channel-update pecl.php.net && \
+    pecl install igbinary-3.2.16 && \
+    pecl install --configureoptions 'enable-redis-igbinary="yes" enable-redis-lzf="yes" enable-redis-zstd="yes" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis-6.3.0 && \
+# PHP extension Redis is included since 4.8.12+ and 5.0.1+.
+    docker-php-ext-enable igbinary && \
+    docker-php-ext-enable redis && \
+    install-swoole.sh 6.3.0-rc1 \
+        --enable-swoole-thread \
+        --enable-brotli \
+        --enable-mysqlnd \
+        --enable-sockets \
+        --enable-swoole-curl \
+        --enable-swoole-ftp \
+        --enable-swoole-pgsql \
+        --enable-swoole-sqlite \
+        --enable-zstd \
+        --with-swoole-odbc=unixODBC,/usr \
+        --with-swoole-ssh2 && \
+    mkdir -p /var/log/supervisor && \
+# For non-development images, purge the build-only "-dev" packages (headers/static libraries) to reduce
+# the final image size. The runtime shared libraries they depend on are left untouched (no autoremove is
+# run), so the compiled PHP extensions keep working. For development images (DEV_MODE=true) these headers
+# are kept intentionally, alongside the retained Swoole source code, so Swoole can be recompiled/debugged.
+    if [ "${DEV_MODE}" != "true" ] ; then \
+        apt-get purge -y \
+            libbrotli-dev            \
+            libcurl4-openssl-dev     \
+            libpq-dev                \
+            libsqlite3-dev           \
+            libssl-dev               \
+            unixodbc-dev             \
+            zlib1g-dev ; \
+    fi && \
+    rm -rf /var/lib/apt/lists/* /usr/bin/qemu-*-static && \
+# Fail the build if the extension does not actually load. Swoole is compiled here for every target platform, and
+# a library that is missing at runtime (rather than at link time) produces a successful build but an image
+# whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
+# be asserted explicitly; the published ppc64le and s390x Alpine images shipped broken this way.
+    php -r 'exit(extension_loaded("swoole") ? 0 : 1);'
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
+
+WORKDIR "/var/www/"
