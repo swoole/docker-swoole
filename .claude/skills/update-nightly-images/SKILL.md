@@ -14,7 +14,7 @@ Bumps `image.composer.version` and each entry under `image.php_extensions` in `c
 1. Read `config/nightly.yml` to see the current `composer.version` and each `php_extensions.<name>.version`.
 2. Look up the latest stable release of each:
    - **Composer**: `https://api.github.com/repos/composer/composer/releases/latest` (`tag_name`), or https://getcomposer.org/download/.
-   - **Each PECL extension** (currently just `redis`; `igbinary` joins it at Swoole 6.3.0): `https://pecl.php.net/rest/r/<name>/allreleases.xml`
+   - **Each PECL extension** (currently `igbinary` and `redis`): `https://pecl.php.net/rest/r/<name>/allreleases.xml`
      — take the newest `<v>` **whose version name carries no `RC`/`alpha`/`beta` suffix**. Do not select on the `<s>`
      stability flag, and do not use `https://pecl.php.net/rest/r/<name>/stable.txt`: PECL labels pre-releases
      `stable`, so both can hand back a release candidate. On 2026-09-18 igbinary's newest release was `3.2.17RC1`,
@@ -24,6 +24,11 @@ Bumps `image.composer.version` and each entry under `image.php_extensions` in `c
      `https://api.github.com/repos/igbinary/igbinary/releases`.
 
    If a value is already current, leave it unchanged — don't create a no-op diff for it.
+
+   igbinary is pinned to 3.2.16 with a `version_overrides` entry that uses the release candidate 3.2.17RC1 on PHP 8.5,
+   since 3.2.16 doesn't compile there. Once a newer non-RC release is out, pin it for every PHP version and drop the
+   override (and its `sha256` entry) — but check first that it builds on the newest PHP version listed, e.g.
+   `docker run --rm php:8.5-cli-alpine sh -c 'apk add --no-cache $PHPIZE_DEPS >/dev/null && pecl install igbinary-<version> && docker-php-ext-enable igbinary && php --ri igbinary'`.
 3. Edit `config/nightly.yml` with the new version numbers. For each PECL extension whose version changed, also add the
    SHA-256 checksum of the new package under its `sha256` map, keyed by version, and drop the entry of a version no
    longer used: `curl -sSfL https://pecl.php.net/get/<name>-<version>.tgz | shasum -a 256`. PECL publishes no checksums

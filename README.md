@@ -36,7 +36,7 @@ Table of Contents
 
 # Feature List
 
-* Built-in scripts to manage _Swoole_ extensions and _Supervisord_ programs.
+* Built-in scripts to rebuild _Swoole_ and to manage _Supervisord_ programs.
 * Easy to manage booting scripts in Docker.
 * Allow running PHP scripts and other commands directly in different environments (including ECS).
 * Use one root filesystem for simplicity (one Docker `COPY` command only in dockerfiles).

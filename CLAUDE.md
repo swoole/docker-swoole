@@ -26,7 +26,9 @@ composer update                                  # install dev dependencies (PHP
                                                  # runs bin/test-image.php inside the container
 ```
 
-CI (`.github/workflows/tests.yml`) runs `php-cs-fixer fix -q --dry-run` and `phpunit` on every push.
+CI (`.github/workflows/tests.yml`) runs `php-cs-fixer fix -q --dry-run` and `phpunit` on every push. Besides the generator, `phpunit` tests the workflows (`tests/WorkflowTest.php`): actions referenced by version tag, restricted default permissions, and images published with an SBOM, full provenance, OCI labels and a cosign signature.
+
+The generated Dockerfiles need BuildKit (`ADD --checksum`, `RUN --mount`).
 
 ## Architecture
 
@@ -36,7 +38,7 @@ The generation pipeline (all rendering logic lives in `src/Dockerfile.php`):
 2. **Templates**: `Dockerfile.twig` (Debian-based, used for both `cli` and `zts` image types) and `Dockerfile.alpine.twig`. Blocks shared by both (the PECL extensions, the Swoole configure options, the final extension-load check) live in `partials/` and are included by both templates, so a new Swoole option is added once. For Alpine, the PHP-major-version → Alpine-version mapping is the `ALPINE_VERSIONS` constant in `src/Dockerfile.php` — supporting a new PHP minor version requires adding an entry there.
 3. **Output**: rendered to `dockerfiles/<swoole-version>/php<major>/<cli|zts|alpine>/Dockerfile` and **committed to git**. Never hand-edit files under `dockerfiles/` — edit the templates or configs and rerun the generator.
 
-`rootfilesystem/` is copied verbatim into every non-Alpine image (Alpine images use the PHP image's entrypoint instead): `entrypoint.sh`, helper scripts in `usr/local/bin/` (e.g. `install-swoole.sh`, `autoreload.sh`), boot scripts in `usr/local/boot/`, and supervisord config in `etc/supervisor/`.
+`rootfilesystem/` is copied verbatim into every non-Alpine image (Alpine images use the PHP image's entrypoint instead): `entrypoint.sh` (run under `tini` as PID 1), helper scripts in `usr/local/bin/` (e.g. `install-swoole.sh`, `autoreload.sh`), boot scripts in `usr/local/boot/`, and supervisord config in `etc/supervisor/`.
 
 `examples/` contains numbered docker-compose examples (referenced from the README) driven by `bin/example.sh`.
 
