@@ -65,9 +65,9 @@ echo "Testing Docker image ${IMAGE} ..."
 
 # Features like FTP and SSH2 are supported since Swoole 6.2.0 only.
 #
-# NOTE: The version is parsed from the extension information instead of a "php -r" command, because the entrypoint
-# of non-Alpine images performs word splitting on commands not started with "sh" or "bash" (for ECS support),
-# breaking quoted arguments that contain spaces.
+# NOTE: The version is parsed from the extension information instead of a "php -r" command, because in images built
+# before Swoole 6.3.0-rc1, the entrypoint of non-Alpine images split every command into words (for ECS support),
+# breaking quoted arguments that contain spaces. Newer images only do that for a command given as one single string.
 SWOOLE_VERSION=$(docker run --rm "${IMAGE}" php --ri swoole | grep -E "^Version => " | head -n 1 | awk '{print $3}' || true)
 if [[ -z "${SWOOLE_VERSION}" ]] ; then
     echo "[FAIL] unable to detect the Swoole version in Docker image ${IMAGE}."
