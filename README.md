@@ -31,7 +31,6 @@ Table of Contents
       * [Swoole 5.0](#swoole-50)
       * [Swoole 4.8](#swoole-48)
    * [Nightly images](#nightly-images-built-daily-using-the-master-branch-of-swoole-src)
-* [Verify Images](#verify-images)
 * [Build Images Manually](#build-images-manually)
 * [Credits](#credits)
 
@@ -355,31 +354,6 @@ Note: We don't have development tools built in for Alpine images. There is no Do
 | PHP 8.4 | [php8.4][nightly-php8.4] | [php8.4-dev][nightly-php8.4] | [php8.4-zts][nightly-php8.4-zts] | [php8.4-alpine][nightly-php8.4-alpine] |
 | PHP 8.3 | [php8.3][nightly-php8.3] | [php8.3-dev][nightly-php8.3] | [php8.3-zts][nightly-php8.3-zts] | [php8.3-alpine][nightly-php8.3-alpine] |
 | PHP 8.2 | [php8.2][nightly-php8.2] | [php8.2-dev][nightly-php8.2] | [php8.2-zts][nightly-php8.2-zts] | [php8.2-alpine][nightly-php8.2-alpine] |
-
-# Verify Images
-
-Images built since 6.3.0-rc1 (and nightly images built since then) are signed with [cosign](https://github.com/sigstore/cosign),
-using the identity of the GitHub Actions workflow that built them, and carry an SBOM, build provenance, and
-[OCI labels](https://github.com/opencontainers/image-spec/blob/main/annotations.md). Images built before that have none of
-these.
-
-To verify that an image was built and published by the workflows of this repository:
-
-```bash
-cosign verify phpswoole/swoole:6.3.0-rc1-php8.4 \
-    --certificate-identity-regexp '^https://github\.com/swoole/docker-swoole/\.github/workflows/build_.+\.yml@refs/heads/.+$' \
-    --certificate-oidc-issuer https://token.actions.githubusercontent.com
-```
-
-To check the SBOM (in SPDX format), the build provenance, or the labels of an image:
-
-```bash
-docker buildx imagetools inspect phpswoole/swoole:6.3.0-rc1-php8.4 --format '{{ json (index .SBOM "linux/amd64").SPDX }}'
-docker buildx imagetools inspect phpswoole/swoole:6.3.0-rc1-php8.4 --format '{{ json (index .Provenance "linux/amd64").SLSA }}'
-docker inspect --format '{{ json .Config.Labels }}' phpswoole/swoole:6.3.0-rc1-php8.4
-```
-
-Label `org.opencontainers.image.revision` is the commit of this repository the image was built from.
 
 # Build Images Manually
 

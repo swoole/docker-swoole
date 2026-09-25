@@ -134,8 +134,7 @@ Table of Contents
 - Build the images faster: Alpine images install `libpq-dev` instead of `postgresql-dev`, and PECL extensions are
   compiled in parallel.
 - Retry failed downloads of the Swoole source code.
-- Sign the images with cosign, and attach an SBOM, full build provenance and OCI labels to them. For details, please
-  check section "Verify Images" in the README.
+- Sign the images with cosign, and attach an SBOM, full build provenance and OCI labels to them.
 
 # Swoole 6.2
 
