@@ -107,10 +107,14 @@ Table of Contents
   feature-detects `extension_loaded('igbinary')` now takes its igbinary path; extension _Redis_ also stops loading if
   extension _igbinary_ is disabled afterwards. For example, the `DefaultMarshaller` of Symfony Cache 4.4 through 7.1
   (including 6.4 LTS) switches to igbinary automatically when the extension is loaded, so cached payloads change
-  format on redeploy; Symfony reads both formats back, so existing cache entries stay readable. Symfony Cache 7.2+
-  only uses igbinary when configured to. `Redis::OPT_SERIALIZER` still defaults to `Redis::SERIALIZER_NONE`, so
-  extension _Redis_ itself stores data the same way unless an application opts in. PHP extension _igbinary_ is 3.2.16
-  for PHP 8.4 and below, and **3.2.17RC1 (a pre-release) for PHP 8.5**, since 3.2.16 doesn't compile on PHP 8.5.
+  format on redeploy. Symfony reads both formats back as long as extension _igbinary_ is loaded, so existing cache
+  entries stay readable; however, containers without it (e.g., older images while old and new containers run side by
+  side, or after rolling back to a 6.2 image) fail to read the entries written in the igbinary format. To be able to
+  roll back, either pass `false` as argument `$useIgbinarySerialize` of `DefaultMarshaller`, or flush the cache
+  afterwards. Symfony Cache 7.2+ only uses igbinary when configured to. `Redis::OPT_SERIALIZER` still defaults to
+  `Redis::SERIALIZER_NONE`, so extension _Redis_ itself stores data the same way unless an application opts in. PHP
+  extension _igbinary_ is 3.2.16 for PHP 8.4 and below, and **3.2.17RC1 (a pre-release) for PHP 8.5**, since 3.2.16
+  doesn't compile on PHP 8.5.
 - **Enabled option _--enable-cares_ when installing Swoole**, so that hostnames used in coroutines are resolved
   asynchronously by c-ares. This changes DNS behavior in coroutines: `Swoole\Coroutine\System::dnsLookup()` now honors
   `/etc/hosts`, the search domains and all nameservers in `/etc/resolv.conf`; option `dns_server` now applies to every
@@ -119,7 +123,9 @@ Table of Contents
   module.
 - **Fix commands with arguments containing spaces or wildcards, e.g. `php -r 'echo "hello world";'`**: the
   entrypoint of non-Alpine images split such arguments into words and expanded wildcards. A command given as one
-  single string (e.g. `"composer --version"`, as used in ECS) is still split into words.
+  single string (e.g. `"composer --version"`, as used in ECS) is still split into words, but a command given as
+  several arguments no longer is: e.g., `docker run phpswoole/swoole "composer install" --no-dev` now looks for a
+  command named `composer install`. Pass such a command either as separate arguments or as one single string.
 - **Fix auto-reloading**: it no longer leaves one _inotifywait_ process behind on each reload, and it now restarts
   programs that stopped with an error (e.g. a syntax error) once the file is fixed. File changes are ignored for 3
   seconds after starting and after each reload (configurable with environment variable `AUTORELOAD_GRACE_PERIOD`), so
@@ -129,10 +135,15 @@ Table of Contents
 - Stop containers right away when no Supervisor program is running (e.g. with `DISABLE_DEFAULT_SERVER=true`), instead
   of being killed when Docker's stop timeout runs out.
 - Give the default Swoole server 8 seconds to stop (option `stopwaitsecs` of Supervisor), so that it stops before
-  Docker's default stop timeout of 10 seconds runs out.
-- **Reduce the size of non-Alpine images by about 97 MB**, by stripping debugging symbols from the PHP extensions and
-  removing all packages that are only needed to build them. Running `apt-get autoremove` in a derived image no longer
-  removes shared libraries that the PHP extensions need. Development images (`-dev`) keep both.
+  Docker's default stop timeout of 10 seconds runs out. This is shorter than before (10 seconds, the default of
+  Supervisor) for containers given a longer stop timeout; if your server needs longer to shut down, override option
+  `stopwaitsecs` in file `/etc/supervisor/service.d/swoole.conf`, and give the container a longer stop timeout too.
+- **Reduce the size of non-Alpine images by about 90 to 100 MB**, by stripping debugging symbols from the PHP
+  extensions and removing all packages that are only needed to build them. Running `apt-get autoremove` in a derived
+  image no longer removes shared libraries that the PHP extensions need. Development images (`-dev`) keep both.
+- **Remove the `-dev` packages that earlier images left behind** (e.g., `libgmp-dev`, `libldap-dev`, `libkrb5-dev`
+  and `libzstd-dev`). Derived images that build PHP extensions must install the `-dev` packages the extensions need
+  first: e.g., `docker-php-ext-install gmp ldap` now needs a preceding `apt-get install -y libgmp-dev libldap-dev`.
 - Strip debugging symbols from PHP extensions _Redis_ and _igbinary_ in Alpine images too.
 - Build the images faster: Alpine images install `libpq-dev` instead of `postgresql-dev`, and PECL extensions are
   compiled in parallel.
@@ -144,7 +155,10 @@ Table of Contents
 - **Run [tini](https://github.com/krallin/tini) as PID 1 in non-Alpine images**, to forward signals and reap zombie
   processes. When a one-off command is run with Supervisor programs (e.g., under folder `/etc/supervisor/task.d/`),
   those programs are now stopped gracefully once the command exits or the container is stopped, and the container
-  exits with the status of the command.
+  exits with the status of the command. A one-off command now receives signal SIGTERM when its container is stopped,
+  so a stopped container exits with status 143 (that of a command stopped by SIGTERM), where it used to exit with 0 or
+  137 depending on the command; checks that treat a non-zero exit status of a stopped container as a failure may need
+  updating.
 - **Remove scripts `install-swoole-ext.sh`, `install-phpx.sh` and `install-swoole-ext-zookeeper.sh`**, and examples 13
   to 15 that used them: the Swoole extensions and PHP-X they installed are no longer maintained, and the scripts no
   longer worked.

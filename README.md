@@ -64,6 +64,11 @@ For basic usage, please check the description section of [the official PHP image
 
 Same as in the official PHP image, most PHP extensions can be installed/configured using built-in helper scripts `docker-php-ext-configure`, `docker-php-ext-install`, `docker-php-ext-enable`, and `docker-php-source`. Here are some examples.
 
+Install the `-dev` packages an extension is built against first, as in the official PHP image. Nightly images and
+6.3.0-rc1+ images no longer come with the `-dev` packages that earlier images happened to leave behind (e.g.,
+`libgmp-dev`, `libldap-dev`, `libkrb5-dev` and `libzstd-dev`), so a command like `docker-php-ext-install gmp ldap`
+now needs a preceding `apt-get install -y libgmp-dev libldap-dev`.
+
 ```Dockerfile
 # To install the MySQL extensions.
 # NOTE: The pdo_mysql extension is included in 4.8.12+ and 5.0.1+ images.
