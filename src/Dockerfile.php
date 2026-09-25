@@ -226,9 +226,11 @@ class Dockerfile
      *   - version: Field "version_overrides" of an extension lists versions to use instead of the one in field "version"
      *     for specific PHP major versions (e.g. "8.5").
      *   - sha256: The SHA-256 checksum of the package of that version, from field "sha256" (a map of versions to
-     *     checksums); null if not listed.
+     *     checksums). It is required whenever a version is given, since the build verifies the download against it.
      *   - url: Where to download the package of that version from; null if no version is given, in which case the
-     *     latest stable release is installed from the PECL channel.
+     *     latest stable release is installed from the PECL channel (with no checksum to verify).
+     *
+     * @throws Exception If a version is given without a valid checksum.
      */
     protected function getPhpExtensions(string $phpVersion): array
     {
@@ -240,9 +242,17 @@ class Dockerfile
             }
             unset($data['version_overrides']);
 
-            $version        = (string) ($data['version'] ?? '');
-            $data['sha256'] = ($version === '') ? null : ($data['sha256'][$version] ?? null);
-            $data['url']    = ($version === '') ? null : "https://pecl.php.net/get/{$name}-{$version}.tgz";
+            $version = (string) ($data['version'] ?? '');
+            if ($version === '') {
+                $data['sha256'] = null;
+                $data['url']    = null;
+            } else {
+                $data['sha256'] = $this->getChecksum(
+                    $data['sha256'][$version] ?? null,
+                    "PECL extension {$name} {$version} (field image.php_extensions.{$name}.sha256.\"{$version}\")"
+                );
+                $data['url'] = "https://pecl.php.net/get/{$name}-{$version}.tgz";
+            }
 
             $extensions[$name] = $data;
         }
@@ -251,10 +261,11 @@ class Dockerfile
     }
 
     /**
-     * Get where to download the source code of Swoole from, and its SHA-256 checksum (null if the configuration file
-     * doesn't list one). Nightly images build the master branch, which has no fixed checksum.
+     * Get where to download the source code of Swoole from, and its SHA-256 checksum. Nightly images build the master
+     * branch, which has no fixed checksum.
      *
      * @return array{url: string, sha256: ?string}
+     * @throws Exception If the configuration file of a version doesn't list a valid checksum.
      */
     protected function getSwooleSource(): array
     {
@@ -264,8 +275,27 @@ class Dockerfile
 
         return [
             'url'    => "https://github.com/swoole/swoole-src/archive/refs/tags/v{$this->getSwooleVersion()}.tar.gz",
-            'sha256' => $this->getConfig()['image']['swoole']['sha256'] ?? null,
+            'sha256' => $this->getChecksum(
+                $this->getConfig()['image']['swoole']['sha256'] ?? null,
+                "the source code of Swoole {$this->getSwooleVersion()} (field image.swoole.sha256)"
+            ),
         ];
+    }
+
+    /**
+     * Validate a SHA-256 checksum from the configuration file. A missing checksum is an error rather than a download
+     * left unverified, so that a new version (or an extension version added to "version_overrides") can't be added
+     * without one by accident.
+     *
+     * @throws Exception
+     */
+    protected function getChecksum(mixed $checksum, string $what): string
+    {
+        if (!is_string($checksum) || !preg_match('/^[0-9a-f]{64}$/', $checksum)) {
+            throw new Exception("Missing or invalid SHA-256 checksum for {$what} in configuration file config/{$this->getSwooleVersion()}.yml.");
+        }
+
+        return $checksum;
     }
 
     /**

@@ -16,6 +16,7 @@ use Swoole\Docker\Dockerfile;
  * @internal
  * @coversNothing
  */
+#[CoversMethod(Dockerfile::class, 'getChecksum')]
 #[CoversMethod(Dockerfile::class, 'getPhpExtensions')]
 #[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
 #[CoversMethod(Dockerfile::class, 'getSwooleSource')]
@@ -25,6 +26,12 @@ use Swoole\Docker\Dockerfile;
 #[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
 {
+    private const SHA256_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+    private const SHA256_B = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+
+    private const SHA256_C = 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc';
+
     /**
      * @throws \ReflectionException
      */
@@ -211,11 +218,12 @@ class DockerfileTest extends TestCase
                         'igbinary' => [
                             'version'           => '3.2.16',
                             'version_overrides' => ['8.5' => '3.2.17RC1'],
-                            'sha256'            => ['3.2.16' => 'aaa', '3.2.17RC1' => 'bbb'],
+                            'sha256'            => ['3.2.16' => self::SHA256_A, '3.2.17RC1' => self::SHA256_B],
                             'enabled'           => true,
                         ],
                         'redis' => [
                             'version' => '6.3.0',
+                            'sha256'  => ['6.3.0' => self::SHA256_C],
                             'enabled' => true,
                         ],
                         'zip' => [
@@ -230,22 +238,22 @@ class DockerfileTest extends TestCase
 
     public static function dataGetPhpExtensions(): array
     {
-        $redis = ['version' => '6.3.0', 'enabled' => true, 'sha256' => null, 'url' => 'https://pecl.php.net/get/redis-6.3.0.tgz'];
+        $redis = ['version' => '6.3.0', 'sha256' => self::SHA256_C, 'enabled' => true, 'url' => 'https://pecl.php.net/get/redis-6.3.0.tgz'];
         $zip   = ['enabled' => false, 'sha256' => null, 'url' => null];
 
         return [
             [
                 [
-                    'igbinary' => ['version' => '3.2.16', 'sha256' => 'aaa', 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.16.tgz'],
+                    'igbinary' => ['version' => '3.2.16', 'sha256' => self::SHA256_A, 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.16.tgz'],
                     'redis'    => $redis,
                     'zip'      => $zip,
                 ],
                 '8.4.26',
-                'a PHP version without any override; a checksum listed, one not listed, and no version given',
+                'a PHP version without any override, and an extension without a version (installed from the PECL channel)',
             ],
             [
                 [
-                    'igbinary' => ['version' => '3.2.17RC1', 'sha256' => 'bbb', 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.17RC1.tgz'],
+                    'igbinary' => ['version' => '3.2.17RC1', 'sha256' => self::SHA256_B, 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.17RC1.tgz'],
                     'redis'    => $redis,
                     'zip'      => $zip,
                 ],
@@ -254,7 +262,7 @@ class DockerfileTest extends TestCase
             ],
             [
                 [
-                    'igbinary' => ['version' => '3.2.17RC1', 'sha256' => 'bbb', 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.17RC1.tgz'],
+                    'igbinary' => ['version' => '3.2.17RC1', 'sha256' => self::SHA256_B, 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.17RC1.tgz'],
                     'redis'    => $redis,
                     'zip'      => $zip,
                 ],
@@ -288,17 +296,45 @@ class DockerfileTest extends TestCase
                 'nightly images build the master branch, which has no fixed checksum',
             ],
             [
-                ['url' => 'https://github.com/swoole/swoole-src/archive/refs/tags/v6.3.0-rc1.tar.gz', 'sha256' => 'abc'],
+                ['url' => 'https://github.com/swoole/swoole-src/archive/refs/tags/v6.3.0-rc1.tar.gz', 'sha256' => self::SHA256_A],
                 '6.3.0-rc1',
-                ['image' => ['swoole' => ['sha256' => 'abc']]],
+                ['image' => ['swoole' => ['sha256' => self::SHA256_A]]],
                 'a version with a checksum listed',
             ],
-            [
-                ['url' => 'https://github.com/swoole/swoole-src/archive/refs/tags/v6.2.3.tar.gz', 'sha256' => null],
-                '6.2.3',
-                ['image' => []],
-                'a version without a checksum listed',
-            ],
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataMissingOrInvalidChecksums')]
+    public function testMissingOrInvalidChecksumsThrow(string $method, array $args, array $config, string $message): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setSwooleVersion('6.3.0-rc1')
+            ->setConfig($config)
+        ;
+        $this->expectException(\Swoole\Docker\Exception::class);
+        $this->expectExceptionMessage('SHA-256 checksum');
+        Reflection::callMethod($dockerfile, $method, $args);
+        self::fail($message);
+    }
+
+    public static function dataMissingOrInvalidChecksums(): array
+    {
+        $igbinary = fn (array $sha256): array => ['image' => ['php_extensions' => ['igbinary' => [
+            'version'           => '3.2.16',
+            'version_overrides' => ['8.5' => '3.2.17RC1'],
+            'sha256'            => $sha256,
+        ]]]];
+
+        return [
+            ['getSwooleSource', [], ['image' => []], 'no checksum of the source code of Swoole'],
+            ['getSwooleSource', [], ['image' => ['swoole' => ['sha256' => 'abc']]], 'a malformed checksum of the source code of Swoole'],
+            ['getPhpExtensions', ['8.4.26'], $igbinary([]), 'no checksum of a PECL extension'],
+            ['getPhpExtensions', ['8.5.11'], $igbinary(['3.2.16' => self::SHA256_A]), 'no checksum for the version picked by version_overrides'],
+            ['getPhpExtensions', ['8.4.26'], $igbinary(['3.2.16' => strtoupper(self::SHA256_A)]), 'a checksum in uppercase'],
         ];
     }
 
