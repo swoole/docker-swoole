@@ -19,6 +19,7 @@ use Swoole\Docker\Dockerfile;
 #[CoversMethod(Dockerfile::class, 'getPhpExtensions')]
 #[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
 #[CoversMethod(Dockerfile::class, 'isSwoole620OrLater')]
+#[CoversMethod(Dockerfile::class, 'isSwoole630OrLater')]
 #[CoversMethod(Dockerfile::class, 'isSwooleStdextSupported')]
 #[CoversMethod(Dockerfile::class, 'isValidSwooleVersion')]
 class DockerfileTest extends TestCase
@@ -78,6 +79,65 @@ class DockerfileTest extends TestCase
                 false,
                 '6.1.99',
                 'a large 6.1.x patch version (must not be compared as a string)',
+            ],
+            [
+                false,
+                '5.1.7',
+                'a 5.x version',
+            ],
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataIsSwoole630OrLater')]
+    public function testIsSwoole630OrLater(bool $expected, string $swooleVersion, string $message): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setSwooleVersion($swooleVersion)
+        ;
+        self::assertSame($expected, Reflection::callMethod($dockerfile, 'isSwoole630OrLater'), $message);
+    }
+
+    public static function dataIsSwoole630OrLater(): array
+    {
+        return [
+            [
+                true,
+                'nightly',
+                'nightly images build the master branch of Swoole',
+            ],
+            [
+                true,
+                '6.3.0-rc1',
+                'a pre-release of 6.3.0 (must count as 6.3.0, although version_compare() orders it before 6.3.0)',
+            ],
+            [
+                true,
+                '6.3.0',
+                'the first version built with c-ares',
+            ],
+            [
+                true,
+                '6.10.0',
+                'a minor version # over 10 (must not be compared as a string)',
+            ],
+            [
+                true,
+                '7.0.0',
+                'a major version after 6.x',
+            ],
+            [
+                false,
+                '6.2.3',
+                'a 6.2.x version',
+            ],
+            [
+                false,
+                '6.2.99',
+                'a large 6.2.x patch version (must not be compared as a string)',
             ],
             [
                 false,

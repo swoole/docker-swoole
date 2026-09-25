@@ -111,6 +111,10 @@ Table of Contents
   only uses igbinary when configured to. `Redis::OPT_SERIALIZER` still defaults to `Redis::SERIALIZER_NONE`, so
   extension _Redis_ itself stores data the same way unless an application opts in. PHP extension _igbinary_ is 3.2.16
   for PHP 8.4 and below, and **3.2.17RC1 (a pre-release) for PHP 8.5**, since 3.2.16 doesn't compile on PHP 8.5.
+- **Enabled option _--enable-cares_ when installing Swoole**, so that hostnames used in coroutines are resolved
+  asynchronously by c-ares. This changes DNS behavior in coroutines: `Swoole\Coroutine\System::dnsLookup()` now honors
+  `/etc/hosts`, the search domains and all nameservers in `/etc/resolv.conf`; option `dns_server` now applies to every
+  hostname resolved in coroutines instead of only to `dnsLookup()`; and `/etc/nsswitch.conf` is no longer consulted.
 - **Option _--enable-swoole-stdext_ is no longer used when installing Swoole**, since Swoole 6.3.0 removed the stdext
   module.
 

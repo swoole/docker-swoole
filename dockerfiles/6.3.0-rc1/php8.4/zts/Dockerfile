@@ -15,6 +15,7 @@ RUN \
     apt-get install -y \
         libcurl4-openssl-dev       \
         libbrotli-dev              \
+        libc-ares-dev              \
         libpq-dev                  \
         libsqlite3-dev             \
         libssl-dev                 \
@@ -34,6 +35,7 @@ RUN \
     install-swoole.sh 6.3.0-rc1 \
         --enable-swoole-thread \
         --enable-brotli \
+        --enable-cares \
         --enable-mysqlnd \
         --enable-sockets \
         --enable-swoole-curl \
@@ -51,6 +53,7 @@ RUN \
     if [ "${DEV_MODE}" != "true" ] ; then \
         apt-get purge -y \
             libbrotli-dev            \
+            libc-ares-dev            \
             libcurl4-openssl-dev     \
             libpq-dev                \
             libsqlite3-dev           \

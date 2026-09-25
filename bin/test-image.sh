@@ -94,6 +94,11 @@ if [[ "$(printf '%s\n' "6.2.0" "${SWOOLE_VERSION}" | sort -V | head -n 1)" == "6
         "libssh2 banner => "
     )
 fi
+# Swoole is built with c-ares since 6.3.0. Pre-releases of 6.3.0 (e.g. "6.3.0RC1") pass this check too, since
+# "sort -V" orders them after "6.3.0".
+if [[ "$(printf '%s\n' "6.3.0" "${SWOOLE_VERSION}" | sort -V | head -n 1)" == "6.3.0" ]] ; then
+    patterns+=("c-ares => ")
+fi
 
 # The extension information also proves that the Swoole extension loads without errors (e.g., no missing shared
 # libraries), and that it was compiled with the expected features enabled.

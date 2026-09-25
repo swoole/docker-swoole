@@ -12,8 +12,8 @@ RUN \
 # this package the extension fails to load with "Error relocating swoole.so: getcontext: symbol not found".
 # That is what happened to the ppc64le and s390x Alpine images. It is installed unconditionally (the package is
 # built for all Alpine architectures) so the images keep working on any architecture Swoole has no assembly for.
-    apk add --no-cache libstdc++ libpq libssh2 libucontext unixodbc && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev libssh2-dev libucontext-dev unixodbc-dev && \
+    apk add --no-cache c-ares libstdc++ libpq libssh2 libucontext unixodbc && \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev c-ares-dev postgresql-dev openssl-dev pcre-dev pcre2-dev sqlite-dev zlib-dev libssh2-dev libucontext-dev unixodbc-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     pecl channel-update pecl.php.net && \
@@ -30,6 +30,7 @@ RUN \
     export LDFLAGS="${LDFLAGS} -lucontext" && \
     docker-php-ext-configure swoole \
         --enable-brotli \
+        --enable-cares \
         --enable-mysqlnd \
         --enable-sockets \
         --enable-swoole-curl \

@@ -25,6 +25,9 @@ RUN \
 {%~ endif %}
         libcurl4-openssl-dev       \
         libbrotli-dev              \
+{%~ if swoole_630_or_later %}
+        libc-ares-dev              \
+{%~ endif %}
         libpq-dev                  \
         libsqlite3-dev             \
         libssl-dev                 \
@@ -53,10 +56,15 @@ RUN \
 {%~ endif %}
 {# Option --enable-openssl was removed in Swoole 6.2.0 (OpenSSL support is always compiled in since then), while
    options --enable-swoole-ftp and --with-swoole-ssh2 were added in Swoole 6.2.0. Option --enable-swoole-stdext was
-   removed from the master branch (and so from nightly images) on 2026-09-02, and is not in Swoole 6.3.0+. #}
+   removed from the master branch (and so from nightly images) on 2026-09-02, and is not in Swoole 6.3.0+. Option
+   --enable-cares (async DNS resolution via c-ares) is used for Swoole 6.3.0+ only, so that older images keep their
+   DNS behavior. #}
     install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %}{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
 {% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
         --enable-brotli \
+{%~ if swoole_630_or_later %}
+        --enable-cares \
+{%~ endif %}
         --enable-mysqlnd \
         --enable-sockets \
         --enable-swoole-curl \
@@ -79,6 +87,9 @@ RUN \
     if [ "${DEV_MODE}" != "true" ] ; then \
         apt-get purge -y \
             libbrotli-dev            \
+{%~ if swoole_630_or_later %}
+            libc-ares-dev            \
+{%~ endif %}
             libcurl4-openssl-dev     \
             libpq-dev                \
             libsqlite3-dev           \

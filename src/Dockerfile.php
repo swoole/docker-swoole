@@ -194,6 +194,18 @@ class Dockerfile
     }
 
     /**
+     * Whether the Swoole version is 6.3.0 or later (including nightly, which builds the master branch of Swoole).
+     *
+     * Version "6.3.0-dev" is compared against so that pre-releases of 6.3.0 (e.g. "6.3.0-rc1"), which
+     * version_compare() orders before "6.3.0", count as 6.3.0.
+     */
+    protected function isSwoole630OrLater(): bool
+    {
+        return ($this->getSwooleVersion() === self::VERSION_NIGHTLY)
+            || version_compare($this->getSwooleVersion(), '6.3.0-dev', '>=');
+    }
+
+    /**
      * Whether configure option "--enable-swoole-stdext" is still supported.
      *
      * The stdext module was removed from the master branch of Swoole on 2026-09-02 (its PHP language extensions,
@@ -202,15 +214,11 @@ class Dockerfile
      * first release cut after that removal, starting with 6.3.0-rc1). Releases of the 6.2 series and earlier still
      * support it.
      *
-     * Version "6.3.0-dev" is compared against so that pre-releases of 6.3.0 (e.g. "6.3.0-rc1"), which
-     * version_compare() orders before "6.3.0", count as 6.3.0.
-     *
      * @see https://github.com/swoole/swoole-src/commit/dbdf559f11
      */
     protected function isSwooleStdextSupported(): bool
     {
-        return ($this->getSwooleVersion() !== self::VERSION_NIGHTLY)
-            && version_compare($this->getSwooleVersion(), '6.3.0-dev', '<');
+        return !$this->isSwoole630OrLater();
     }
 
     /**
@@ -245,6 +253,7 @@ class Dockerfile
                 'image_type'              => $type,
                 'swoole_version'          => $this->getSwooleVersion(),
                 'swoole_620_or_later'     => $this->isSwoole620OrLater(),
+                'swoole_630_or_later'     => $this->isSwoole630OrLater(),
                 'swoole_stdext_supported' => $this->isSwooleStdextSupported(),
                 'php_extensions'          => $this->getPhpExtensions($phpVersion),
             ]

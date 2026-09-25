@@ -17,6 +17,7 @@ Table of Contents
 * [How to Use This Image](#how-to-use-this-image)
    * [How to Install More PHP Extensions](#how-to-install-more-php-extensions)
    * [Serializer and Compression Support in Extension Redis](#serializer-and-compression-support-in-extension-redis)
+   * [DNS Resolution in Coroutines (c-ares)](#dns-resolution-in-coroutines-c-ares)
    * [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions)
    * [More Examples](#more-examples)
 * [Image Variants](#image-variants)
@@ -45,12 +46,14 @@ Table of Contents
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup>
 * **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ serializer is enabled in nightly images and in 6.3.0-rc1+ images, while the _msgpack_ serializer is not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ and 6.2.2+ images.<sup>3</sup>
+* **_Swoole_ built with _c-ares_ for asynchronous DNS resolution in coroutines, in nightly images and in 6.3.0-rc1+ images.**<sup>4</sup>
 
 **NOTES**
 
 1. The auto-reloading feature is supported for non-Alpine images only.
 2. To disable extension _pdo_mysql_ and/or _Redis_, please check section [Disable Installed/Enabled PHP Extensions](#disable-installedenabled-php-extensions).
 3. For details, please check section [Serializer and Compression Support in Extension Redis](#serializer-and-compression-support-in-extension-redis).
+4. For details, please check section [DNS Resolution in Coroutines (c-ares)](#dns-resolution-in-coroutines-c-ares).
 
 # How to Use This Image
 
@@ -136,6 +139,30 @@ RUN set -ex && \
 
 Note that extension _Redis_ built this way depends on extension _igbinary_: once rebuilt, it fails to load if
 _igbinary_ is disabled afterwards.
+
+## DNS Resolution in Coroutines (c-ares)
+
+In nightly images and in 6.3.0-rc1+ images, _Swoole_ is built with option `--enable-cares`, so hostnames used in
+coroutines are resolved by [c-ares](https://c-ares.org) on the event loop, instead of by blocking calls in Swoole's
+thread pool. Earlier images are not built with it. You can check whether a given image uses c-ares with:
+
+```bash
+docker run --rm phpswoole/swoole:php8.4 php --ri swoole | grep c-ares
+```
+
+This changes how hostnames are resolved in coroutines:
+
+* `Swoole\Coroutine\System::dnsLookup()` checks `/etc/hosts` first, applies the search domains in `/etc/resolv.conf`,
+  and uses all nameservers listed there. Without c-ares, it only queries the first nameserver and ignores both, so
+  names like `localhost`, hosts added with `docker run --add-host`, or short Kubernetes service names can't be
+  resolved.
+* Option `dns_server` (e.g., `Co::set(['dns_server' => '8.8.8.8'])`) applies to every hostname resolved in coroutines,
+  including those of coroutine clients, hooked cURL and hooked PDO/Redis connections. Without c-ares, it only
+  affects `Swoole\Coroutine\System::dnsLookup()`. Entries in `/etc/hosts` are still checked first.
+* Hostnames resolved in coroutines skip the C library's resolver, so `/etc/nsswitch.conf` is ignored: `/etc/hosts` is
+  always checked first, then DNS.
+
+`Swoole\Coroutine\System::getaddrinfo()`, and hostnames resolved outside of coroutines, are not affected.
 
 ## Disable Installed/Enabled PHP Extensions
 

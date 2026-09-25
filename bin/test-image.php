@@ -170,6 +170,17 @@ Coroutine\run(function (): void {
         }
     });
 
+    // Swoole is built with c-ares since 6.3.0. Without c-ares, System::dnsLookup() only queries the first nameserver
+    // and ignores /etc/hosts, where every container lists "localhost"; with c-ares it checks /etc/hosts first, so
+    // this works without network access. Version "6.3.0-dev" is compared against so that pre-releases of 6.3.0 (e.g.
+    // "6.3.0RC1") count as 6.3.0.
+    if (version_compare(swoole_version(), '6.3.0-dev', '>=')) {
+        check('DNS lookups in coroutines go through c-ares', function (): void {
+            $ip = Coroutine\System::dnsLookup('localhost', 5 * TIME_FACTOR);
+            expect($ip === '127.0.0.1', 'System::dnsLookup("localhost") returned ' . var_export($ip, true) . ', expected "127.0.0.1"');
+        });
+    }
+
     // Start an HTTP server (in a coroutine) to serve the curl and SSH tests below. Since the server runs in the same
     // process as the clients, any client call that is not coroutine-aware would block the event loop, preventing the
     // server from responding and thus failing the tests.
