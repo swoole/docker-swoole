@@ -16,6 +16,7 @@ use Swoole\Docker\Dockerfile;
  * @internal
  * @coversNothing
  */
+#[CoversMethod(Dockerfile::class, 'getPhpExtensions')]
 #[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
 #[CoversMethod(Dockerfile::class, 'isSwoole620OrLater')]
 #[CoversMethod(Dockerfile::class, 'isSwooleStdextSupported')]
@@ -64,6 +65,11 @@ class DockerfileTest extends TestCase
                 'a major version after 6.x',
             ],
             [
+                true,
+                '6.3.0-rc1',
+                'a pre-release of a version after 6.2.0',
+            ],
+            [
                 false,
                 '6.1.8',
                 'a 6.1.x version',
@@ -103,14 +109,86 @@ class DockerfileTest extends TestCase
                 'nightly images build the master branch of Swoole, which dropped stdext support',
             ],
             [
+                false,
+                '6.3.0-rc1',
+                'a pre-release of 6.3.0, the first release without stdext support',
+            ],
+            [
+                false,
+                '6.3.0',
+                'the first release without stdext support',
+            ],
+            [
+                false,
+                '7.0.0',
+                'a major version after 6.x',
+            ],
+            [
                 true,
-                '6.2.2',
-                'the latest released version, built before stdext support was dropped',
+                '6.2.3',
+                'a 6.2.x version, built before stdext support was dropped',
             ],
             [
                 true,
                 '6.1.8',
                 'a 6.1.x version',
+            ],
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataGetPhpExtensions')]
+    public function testGetPhpExtensions(array $expected, string $phpVersion, string $message): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setConfig([
+                'image' => [
+                    'php_extensions' => [
+                        'igbinary' => [
+                            'version'           => '3.2.16',
+                            'version_overrides' => ['8.5' => '3.2.17RC1'],
+                            'enabled'           => true,
+                        ],
+                        'redis' => [
+                            'version' => '6.3.0',
+                            'enabled' => true,
+                        ],
+                    ],
+                ],
+            ])
+        ;
+        self::assertSame($expected, Reflection::callMethod($dockerfile, 'getPhpExtensions', [$phpVersion]), $message);
+    }
+
+    public static function dataGetPhpExtensions(): array
+    {
+        return [
+            [
+                [
+                    'igbinary' => ['version' => '3.2.16', 'enabled' => true],
+                    'redis'    => ['version' => '6.3.0', 'enabled' => true],
+                ],
+                '8.4.26',
+                'a PHP version without any override',
+            ],
+            [
+                [
+                    'igbinary' => ['version' => '3.2.17RC1', 'enabled' => true],
+                    'redis'    => ['version' => '6.3.0', 'enabled' => true],
+                ],
+                '8.5.11',
+                'a PHP patch version whose major version has an override',
+            ],
+            [
+                [
+                    'igbinary' => ['version' => '3.2.17RC1', 'enabled' => true],
+                    'redis'    => ['version' => '6.3.0', 'enabled' => true],
+                ],
+                '8.5',
+                'a PHP major version (as used by nightly images) that has an override',
             ],
         ];
     }
@@ -184,6 +262,16 @@ class DockerfileTest extends TestCase
             ],
 
             [
+                true,
+                '6.3.0-rc1',
+                'a release candidate',
+            ],
+            [
+                true,
+                '6.0.0-alpha',
+                'an alpha release',
+            ],
+            [
                 false,
                 '',
                 'an empty string',
@@ -227,6 +315,16 @@ class DockerfileTest extends TestCase
                 false,
                 '4.3.6-',
                 'no image revision included',
+            ],
+            [
+                false,
+                '4.3.6-1',
+                'the pre-release part does not start with a letter',
+            ],
+            [
+                false,
+                '4.3.6rc1',
+                'no hyphen before the pre-release part',
             ],
             [
                 false,

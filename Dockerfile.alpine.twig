@@ -39,7 +39,7 @@ RUN \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
 {# Option --enable-openssl was removed in Swoole 6.2.0 (OpenSSL support is always compiled in since then), while
    options --enable-swoole-ftp and --with-swoole-ssh2 were added in Swoole 6.2.0. Option --enable-swoole-stdext was
-   removed from the master branch (and so from nightly images) on 2026-09-02. #}
+   removed from the master branch (and so from nightly images) on 2026-09-02, and is not in Swoole 6.3.0+. #}
     export LDFLAGS="${LDFLAGS} -lucontext" && \
     docker-php-ext-configure swoole{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
         --enable-brotli \

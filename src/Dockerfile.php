@@ -172,9 +172,13 @@ class Dockerfile
         return "{$this->getBasePath()}/config/{$swooleVersion}.yml";
     }
 
+    /**
+     * A version # is either a stable release (e.g. "6.2.3"), or a pre-release named after the Git tag of Swoole
+     * without its leading "v" (e.g. "6.3.0-rc1" for tag "v6.3.0-rc1").
+     */
     protected function isValidSwooleVersion(string $swooleVersion): bool
     {
-        return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/', $swooleVersion);
+        return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z][a-zA-Z0-9]*)?$/', $swooleVersion);
     }
 
     /**
@@ -194,14 +198,39 @@ class Dockerfile
      *
      * The stdext module was removed from the master branch of Swoole on 2026-09-02 (its PHP language extensions,
      * e.g. strongly typed arrays and basic type methods, are now implemented by the typephp project instead), so
-     * nightly images, which build that branch, no longer support this option. All currently released versions of
-     * Swoole (up to and including 6.2.2) were built before that removal and still support it.
+     * nightly images, which build that branch, no longer support this option, and neither does Swoole 6.3.0 (the
+     * first release cut after that removal, starting with 6.3.0-rc1). Releases of the 6.2 series and earlier still
+     * support it.
+     *
+     * Version "6.3.0-dev" is compared against so that pre-releases of 6.3.0 (e.g. "6.3.0-rc1"), which
+     * version_compare() orders before "6.3.0", count as 6.3.0.
      *
      * @see https://github.com/swoole/swoole-src/commit/dbdf559f11
      */
     protected function isSwooleStdextSupported(): bool
     {
-        return $this->getSwooleVersion() !== self::VERSION_NIGHTLY;
+        return ($this->getSwooleVersion() !== self::VERSION_NIGHTLY)
+            && version_compare($this->getSwooleVersion(), '6.3.0-dev', '<');
+    }
+
+    /**
+     * Get the PECL extensions to install for given PHP version, with field "version_overrides" of each extension
+     * resolved: when it lists the PHP major version (e.g. "8.5"), that version of the extension is used instead of
+     * the one in field "version".
+     */
+    protected function getPhpExtensions(string $phpVersion): array
+    {
+        $phpMajorVersion = $this->getPhpMajorVersion($phpVersion);
+        $extensions      = [];
+        foreach ($this->getConfig()['image']['php_extensions'] ?? [] as $name => $data) {
+            if (isset($data['version_overrides'][$phpMajorVersion])) {
+                $data['version'] = $data['version_overrides'][$phpMajorVersion];
+            }
+            unset($data['version_overrides']);
+            $extensions[$name] = $data;
+        }
+
+        return $extensions;
     }
 
     /**
@@ -217,6 +246,7 @@ class Dockerfile
                 'swoole_version'          => $this->getSwooleVersion(),
                 'swoole_620_or_later'     => $this->isSwoole620OrLater(),
                 'swoole_stdext_supported' => $this->isSwooleStdextSupported(),
+                'php_extensions'          => $this->getPhpExtensions($phpVersion),
             ]
         );
 
