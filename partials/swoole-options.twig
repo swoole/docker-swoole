@@ -1,0 +1,24 @@
+{# Configure options of Swoole, except for those specific to one template. Shared by templates Dockerfile.twig and Dockerfile.alpine.twig. #}
+{# Option --enable-openssl was removed in Swoole 6.2.0 (OpenSSL support is always compiled in since then), while
+   options --enable-swoole-ftp and --with-swoole-ssh2 were added in Swoole 6.2.0. Option --enable-swoole-stdext was
+   removed from the master branch (and so from nightly images) on 2026-09-02, and is not in Swoole 6.3.0+. Option
+   --enable-cares (async DNS resolution via c-ares) is used for Swoole 6.3.0+ only, so that older images keep their
+   DNS behavior. #}
+        --enable-brotli \
+{%~ if swoole_630_or_later %}
+        --enable-cares \
+{%~ endif %}
+        --enable-mysqlnd \
+        --enable-sockets \
+        --enable-swoole-curl \
+{%~ if swoole_620_or_later %}
+        --enable-swoole-ftp \
+{%~ endif %}
+        --enable-swoole-pgsql \
+        --enable-swoole-sqlite \
+{%~ if swoole_stdext_supported %}
+        --enable-swoole-stdext \
+{%~ endif %}
+        --enable-zstd \
+        --with-swoole-odbc=unixODBC,/usr{% if swoole_620_or_later %} \
+        --with-swoole-ssh2{% endif %} && \

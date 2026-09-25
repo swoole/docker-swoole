@@ -1,0 +1,7 @@
+{# Fails the build if a PHP extension can't be loaded. Shared by templates Dockerfile.twig and Dockerfile.alpine.twig. #}
+# Fail the build if the extension does not actually load. Swoole is compiled here for every target platform, and
+# a library that is missing at runtime (rather than at link time) produces a successful build but an image
+# whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
+# be asserted explicitly; the published ppc64le and s390x Alpine images shipped broken this way. The PECL extensions
+# are checked too, since removing the build-only packages could take a runtime library of theirs along.
+    php -r 'exit(extension_loaded("swoole"){% for name, data in php_extensions %}{% if data.enabled %} && extension_loaded("{{ name }}"){% endif %}{% endfor %} ? 0 : 1);'

@@ -16,52 +16,15 @@ RUN \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev{% if swoole_630_or_later %} c-ares-dev{% endif %} libpq-dev openssl-dev sqlite-dev zlib-dev zstd-dev{% if swoole_620_or_later %} libssh2-dev{% endif %} libucontext-dev unixodbc-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
-{%~ if php_extensions is not empty %}
-    pecl channel-update pecl.php.net && \
-    {%~ for name, data in php_extensions %}
-        {%~ if data.configureoptions is empty %}
-    MAKEFLAGS="-j$(nproc)" pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
-        {%~ else %}
-    MAKEFLAGS="-j$(nproc)" pecl install --configureoptions '{{ data.configureoptions }}' {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
-        {%~ endif %}
-    {%~ endfor %}
-# PHP extension Redis is included since 4.8.12+ and 5.0.1+.
-    {%~ for name, data in php_extensions %}
-        {%~ if data.enabled %}
-    docker-php-ext-enable {{ name }} && \
-        {%~ endif %}
-    {%~ endfor %}
-{%~ endif %}
+{%~ include 'partials/pecl-extensions.twig' %}
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
     curl -sSfL --retry 5 --retry-all-errors --connect-timeout 20 https://github.com/swoole/swoole-src/archive/{% if swoole_version == "nightly" %}master{% else %}v{{ swoole_version }}{% endif %}.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
-{# Option --enable-openssl was removed in Swoole 6.2.0 (OpenSSL support is always compiled in since then), while
-   options --enable-swoole-ftp and --with-swoole-ssh2 were added in Swoole 6.2.0. Option --enable-swoole-stdext was
-   removed from the master branch (and so from nightly images) on 2026-09-02, and is not in Swoole 6.3.0+. Option
-   --enable-cares (async DNS resolution via c-ares) is used for Swoole 6.3.0+ only, so that older images keep their
-   DNS behavior. #}
     export LDFLAGS="${LDFLAGS} -lucontext" && \
     docker-php-ext-configure swoole{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
-        --enable-brotli \
-{%~ if swoole_630_or_later %}
-        --enable-cares \
-{%~ endif %}
-        --enable-mysqlnd \
-        --enable-sockets \
-        --enable-swoole-curl \
-{%~ if swoole_620_or_later %}
-        --enable-swoole-ftp \
-{%~ endif %}
-        --enable-swoole-pgsql \
-        --enable-swoole-sqlite \
-{%~ if swoole_stdext_supported %}
-        --enable-swoole-stdext \
-{%~ endif %}
-        --enable-zstd \
-        --with-swoole-odbc=unixODBC,/usr{% if swoole_620_or_later %} \
-        --with-swoole-ssh2{% endif %} && \
+{%~ include 'partials/swoole-options.twig' %}
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \
@@ -78,11 +41,6 @@ RUN \
     apk add --no-cache --virtual .swoole-rundeps $runDeps && \
     apk del .build-deps && \
     rm -rf /tmp/pear && \
-# Fail the build if the extension does not actually load. Swoole is compiled here for every target platform, and
-# a library that is missing at runtime (rather than at link time) produces a successful build but an image
-# whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
-# be asserted explicitly; the published ppc64le and s390x Alpine images shipped broken this way. The PECL extensions
-# are checked too, since removing the build-only packages could take a runtime library of theirs along.
-    php -r 'exit(extension_loaded("swoole"){% for name, data in php_extensions %}{% if data.enabled %} && extension_loaded("{{ name }}"){% endif %}{% endfor %} ? 0 : 1);'
+{%~ include 'partials/load-check.twig' %}
 
 WORKDIR "/var/www/"
