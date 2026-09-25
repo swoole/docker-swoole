@@ -6,6 +6,10 @@ on:
     branches:
       - master
 
+# Jobs only read the repository by default; jobs that need more ask for it themselves.
+permissions:
+  contents: read
+
 jobs:
   ci_tests:
     runs-on: ubuntu-24.04

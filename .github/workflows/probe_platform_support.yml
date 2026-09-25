@@ -27,6 +27,10 @@ on:
         required: true
         default: '8.4'
 
+# Jobs only read the repository by default; jobs that need more ask for it themselves.
+permissions:
+  contents: read
+
 jobs:
   probe:
     name: ${{ matrix.platform }} (${{ matrix.image }})

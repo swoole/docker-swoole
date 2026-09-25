@@ -6,6 +6,10 @@ on:
       - '[4-9].[0-9]+.[0-9]+'
       - '[4-9].[0-9]+.[0-9]+-?[a-zA-Z]**'
 
+# Jobs only read the repository by default; jobs that need more ask for it themselves.
+permissions:
+  contents: read
+
 env:
   # Number of entries in the "platform" matrix below. The merge job refuses to publish a tag unless it collected
   # exactly that many digests, so an architecture can never go missing from a published tag.
@@ -98,6 +102,12 @@ jobs:
         run: ./bin/test-image.sh phpswoole/swoole:test
 
       -
+        name: Read the base image of the Dockerfile
+        id: base
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        run: echo "name=docker.io/library/$(awk 'toupper($1) == "FROM" { print $2; exit }' "dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile")" >> "$GITHUB_OUTPUT"
+
+      -
         name: Build and push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine by digest
         id: docker_build
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
@@ -107,6 +117,19 @@ jobs:
           file: dockerfiles/${{ steps.params.outputs.branch_name }}/php${{ matrix.php }}/alpine/Dockerfile
           platforms: ${{ matrix.platform.name }}
           outputs: type=image,name=phpswoole/swoole,push-by-digest=true,name-canonical=true,push=true
+          # An SBOM and full build provenance are attached to the image of each platform, and kept in the
+          # multi-architecture index created by the merge job below.
+          sbom: true
+          provenance: mode=max
+          labels: |
+            org.opencontainers.image.title=Swoole
+            org.opencontainers.image.description=Official Docker image of Swoole
+            org.opencontainers.image.url=https://hub.docker.com/r/phpswoole/swoole
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.params.outputs.branch_name }}
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.base.name=${{ steps.base.outputs.name }}
 
       -
         name: Export the digest
@@ -134,6 +157,10 @@ jobs:
   merge:
     name: PHP ${{ matrix.php }} (alpine)
     needs: build
+    permissions:
+      contents: read
+      # Lets cosign sign the published images keylessly, with the identity of this workflow run.
+      id-token: write
     runs-on: ubuntu-24.04
     # Without "!cancelled()" a single failed build job would skip the whole merge matrix, so one flaky
     # emulated platform would stop every tag in the run from being published — the previous pipeline only
@@ -220,6 +247,12 @@ jobs:
       # The floating tags depend on the image type: "default" images only get the two version-specific tags, "major"
       # images also get the tag for their minor series, and the "latest" image gets that plus the bare "latest" tag.
       -
+        name: Install cosign
+        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
+        # This action doesn't publish major-version tags (like "v4") since v3, so it's pinned to a release instead.
+        uses: sigstore/cosign-installer@v4.1.2
+
+      -
         name: Push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
         working-directory: /tmp/digests
@@ -243,6 +276,15 @@ jobs:
           fi
 
           docker buildx imagetools create \
+              --annotation "index:org.opencontainers.image.title=Swoole" \
+              --annotation "index:org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+              --annotation "index:org.opencontainers.image.revision=${{ github.sha }}" \
+              --annotation "index:org.opencontainers.image.version=${{ steps.params.outputs.branch_name }}" \
+              --annotation "index:org.opencontainers.image.licenses=Apache-2.0" \
               $(printf -- '--tag phpswoole/swoole:%s ' "${tags[@]}") \
               $(printf 'phpswoole/swoole@sha256:%s ' *)
           docker buildx imagetools inspect "phpswoole/swoole:${tags[0]}"
+
+          # Sign the multi-architecture index, which all the tags above point to.
+          digest=$(docker buildx imagetools inspect "phpswoole/swoole:${tags[0]}" --format '{{ .Manifest.Digest }}')
+          cosign sign --yes "phpswoole/swoole@${digest}"
