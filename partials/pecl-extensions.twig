@@ -5,7 +5,7 @@
     pecl channel-update pecl.php.net && \
     {%~ endif %}
     {%~ for name, data in php_extensions %}
-    MAKEFLAGS="-j$(nproc)" pecl install{% if data.configureoptions is not empty %} --configureoptions '{{ data.configureoptions }}'{% endif %} {% if data.url is not empty %}/tmp/sources/{{ name }}.tgz{% else %}{{ name }}{% endif %} && \
+    MAKEFLAGS="-j$(nproc)" pecl install{% if data.configureoptions is not empty %} --configureoptions {{ data.configureoptions|shell_arg }}{% endif %} {% if data.url is not empty %}/tmp/sources/{{ name }}.tgz{% else %}{{ name }}{% endif %} && \
     {%~ endfor %}
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     {%~ for name, data in php_extensions %}

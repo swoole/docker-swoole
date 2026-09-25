@@ -10,6 +10,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 
 /**
  * Class Dockerfile
@@ -352,9 +353,12 @@ class Dockerfile
 
     private function getTwig(): Environment
     {
-        return $this->twig ??= new Environment(
-            new FilesystemLoader($this->getBasePath()),
-            ['autoescape' => false]
-        );
+        if ($this->twig === null) {
+            $this->twig = new Environment(new FilesystemLoader($this->getBasePath()), ['autoescape' => false]);
+            // Quotes a value as one single argument of a shell command, e.g. the configure options of a PECL extension.
+            $this->twig->addFilter(new TwigFilter('shell_arg', 'escapeshellarg'));
+        }
+
+        return $this->twig;
     }
 }

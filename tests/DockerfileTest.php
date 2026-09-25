@@ -341,6 +341,20 @@ class DockerfileTest extends TestCase
     /**
      * @throws \ReflectionException
      */
+    public function testShellArgFilterQuotesValuesAsOneArgument(): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))->newInstanceWithoutConstructor()->setBasePath(dirname(__DIR__));
+        $value      = "with-foo='bar' enable-baz=\"yes\"";
+        $rendered   = Reflection::callMethod($dockerfile, 'getTwig')->createTemplate('{{ value|shell_arg }}')->render(['value' => $value]);
+
+        self::assertSame("'with-foo='\\''bar'\\'' enable-baz=\"yes\"'", $rendered, 'single quotes must be escaped');
+        exec('printf %s ' . $rendered, $output);
+        self::assertSame($value, implode("\n", $output), 'the shell must read the value back unchanged, as one argument');
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
     #[DataProvider('dataGetPhpMajorVersion')]
     public function testGetPhpMajorVersion(string $expected, string $phpVersion, string $message): void
     {
