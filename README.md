@@ -45,8 +45,8 @@ Table of Contents
 * Support auto-reloading for local development.<sup>1</sup>
 * Support code debugging for local development.
 * **PHP extension _pdo_mysql_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup>
-* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ serializer is enabled in nightly images and in 6.3.0-rc1+ images, while the _msgpack_ serializer is not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ and 6.2.2+ images.<sup>3</sup>
-* **_Swoole_ built with _c-ares_ for asynchronous DNS resolution in coroutines, in nightly images and in 6.3.0-rc1+ images.**<sup>4</sup>
+* **PHP extension _Redis_ included since 4.8.12+ and 5.0.1+.**<sup>2</sup> The _igbinary_ serializer is enabled in nightly images and in 6.3.0+ images, while the _msgpack_ serializer is not enabled; the _lzf_ and _zstd_ compressions are enabled in nightly images and in 6.1.10+ and 6.2.2+ images.<sup>3</sup>
+* **_Swoole_ built with _c-ares_ for asynchronous DNS resolution in coroutines, in nightly images and in 6.3.0+ images.**<sup>4</sup>
 
 **NOTES**
 
@@ -65,7 +65,7 @@ For basic usage, please check the description section of [the official PHP image
 Same as in the official PHP image, most PHP extensions can be installed/configured using built-in helper scripts `docker-php-ext-configure`, `docker-php-ext-install`, `docker-php-ext-enable`, and `docker-php-source`. Here are some examples.
 
 Install the `-dev` packages an extension is built against first, as in the official PHP image. Nightly images and
-6.3.0-rc1+ images no longer come with the `-dev` packages that earlier images happened to leave behind (e.g.,
+6.3.0+ images no longer come with the `-dev` packages that earlier images happened to leave behind (e.g.,
 `libgmp-dev`, `libldap-dev`, `libkrb5-dev` and `libzstd-dev`), so a command like `docker-php-ext-install gmp ldap`
 now needs a preceding `apt-get install -y libgmp-dev libldap-dev`.
 
@@ -106,7 +106,7 @@ RUN set -ex \
 ## Serializer and Compression Support in Extension Redis
 
 Extension _Redis_ is compiled with the _msgpack_ serializer disabled. The _igbinary_ serializer is enabled in nightly
-images and in versioned images since 6.3.0-rc1, which include extension _igbinary_ for that purpose; in earlier
+images and in versioned images since 6.3.0, which include extension _igbinary_ for that purpose; in earlier
 versioned images it is disabled. The _lzf_ and _zstd_ compressions are enabled in nightly images and in versioned
 images since 6.1.10+ and 6.2.2+; in earlier versioned images no compression is available. You can check what a given
 image supports with:
@@ -125,7 +125,7 @@ Serializers and compressions are opt-in at runtime: `Redis::OPT_SERIALIZER` defa
 `Redis::OPT_COMPRESSION` defaults to `Redis::COMPRESSION_NONE`, so none of them changes how your data is stored unless
 your application asks for it.
 
-To use `Redis::SERIALIZER_IGBINARY` in images older than 6.3.0-rc1, or the _msgpack_ serializer in any image,
+To use `Redis::SERIALIZER_IGBINARY` in images older than 6.3.0, or the _msgpack_ serializer in any image,
 extension _Redis_ has to be rebuilt against extension _igbinary_ (or _msgpack_). Installing
 _igbinary_ alone is not enough: helper scripts like
 [install-php-extensions](https://github.com/mlocati/docker-php-extension-installer) skip extensions that are already
@@ -147,7 +147,7 @@ _igbinary_ is disabled afterwards.
 
 ## DNS Resolution in Coroutines (c-ares)
 
-In nightly images and in 6.3.0-rc1+ images, _Swoole_ is built with option `--enable-cares`, so hostnames used in
+In nightly images and in 6.3.0+ images, _Swoole_ is built with option `--enable-cares`, so hostnames used in
 coroutines are resolved by [c-ares](https://c-ares.org) on the event loop, instead of by blocking calls in Swoole's
 thread pool. Earlier images are not built with it. You can check whether a given image uses c-ares with:
 
@@ -184,7 +184,7 @@ RUN set -ex && \
 
 Note that above commands will remove the corresponding configuration files for the extensions, but won't remove the extensions themselves.
 
-**WARNING**: In nightly images and in 6.3.0-rc1+ images, extension _Redis_ is built with the _igbinary_ serializer and
+**WARNING**: In nightly images and in 6.3.0+ images, extension _Redis_ is built with the _igbinary_ serializer and
 depends on extension _igbinary_. Do not remove `docker-php-ext-igbinary.ini` while keeping extension _Redis_ enabled:
 extension _Redis_ then fails to load.
 
