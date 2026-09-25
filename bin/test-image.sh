@@ -102,10 +102,18 @@ check_command_output \
     "${patterns[@]}" \
     -- php --ri swoole
 
+# Extension Redis is built with the igbinary serializer since Swoole 6.3.0. Pre-releases of 6.3.0 (e.g. "6.3.0RC1")
+# pass this check too, since "sort -V" orders them after "6.3.0".
+redis_patterns=(
+    "Redis Support => enabled"
+    "Available compression => lzf, zstd"
+)
+if [[ "$(printf '%s\n' "6.3.0" "${SWOOLE_VERSION}" | sort -V | head -n 1)" == "6.3.0" ]] ; then
+    redis_patterns+=("Available serializers => php, json, igbinary")
+fi
 check_command_output \
-    "Redis is installed correctly, with the expected compressions enabled" \
-    "Redis Support => enabled" \
-    "Available compression => lzf, zstd" \
+    "Redis is installed correctly, with the expected serializers and compressions enabled" \
+    "${redis_patterns[@]}" \
     -- php --ri redis
 
 check_command_output "Composer works" "Composer version" -- composer --version

@@ -75,11 +75,20 @@ check('the Redis extension is loaded, with the expected compressions enabled', f
     expect(extension_loaded('redis'), 'extension "redis" is not loaded');
     expect(class_exists(Redis::class), 'class "Redis" does not exist');
 
-    // Extension Redis is built with the lzf and zstd compressions enabled, and with the igbinary and msgpack
-    // serializers disabled; see the "configureoptions" of extension "redis" in config/nightly.yml.
+    // Extension Redis is built with the lzf and zstd compressions enabled, and with the msgpack serializer disabled
+    // (the igbinary serializer is enabled since Swoole 6.3.0; see the check below); see the "configureoptions" of
+    // extension "redis" in config/nightly.yml.
     expect(defined('Redis::COMPRESSION_LZF'), 'extension "redis" is built without lzf compression support');
     expect(defined('Redis::COMPRESSION_ZSTD'), 'extension "redis" is built without zstd compression support');
 });
+
+// Version "6.3.0-dev" is compared against so that pre-releases of 6.3.0 (e.g. "6.3.0RC1") count as 6.3.0.
+if (version_compare(swoole_version(), '6.3.0-dev', '>=')) {
+    check('extension igbinary is available to extension Redis', function (): void {
+        expect(extension_loaded('igbinary'), 'extension "igbinary" is not loaded');
+        expect(defined('Redis::SERIALIZER_IGBINARY'), 'extension "redis" is built without igbinary serializer support');
+    });
+}
 
 check('Swoole thread support matches the PHP build', function (): void {
     // Class "Swoole\Thread" exists if and only if Swoole is compiled with option "--enable-swoole-thread", which
