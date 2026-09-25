@@ -20,6 +20,9 @@ image:
       version: "3.2.16"
       version_overrides:
         "8.5": "3.2.17RC1"
+      sha256:
+        "3.2.16": "8bf25d465abc7973d9e2c9a3039a5f8eea635b23bc1477017ff3999ff95836da"
+        "3.2.17RC1": "91da821443db125282a6aea039f24588dd28ff5d71e8187f6ecc41165bceafbc"
       enabled: true
     redis:
       version: "6.3.0"
@@ -33,4 +36,6 @@ image:
       # is already present in the base images. Neither adds a PHP extension, and Redis::OPT_COMPRESSION still
       # defaults to Redis::COMPRESSION_NONE, so stored data is unaffected unless an application opts in.
       configureoptions: "enable-redis-igbinary=\"yes\" enable-redis-lzf=\"yes\" enable-redis-zstd=\"yes\" enable-redis-msgpack=\"no\" enable-redis-lz4=\"no\" with-liblz4=\"yes\""
+      sha256:
+        "6.3.0": "0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51dd7f0b5"
       enabled: true

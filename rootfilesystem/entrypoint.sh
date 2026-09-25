@@ -37,19 +37,49 @@ if [[ "SERVICE" == "${BOOT_MODE}" ]] ; then
         wait
     fi
 else
-    if [[ -n "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
-        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf # Run supervisord in the background.
+    # A command given as one single string is split into words, to support Docker commands invoked in ECS (via command
+    # "aws ecs run-task"), kind of like following:
+    #     docker run --rm phpswoole/swoole "composer --version"
+    # Otherwise, arguments are passed through as they are, e.g.,
+    #     docker run --rm phpswoole/swoole bash -c "composer --version"
+    #     docker run --rm phpswoole/swoole php -r 'echo "hello world", PHP_EOL;'
+    if [[ -z "$(ls /etc/supervisor/conf.d/*.conf 2>/dev/null)" ]] ; then
+        if [[ $# -eq 1 ]] ; then
+            exec $1
+        else
+            exec "$@"
+        fi
     fi
 
+    # Supervisor programs are to run alongside the command (e.g., those under folder /etc/supervisor/task.d/). The
+    # command runs as a child process instead of replacing this script, so that once it exits (or the container is
+    # stopped), Supervisor stops its programs gracefully rather than having them killed along with the container.
+    /usr/bin/supervisord -c /etc/supervisor/supervisord.conf # Run supervisord in the background.
+
+    # Standard input is passed on explicitly, since a command started in the background reads from /dev/null otherwise.
     if [[ $# -eq 1 ]] ; then
-        # A command given as one single string is split into words, to support Docker commands invoked in ECS (via
-        # command "aws ecs run-task"), kind of like following:
-        #     docker run --rm phpswoole/swoole "composer --version"
-        exec $1
+        $1 <&0 &
     else
-        # Arguments are passed through as they are, e.g.,
-        #     docker run --rm phpswoole/swoole bash -c "composer --version"
-        #     docker run --rm phpswoole/swoole php -r 'echo "hello world", PHP_EOL;'
-        exec "$@"
+        "$@" <&0 &
     fi
+    pid=$!
+    trap 'kill -TERM "${pid}" 2>/dev/null' TERM
+    trap 'kill -INT "${pid}" 2>/dev/null' INT
+
+    # Command "wait" returns early when a signal is trapped; keep waiting until the command has actually exited, to get
+    # its exit status.
+    set +e
+    wait "${pid}"
+    status=$?
+    while kill -0 "${pid}" 2>/dev/null ; do
+        wait "${pid}"
+        status=$?
+    done
+
+    supervisordPid="$(cat /var/run/supervisord.pid 2>/dev/null)"
+    supervisorctl -c /etc/supervisor/supervisord.conf shutdown > /dev/null
+    while [[ -n "${supervisordPid}" ]] && kill -0 "${supervisordPid}" 2>/dev/null ; do
+        sleep 0.1
+    done
+    exit "${status}"
 fi

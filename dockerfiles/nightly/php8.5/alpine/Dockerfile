@@ -1,8 +1,16 @@
+# The source code of Swoole and the packages of the PECL extensions are downloaded in a stage of their own, which the
+# build below mounts rather than copies from, so they don't end up in any layer of the image. ADD verifies each
+# download against the checksum listed in the configuration file, if any, and records it in the build provenance.
+FROM scratch AS sources
+ADD https://github.com/swoole/swoole-src/archive/refs/heads/master.tar.gz /swoole-src.tar.gz
+ADD --checksum=sha256:91da821443db125282a6aea039f24588dd28ff5d71e8187f6ecc41165bceafbc https://pecl.php.net/get/igbinary-3.2.17RC1.tgz /igbinary.tgz
+ADD --checksum=sha256:0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51dd7f0b5 https://pecl.php.net/get/redis-6.3.0.tgz /redis.tgz
+
 FROM php:8.5-cli-alpine3.23
 
 COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/
 
-RUN \
+RUN --mount=type=bind,from=sources,target=/tmp/sources \
     set -ex && \
 # Keep only the runtime shared libraries in the final image; the matching "-dev" packages (headers) are
 # installed as part of the temporary ".build-deps" virtual package and removed once Swoole is built.
@@ -16,17 +24,15 @@ RUN \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev linux-headers brotli-dev c-ares-dev libpq-dev openssl-dev sqlite-dev zlib-dev zstd-dev libssh2-dev libucontext-dev unixodbc-dev && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
-    pecl channel-update pecl.php.net && \
-    MAKEFLAGS="-j$(nproc)" pecl install igbinary-3.2.17RC1 && \
-    MAKEFLAGS="-j$(nproc)" pecl install --configureoptions 'enable-redis-igbinary="yes" enable-redis-lzf="yes" enable-redis-zstd="yes" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' redis-6.3.0 && \
+    MAKEFLAGS="-j$(nproc)" pecl install /tmp/sources/igbinary.tgz && \
+    MAKEFLAGS="-j$(nproc)" pecl install --configureoptions 'enable-redis-igbinary="yes" enable-redis-lzf="yes" enable-redis-zstd="yes" enable-redis-msgpack="no" enable-redis-lz4="no" with-liblz4="yes"' /tmp/sources/redis.tgz && \
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-enable igbinary && \
     docker-php-ext-enable redis && \
     docker-php-ext-install sockets && \
     docker-php-source extract && \
     mkdir /usr/src/php/ext/swoole && \
-    curl -sSfL --retry 5 --retry-all-errors --connect-timeout 20 https://github.com/swoole/swoole-src/archive/master.tar.gz -o swoole.tar.gz && \
-    tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
+    tar xzf /tmp/sources/swoole-src.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
     export LDFLAGS="${LDFLAGS} -lucontext" && \
     docker-php-ext-configure swoole \
         --enable-brotli \
@@ -41,7 +47,6 @@ RUN \
         --with-swoole-odbc=unixODBC,/usr \
         --with-swoole-ssh2 && \
     docker-php-ext-install -j$(nproc) swoole && \
-    rm -f swoole.tar.gz && \
     docker-php-source delete && \
 # Strip debugging symbols from the PECL extensions (extension Swoole is stripped by docker-php-ext-install already), and
 # install the packages providing the shared libraries that the PHP extensions link against, so that removing the

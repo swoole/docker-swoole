@@ -18,6 +18,7 @@ use Swoole\Docker\Dockerfile;
  */
 #[CoversMethod(Dockerfile::class, 'getPhpExtensions')]
 #[CoversMethod(Dockerfile::class, 'getPhpMajorVersion')]
+#[CoversMethod(Dockerfile::class, 'getSwooleSource')]
 #[CoversMethod(Dockerfile::class, 'isSwoole620OrLater')]
 #[CoversMethod(Dockerfile::class, 'isSwoole630OrLater')]
 #[CoversMethod(Dockerfile::class, 'isSwooleStdextSupported')]
@@ -210,11 +211,15 @@ class DockerfileTest extends TestCase
                         'igbinary' => [
                             'version'           => '3.2.16',
                             'version_overrides' => ['8.5' => '3.2.17RC1'],
+                            'sha256'            => ['3.2.16' => 'aaa', '3.2.17RC1' => 'bbb'],
                             'enabled'           => true,
                         ],
                         'redis' => [
                             'version' => '6.3.0',
                             'enabled' => true,
+                        ],
+                        'zip' => [
+                            'enabled' => false,
                         ],
                     ],
                 ],
@@ -225,30 +230,74 @@ class DockerfileTest extends TestCase
 
     public static function dataGetPhpExtensions(): array
     {
+        $redis = ['version' => '6.3.0', 'enabled' => true, 'sha256' => null, 'url' => 'https://pecl.php.net/get/redis-6.3.0.tgz'];
+        $zip   = ['enabled' => false, 'sha256' => null, 'url' => null];
+
         return [
             [
                 [
-                    'igbinary' => ['version' => '3.2.16', 'enabled' => true],
-                    'redis'    => ['version' => '6.3.0', 'enabled' => true],
+                    'igbinary' => ['version' => '3.2.16', 'sha256' => 'aaa', 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.16.tgz'],
+                    'redis'    => $redis,
+                    'zip'      => $zip,
                 ],
                 '8.4.26',
-                'a PHP version without any override',
+                'a PHP version without any override; a checksum listed, one not listed, and no version given',
             ],
             [
                 [
-                    'igbinary' => ['version' => '3.2.17RC1', 'enabled' => true],
-                    'redis'    => ['version' => '6.3.0', 'enabled' => true],
+                    'igbinary' => ['version' => '3.2.17RC1', 'sha256' => 'bbb', 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.17RC1.tgz'],
+                    'redis'    => $redis,
+                    'zip'      => $zip,
                 ],
                 '8.5.11',
-                'a PHP patch version whose major version has an override',
+                'a PHP patch version whose major version has an override, with the checksum of the overriding version',
             ],
             [
                 [
-                    'igbinary' => ['version' => '3.2.17RC1', 'enabled' => true],
-                    'redis'    => ['version' => '6.3.0', 'enabled' => true],
+                    'igbinary' => ['version' => '3.2.17RC1', 'sha256' => 'bbb', 'enabled' => true, 'url' => 'https://pecl.php.net/get/igbinary-3.2.17RC1.tgz'],
+                    'redis'    => $redis,
+                    'zip'      => $zip,
                 ],
                 '8.5',
                 'a PHP major version (as used by nightly images) that has an override',
+            ],
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider('dataGetSwooleSource')]
+    public function testGetSwooleSource(array $expected, string $swooleVersion, array $config, string $message): void
+    {
+        $dockerfile = (new \ReflectionClass(Dockerfile::class))
+            ->newInstanceWithoutConstructor()
+            ->setSwooleVersion($swooleVersion)
+            ->setConfig($config)
+        ;
+        self::assertSame($expected, Reflection::callMethod($dockerfile, 'getSwooleSource'), $message);
+    }
+
+    public static function dataGetSwooleSource(): array
+    {
+        return [
+            [
+                ['url' => 'https://github.com/swoole/swoole-src/archive/refs/heads/master.tar.gz', 'sha256' => null],
+                'nightly',
+                ['image' => ['swoole' => ['sha256' => 'ignored']]],
+                'nightly images build the master branch, which has no fixed checksum',
+            ],
+            [
+                ['url' => 'https://github.com/swoole/swoole-src/archive/refs/tags/v6.3.0-rc1.tar.gz', 'sha256' => 'abc'],
+                '6.3.0-rc1',
+                ['image' => ['swoole' => ['sha256' => 'abc']]],
+                'a version with a checksum listed',
+            ],
+            [
+                ['url' => 'https://github.com/swoole/swoole-src/archive/refs/tags/v6.2.3.tar.gz', 'sha256' => null],
+                '6.2.3',
+                ['image' => []],
+                'a version without a checksum listed',
             ],
         ];
     }

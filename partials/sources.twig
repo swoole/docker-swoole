@@ -1,0 +1,12 @@
+{# Downloads the source code of Swoole and the packages of the PECL extensions. Shared by templates Dockerfile.twig and Dockerfile.alpine.twig. #}
+# The source code of Swoole and the packages of the PECL extensions are downloaded in a stage of their own, which the
+# build below mounts rather than copies from, so they don't end up in any layer of the image. ADD verifies each
+# download against the checksum listed in the configuration file, if any, and records it in the build provenance.
+FROM scratch AS sources
+ADD {% if swoole_source.sha256 is not empty %}--checksum=sha256:{{ swoole_source.sha256 }} {% endif %}{{ swoole_source.url }} /swoole-src.tar.gz
+{%~ for name, data in php_extensions %}
+    {%~ if data.url is not empty %}
+ADD {% if data.sha256 is not empty %}--checksum=sha256:{{ data.sha256 }} {% endif %}{{ data.url }} /{{ name }}.tgz
+    {%~ endif %}
+{%~ endfor %}
+

@@ -1,3 +1,4 @@
+{%~ include 'partials/sources.twig' %}
 FROM php:{{ php_version }}-{{ image_type }}
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -9,7 +10,7 @@ ENV DEV_MODE=$DEV_MODE
 COPY --from=composer:{{ composer.version }} /usr/bin/composer /usr/bin/
 COPY ./rootfilesystem/ /
 
-RUN \
+RUN --mount=type=bind,from=sources,target=/tmp/sources \
     set -ex && \
 # Packages marked as manually installed in the base image, to keep when the build-only packages are removed below.
     savedAptMark="$(apt-mark showmanual)" && \
@@ -39,6 +40,7 @@ RUN \
         libssl-dev                 \
         libzstd-dev                \
         supervisor                 \
+        tini                       \
         unixodbc-dev               \
         unzip                      \
         zlib1g-dev                 \
@@ -46,9 +48,33 @@ RUN \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
 {%~ include 'partials/pecl-extensions.twig' %}
-    install-swoole.sh {% if swoole_version == "nightly" %}master{% else %}{{ swoole_version }}{% endif %}{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
+    docker-php-ext-install sockets && \
+    mkdir -p /usr/src/swoole-src && \
+    tar xzf /tmp/sources/swoole-src.tar.gz --strip-components=1 -C /usr/src/swoole-src && \
+# Development images build Swoole with debug and trace logging, and with debugging symbols (which the default compiler
+# flags of the official PHP images leave out).
+    if [ "${DEV_MODE}" = "true" ] ; then \
+        devOptions="--enable-debug-log --enable-trace-log" && \
+        export CFLAGS="${PHP_CFLAGS} -g" CXXFLAGS="${PHP_CFLAGS} -g" ; \
+    else \
+        devOptions="" ; \
+    fi && \
+    docker-php-ext-configure /usr/src/swoole-src ${devOptions}{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
 {% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
 {%~ include 'partials/swoole-options.twig' %}
+# Command docker-php-ext-install strips debugging symbols, so development images build and install Swoole themselves,
+# and keep its source code in folder /usr/src/swoole-src, along with debugging tools.
+    if [ "${DEV_MODE}" = "true" ] ; then \
+        apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends && \
+        make -C /usr/src/swoole-src -j"$(nproc)" && \
+        make -C /usr/src/swoole-src install && \
+        make -C /usr/src/swoole-src clean && \
+        docker-php-ext-enable swoole ; \
+    else \
+        docker-php-ext-install -j"$(nproc)" /usr/src/swoole-src && \
+        rm -rf /usr/src/swoole-src ; \
+    fi && \
+    docker-php-source delete && \
     mkdir -p /var/log/supervisor && \
 # For non-development images, strip debugging symbols from the PHP extensions and remove the build-only packages
 # (headers, static libraries, and the packages they pulled in) to reduce the final image size. Same as in the official
@@ -60,7 +86,7 @@ RUN \
     if [ "${DEV_MODE}" != "true" ] ; then \
         strip --strip-all "$(php-config --extension-dir)"/*.so && \
         apt-mark auto '.*' > /dev/null && \
-        apt-mark manual $savedAptMark{% if inotify == true %} inotify-tools{% endif %} supervisor unzip > /dev/null && \
+        apt-mark manual $savedAptMark{% if inotify == true %} inotify-tools{% endif %} supervisor tini unzip > /dev/null && \
         find /usr/local -type f -name '*.so' -exec ldd '{}' ';' \
             | awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
             | sort -u \
@@ -74,7 +100,9 @@ RUN \
     rm -rf /var/lib/apt/lists/* /tmp/pear && \
 {%~ include 'partials/load-check.twig' %}
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Program tini runs as PID 1: it forwards signals to the entrypoint script, and reaps the zombie processes that the
+# commands started in the container leave behind.
+ENTRYPOINT ["/usr/bin/tini", "-s", "--", "/entrypoint.sh"]
 CMD []
 
 WORKDIR "/var/www/"

@@ -222,9 +222,13 @@ class Dockerfile
     }
 
     /**
-     * Get the PECL extensions to install for given PHP version, with field "version_overrides" of each extension
-     * resolved: when it lists the PHP major version (e.g. "8.5"), that version of the extension is used instead of
-     * the one in field "version".
+     * Get the PECL extensions to install for given PHP version, with their fields resolved for that PHP version:
+     *   - version: Field "version_overrides" of an extension lists versions to use instead of the one in field "version"
+     *     for specific PHP major versions (e.g. "8.5").
+     *   - sha256: The SHA-256 checksum of the package of that version, from field "sha256" (a map of versions to
+     *     checksums); null if not listed.
+     *   - url: Where to download the package of that version from; null if no version is given, in which case the
+     *     latest stable release is installed from the PECL channel.
      */
     protected function getPhpExtensions(string $phpVersion): array
     {
@@ -235,10 +239,33 @@ class Dockerfile
                 $data['version'] = $data['version_overrides'][$phpMajorVersion];
             }
             unset($data['version_overrides']);
+
+            $version        = (string) ($data['version'] ?? '');
+            $data['sha256'] = ($version === '') ? null : ($data['sha256'][$version] ?? null);
+            $data['url']    = ($version === '') ? null : "https://pecl.php.net/get/{$name}-{$version}.tgz";
+
             $extensions[$name] = $data;
         }
 
         return $extensions;
+    }
+
+    /**
+     * Get where to download the source code of Swoole from, and its SHA-256 checksum (null if the configuration file
+     * doesn't list one). Nightly images build the master branch, which has no fixed checksum.
+     *
+     * @return array{url: string, sha256: ?string}
+     */
+    protected function getSwooleSource(): array
+    {
+        if ($this->getSwooleVersion() === self::VERSION_NIGHTLY) {
+            return ['url' => 'https://github.com/swoole/swoole-src/archive/refs/heads/master.tar.gz', 'sha256' => null];
+        }
+
+        return [
+            'url'    => "https://github.com/swoole/swoole-src/archive/refs/tags/v{$this->getSwooleVersion()}.tar.gz",
+            'sha256' => $this->getConfig()['image']['swoole']['sha256'] ?? null,
+        ];
     }
 
     /**
@@ -256,6 +283,7 @@ class Dockerfile
                 'swoole_630_or_later'     => $this->isSwoole630OrLater(),
                 'swoole_stdext_supported' => $this->isSwooleStdextSupported(),
                 'php_extensions'          => $this->getPhpExtensions($phpVersion),
+                'swoole_source'           => $this->getSwooleSource(),
             ]
         );
 

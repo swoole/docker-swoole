@@ -20,10 +20,18 @@ image:
   composer:
     version: "1.8.6" # Composer version.
   inotify: false # Install package inotify-tools or not for non-Alpine images. By default it's not installed.
+  swoole:
+    # SHA-256 checksum of the source code of Swoole, as downloaded from
+    # https://github.com/swoole/swoole-src/archive/refs/tags/v<version>.tar.gz. Optional, but should be set for all
+    # versioned images: the build fails if the download doesn't match it.
+    sha256: "5d1d57adf16494f6cbb0211665d8fb7c7e4726c0b81d35e200812df326051e8e"
   php_extensions: # List of PECL extensions to be installed for non-Alpine images.
     zip: # An extension name.
       version: "1.15.4" # Optional.
       version_overrides: # Optional. Versions to use instead of field "version" for specific PHP major versions.
         "8.5": "1.22.0"
+      sha256: # Optional. SHA-256 checksums of the packages (https://pecl.php.net/get/<name>-<version>.tgz), by version.
+        "1.15.4": "0000000000000000000000000000000000000000000000000000000000000000"
+        "1.22.0": "0000000000000000000000000000000000000000000000000000000000000000"
       configureoptions: "" # List of configure options. Optional.
       enabled: true # Enable the extension or not. By default it's disabled.

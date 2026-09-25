@@ -1,12 +1,11 @@
 {# Installs and enables the PECL extensions listed in the configuration file. Shared by templates Dockerfile.twig and Dockerfile.alpine.twig. #}
 {%~ if php_extensions is not empty %}
+{# Only extensions without a version are installed from the PECL channel; the others come from stage "sources". #}
+    {%~ if php_extensions|filter(data => data.url is empty)|length > 0 %}
     pecl channel-update pecl.php.net && \
+    {%~ endif %}
     {%~ for name, data in php_extensions %}
-        {%~ if data.configureoptions is empty %}
-    MAKEFLAGS="-j$(nproc)" pecl install {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
-        {%~ else %}
-    MAKEFLAGS="-j$(nproc)" pecl install --configureoptions '{{ data.configureoptions }}' {{ name }}{% if data.version is not empty %}-{{ data.version }}{% endif %} && \
-        {%~ endif %}
+    MAKEFLAGS="-j$(nproc)" pecl install{% if data.configureoptions is not empty %} --configureoptions '{{ data.configureoptions }}'{% endif %} {% if data.url is not empty %}/tmp/sources/{{ name }}.tgz{% else %}{{ name }}{% endif %} && \
     {%~ endfor %}
 # PHP extension Redis is included since 4.8.12+ and 5.0.1+.
     {%~ for name, data in php_extensions %}

@@ -135,6 +135,13 @@ Table of Contents
   compiled in parallel.
 - Retry failed downloads of the Swoole source code.
 - Sign the images with cosign, and attach an SBOM, full build provenance and OCI labels to them.
+- **Verify the downloads of the Swoole source code and of the PECL extensions against SHA-256 checksums**, and record
+  them in the build provenance. Non-Alpine images now build Swoole the same way as Alpine images, with
+  `docker-php-ext-configure` and `docker-php-ext-install`, instead of with script `install-swoole.sh`.
+- **Run [tini](https://github.com/krallin/tini) as PID 1 in non-Alpine images**, to forward signals and reap zombie
+  processes. When a one-off command is run with Supervisor programs (e.g., under folder `/etc/supervisor/task.d/`),
+  those programs are now stopped gracefully once the command exits or the container is stopped, and the container
+  exits with the status of the command.
 - **Remove scripts `install-swoole-ext.sh`, `install-phpx.sh` and `install-swoole-ext-zookeeper.sh`**, and examples 13
   to 15 that used them: the Swoole extensions and PHP-X they installed are no longer maintained, and the scripts no
   longer worked.

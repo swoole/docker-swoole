@@ -24,7 +24,10 @@ Bumps `image.composer.version` and each entry under `image.php_extensions` in `c
      `https://api.github.com/repos/igbinary/igbinary/releases`.
 
    If a value is already current, leave it unchanged — don't create a no-op diff for it.
-3. Edit `config/nightly.yml` with the new version numbers.
+3. Edit `config/nightly.yml` with the new version numbers. For each PECL extension whose version changed, also add the
+   SHA-256 checksum of the new package under its `sha256` map, keyed by version, and drop the entry of a version no
+   longer used: `curl -sSfL https://pecl.php.net/get/<name>-<version>.tgz | shasum -a 256`. PECL publishes no checksums
+   of its own, so this records what it serves at the time; the build fails if a later download doesn't match.
 4. Regenerate: `./bin/generate-dockerfiles.php nightly`.
 5. Review the diff (`git diff`) — only `config/nightly.yml` and files under `dockerfiles/nightly/` should have changed.
 6. Commit on the current branch (normally `master`) — do not push. Match the repo's commit style (short, lowercase, imperative):

@@ -366,7 +366,8 @@ follow these three steps.
 ./bin/generate-dockerfiles.php 5.1.8   # Generate dockerfiles to build images for Swoole 5.1.8.
 ```
 
-**3**. Build Docker images with commands like:
+**3**. Build Docker images with commands like the following. The Dockerfiles need BuildKit (the default builder since
+Docker 23.0), for options `ADD --checksum` and `RUN --mount`.
 
 ```bash
 docker build -t phpswoole/swoole:php8.2              -f dockerfiles/nightly/php8.2/cli/Dockerfile   .
