@@ -4,7 +4,12 @@ on:
   push:
     branches:
       - '[4-9].[0-9]+.[0-9]+'
-      - '[4-9].[0-9]+.[0-9]+-?[a-zA-Z]**'
+      # Pre-releases, named after their Git tags without the leading "v" (e.g. "6.3.0-rc1"); see
+      # Dockerfile::isValidSwooleVersion().
+      - '[4-9].[0-9]+.[0-9]+-alpha*'
+      - '[4-9].[0-9]+.[0-9]+-beta*'
+      - '[4-9].[0-9]+.[0-9]+-rc*'
+      - '[4-9].[0-9]+.[0-9]+-RC*'
 
 # Jobs only read the repository by default; jobs that need more ask for it themselves.
 permissions:

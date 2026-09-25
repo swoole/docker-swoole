@@ -79,6 +79,11 @@ class DockerfileTest extends TestCase
                 'a pre-release of a version after 6.2.0',
             ],
             [
+                true,
+                '6.2.0-rc1',
+                'a pre-release of 6.2.0 (must count as 6.2.0, although version_compare() orders it before 6.2.0)',
+            ],
+            [
                 false,
                 '6.1.8',
                 'a 6.1.x version',
@@ -429,6 +434,26 @@ class DockerfileTest extends TestCase
                 true,
                 '6.0.0-alpha',
                 'an alpha release',
+            ],
+            [
+                true,
+                '6.3.0-beta2',
+                'a numbered beta release',
+            ],
+            [
+                true,
+                '6.3.0-RC1',
+                'a release candidate in uppercase',
+            ],
+            [
+                false,
+                '6.3.0-foo',
+                'an unknown pre-release suffix, which version_compare() would order before any pre-release',
+            ],
+            [
+                false,
+                '6.3.0-rc1foo',
+                'extra characters after the pre-release suffix',
             ],
             [
                 false,

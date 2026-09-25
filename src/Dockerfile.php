@@ -175,11 +175,16 @@ class Dockerfile
 
     /**
      * A version # is either a stable release (e.g. "6.2.3"), or a pre-release named after the Git tag of Swoole
-     * without its leading "v" (e.g. "6.3.0-rc1" for tag "v6.3.0-rc1").
+     * without its leading "v" (e.g. "6.3.0-rc1" for tag "v6.3.0-rc1"). Only the pre-release suffixes that
+     * version_compare() orders between "-dev" and the release itself are accepted (alpha, beta and RC, optionally
+     * numbered), so that the version checks below treat pre-releases the same way as their releases.
      */
     protected function isValidSwooleVersion(string $swooleVersion): bool
     {
-        return (bool) preg_match('/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z][a-zA-Z0-9]*)?$/', $swooleVersion);
+        return (bool) preg_match(
+            '/^[1-9]\d*\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(alpha|beta|rc|RC)\d*)?$/',
+            $swooleVersion
+        );
     }
 
     /**
@@ -187,11 +192,14 @@ class Dockerfile
      *
      * Swoole 6.2.0 removed configure option "--enable-openssl" (OpenSSL support is always compiled in since then),
      * and added configure options "--enable-swoole-ftp" and "--with-swoole-ssh2".
+     *
+     * Version "6.2.0-dev" is compared against so that pre-releases of 6.2.0 (e.g. "6.2.0-rc1"), which
+     * version_compare() orders before "6.2.0", count as 6.2.0.
      */
     protected function isSwoole620OrLater(): bool
     {
         return ($this->getSwooleVersion() === self::VERSION_NIGHTLY)
-            || version_compare($this->getSwooleVersion(), '6.2.0', '>=');
+            || version_compare($this->getSwooleVersion(), '6.2.0-dev', '>=');
     }
 
     /**
