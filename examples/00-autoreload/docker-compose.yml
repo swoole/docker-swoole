@@ -1,11 +1,14 @@
 # This docker-compose.yml file shows how Supervisor program(s) are reloaded automatically when file changes detected
-# under web root /var/www. There are two environment variables used:
+# under web root /var/www. These environment variables are used:
 #     1. AUTORELOAD_PROGRAMS: space-separated Supervisor program(s) to be reloaded when file changes detected. e.g.,
 #            AUTORELOAD_PROGRAMS: "swoole"       # Autoreload Supervisor program "swoole" only.
 #            AUTORELOAD_PROGRAMS: "swoole nginx" # Autoreload Supervisor program "swoole" and "nginx".
 #     2. AUTORELOAD_ANY_FILES: Optional. If set to "true", "1", "yes", or "y", reload Supervisor program(s) when any
 #        files under the root directory (/var/www in this example) is changed; otherwise, reload only when PHP file(s)
 #        are changed.
+#     3. AUTORELOAD_GRACE_PERIOD: Optional. Number of seconds to ignore file changes for, after starting and after each
+#        reload; 3 by default. This way, files that the program(s) write under the root directory while starting (e.g.,
+#        generated proxy classes) don't trigger another reload. Raise it if your program(s) take longer to start.
 #
 # NOTE: The auto-reloading feature is supported for non-Alpine images only.
 #
