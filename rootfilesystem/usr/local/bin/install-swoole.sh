@@ -47,6 +47,7 @@ DEV_OPTIONS=()
 if [[ "true" = "${DEV_MODE}" ]] ; then
     apt-get update
     apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends
+    rm -rf /var/lib/apt/lists/*
     DEV_OPTIONS=(--enable-debug-log --enable-trace-log)
 fi
 
