@@ -154,8 +154,7 @@ Note that above commands will remove the corresponding configuration files for t
 
 **WARNING**: In nightly images and in 6.3.0-rc1+ images, extension _Redis_ is built with the _igbinary_ serializer and
 depends on extension _igbinary_. Do not remove `docker-php-ext-igbinary.ini` while keeping extension _Redis_ enabled:
-extension _Redis_ then fails to load, with error `Cannot load module "redis" because required module "igbinary" is not
-loaded`.
+extension _Redis_ then fails to load.
 
 ## More Examples
 

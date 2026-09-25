@@ -27,7 +27,7 @@ image:
       # are still prompted for by PECL and silently fall back to their package defaults, which makes the build
       # non-deterministic and lets it drift whenever phpredis adds a new option.
       #
-      # The igbinary serializer is enabled; Redis::OPT_SERIALIZER still defaults to Redis::SERIALIZER_PHP.
+      # The igbinary serializer is enabled; Redis::OPT_SERIALIZER still defaults to Redis::SERIALIZER_NONE.
       #
       # Compression support (lzf, zstd) is enabled: lzf is compiled from sources bundled with phpredis, and libzstd
       # is already present in the base images. Neither adds a PHP extension, and Redis::OPT_COMPRESSION still

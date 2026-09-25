@@ -105,8 +105,12 @@ Table of Contents
 ### Changed
 - **Build PHP extension _Redis_ with igbinary serializer support, and include PHP extension _igbinary_.** Code that
   feature-detects `extension_loaded('igbinary')` now takes its igbinary path; extension _Redis_ also stops loading if
-  extension _igbinary_ is disabled afterwards. PHP extension _igbinary_ is 3.2.16 for PHP 8.4 and below, and
-  **3.2.17RC1 (a pre-release) for PHP 8.5**, since 3.2.16 doesn't compile on PHP 8.5.
+  extension _igbinary_ is disabled afterwards. For example, the `DefaultMarshaller` of Symfony Cache 4.4 through 7.1
+  (including 6.4 LTS) switches to igbinary automatically when the extension is loaded, so cached payloads change
+  format on redeploy; Symfony reads both formats back, so existing cache entries stay readable. Symfony Cache 7.2+
+  only uses igbinary when configured to. `Redis::OPT_SERIALIZER` still defaults to `Redis::SERIALIZER_NONE`, so
+  extension _Redis_ itself stores data the same way unless an application opts in. PHP extension _igbinary_ is 3.2.16
+  for PHP 8.4 and below, and **3.2.17RC1 (a pre-release) for PHP 8.5**, since 3.2.16 doesn't compile on PHP 8.5.
 - **Option _--enable-swoole-stdext_ is no longer used when installing Swoole**, since Swoole 6.3.0 removed the stdext
   module.
 
