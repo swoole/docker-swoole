@@ -19,7 +19,6 @@ php: # List of PHP versions to build for.
 image:
   composer:
     version: "1.8.6" # Composer version.
-  inotify: false # Install package inotify-tools or not for non-Alpine images. By default it's not installed.
   swoole:
     # SHA-256 checksum of the source code of Swoole, as downloaded from
     # https://github.com/swoole/swoole-src/archive/refs/tags/v<version>.tar.gz. Optional, but should be set for all

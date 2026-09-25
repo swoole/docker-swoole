@@ -10,7 +10,6 @@ php:
 image:
   composer:
     version: "2.10.3"
-  inotify: true
   php_extensions:
     # Extension igbinary must be listed before extension Redis: phpredis's configure script needs the igbinary headers
     # to build its igbinary serializer. igbinary 3.2.16, the latest stable release, doesn't compile on PHP 8.5 (it

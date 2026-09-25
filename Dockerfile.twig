@@ -16,17 +16,12 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
     savedAptMark="$(apt-mark showmanual)" && \
     apt-get update && \
     apt-get install -y \
-{%~ if inotify == true %}
-# The auto-reloading feature is supported for non-Alpine images only.
+# Package "inotify-tools" is used by the auto-reloading feature, which is supported for non-Alpine images only. For
+# details, please check script "autoreload.sh" and example "00-autoreload".
 #
-# Package "inotify-tools" is pre-installed in nightly images and in 6.3.0-rc1+ images. For older versioned images, it
-# will be installed automatically when needed. For details, please check script "autoreload.sh" and example
-# "00-autoreload".
-#
-# @see https://github.com/swoole/docker-swoole/blob/master/rootfilesystem/usr/local/boot/autoreload.sh
+# @see https://github.com/swoole/docker-swoole/blob/master/rootfilesystem/usr/local/bin/autoreload.sh
 # @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
         inotify-tools              \
-{%~ endif %}
         libcurl4-openssl-dev       \
         libbrotli-dev              \
 {%~ if swoole_630_or_later %}
@@ -86,7 +81,7 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
     if [ "${DEV_MODE}" != "true" ] ; then \
         strip --strip-all "$(php-config --extension-dir)"/*.so && \
         apt-mark auto '.*' > /dev/null && \
-        apt-mark manual $savedAptMark{% if inotify == true %} inotify-tools{% endif %} supervisor tini unzip > /dev/null && \
+        apt-mark manual $savedAptMark inotify-tools supervisor tini unzip > /dev/null && \
         find /usr/local -type f -name '*.so' -exec ldd '{}' ';' \
             | awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
             | sort -u \

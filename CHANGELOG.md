@@ -123,6 +123,7 @@ Table of Contents
 - **Fix auto-reloading**: it no longer leaves one _inotifywait_ process behind on each reload, and it now restarts
   programs that stopped with an error (e.g. a syntax error) once the file is fixed.
 - Install package _inotify-tools_ in non-Alpine images, instead of when a container with auto-reloading enabled starts.
+  Configuration option `inotify` is removed, since the package is always installed now.
 - Stop containers right away when no Supervisor program is running (e.g. with `DISABLE_DEFAULT_SERVER=true`), instead
   of being killed when Docker's stop timeout runs out.
 - Give the default Swoole server 8 seconds to stop (option `stopwaitsecs` of Supervisor), so that it stops before

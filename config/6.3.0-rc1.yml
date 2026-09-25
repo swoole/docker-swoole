@@ -10,7 +10,6 @@ php:
 image:
   composer:
     version: "2.10.3"
-  inotify: true
   swoole:
     # SHA-256 checksum of https://github.com/swoole/swoole-src/archive/refs/tags/v6.3.0-rc1.tar.gz.
     sha256: "5d1d57adf16494f6cbb0211665d8fb7c7e4726c0b81d35e200812df326051e8e"
