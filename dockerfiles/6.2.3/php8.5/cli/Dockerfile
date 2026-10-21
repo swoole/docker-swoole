@@ -1,4 +1,4 @@
-FROM php:8.5.10-cli
+FROM php:8.5.12-cli
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
