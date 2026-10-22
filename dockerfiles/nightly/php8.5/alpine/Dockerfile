@@ -6,7 +6,7 @@ ADD https://github.com/swoole/swoole-src/archive/refs/heads/master.tar.gz /swool
 ADD --checksum=sha256:91da821443db125282a6aea039f24588dd28ff5d71e8187f6ecc41165bceafbc https://pecl.php.net/get/igbinary-3.2.17RC1.tgz /igbinary.tgz
 ADD --checksum=sha256:0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51dd7f0b5 https://pecl.php.net/get/redis-6.3.0.tgz /redis.tgz
 
-FROM php:8.5-cli-alpine3.23
+FROM php:8.5-cli-alpine3.24
 
 COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/
 

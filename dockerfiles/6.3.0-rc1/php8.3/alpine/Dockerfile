@@ -6,7 +6,7 @@ ADD --checksum=sha256:5d1d57adf16494f6cbb0211665d8fb7c7e4726c0b81d35e200812df326
 ADD --checksum=sha256:8bf25d465abc7973d9e2c9a3039a5f8eea635b23bc1477017ff3999ff95836da https://pecl.php.net/get/igbinary-3.2.16.tgz /igbinary.tgz
 ADD --checksum=sha256:0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51dd7f0b5 https://pecl.php.net/get/redis-6.3.0.tgz /redis.tgz
 
-FROM php:8.3.36-cli-alpine3.23
+FROM php:8.3.36-cli-alpine3.24
 
 COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/
 
