@@ -11,10 +11,14 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Class WorkflowTest
  *
- * Guards the list of platforms each build workflow declares in PLATFORMS, which its merge job (bin/publish-image.sh)
- * uses to tell which platforms failed to build. It has to match the platform matrix of the build job, but it lives in
- * a different job, so nothing in GitHub Actions can keep the two in sync. A platform missing from PLATFORMS would make
- * every merge job fail; an extra one would be reported as missing on every run.
+ * Guards properties of the workflows that nothing in GitHub Actions checks:
+ *   - The list of platforms each build workflow declares in PLATFORMS, which its merge job (bin/publish-image.sh)
+ *     uses to tell which platforms failed to build. It has to match the platform matrix of the build job, but it lives
+ *     in a different job, so nothing in GitHub Actions can keep the two in sync. A platform missing from PLATFORMS
+ *     would make every merge job fail; an extra one would be reported as missing on every run.
+ *   - OPTIONAL_PLATFORMS, which must list exactly the platforms marked "optional" in the platform matrix, and the build
+ *     job's "continue-on-error: ${{ matrix.platform.optional }}": together they make a failed build of an optional
+ *     platform leave the run green, and one of a required platform fail it.
  *
  * @internal
  * @coversNothing
@@ -36,6 +40,20 @@ class WorkflowTest extends TestCase
             array_column($platforms, 'name'),
             preg_split('/\s+/', trim($declared)),
             "PLATFORMS in {$workflow} does not list the platforms of its platform matrix, in the same order",
+        );
+
+        $optional = $data['env']['OPTIONAL_PLATFORMS'] ?? null;
+        self::assertIsString($optional, "no OPTIONAL_PLATFORMS found in {$workflow}");
+        self::assertSame(
+            array_column(array_filter($platforms, fn (array $platform): bool => $platform['optional'] ?? false), 'name'),
+            preg_split('/\s+/', trim($optional), -1, PREG_SPLIT_NO_EMPTY),
+            "OPTIONAL_PLATFORMS in {$workflow} does not list the platforms marked optional in its platform matrix",
+        );
+        // A failed build of an optional platform must not fail the run, and one of a required platform must.
+        self::assertSame(
+            '${{ matrix.platform.optional }}',
+            $data['jobs']['build']['continue-on-error'] ?? null,
+            "the build job of {$workflow} doesn't let optional platforms fail",
         );
     }
 
@@ -62,7 +80,8 @@ class WorkflowTest extends TestCase
 
         $steps = $data['jobs']['merge']['steps'];
         self::assertNotEmpty(preg_grep('#^actions/checkout@#', array_column($steps, 'uses')), "the merge job of {$workflow} doesn't check out the repository");
-        // The run has to fail when a platform is missing, so that it gets rebuilt.
+        // The script alone decides whether a missing platform fails the run (only a required one does), so no step of
+        // the merge job may swallow its exit status.
         self::assertSame([], array_filter(array_column($steps, 'continue-on-error')), "a step of the merge job of {$workflow} ignores failures");
         $scripts = implode("\n", array_column($steps, 'run'));
         self::assertMatchesRegularExpression('#\./bin/publish-image\.sh .+ /tmp/digests#', $scripts, "the merge job of {$workflow} doesn't publish with bin/publish-image.sh");
@@ -83,6 +102,7 @@ class WorkflowTest extends TestCase
         foreach ($platforms as $platform) {
             $name = $platform['name'] ?? '(unnamed)';
             self::assertIsBool($platform['emulated'] ?? null, "option \"emulated\" of platform {$name} is not a boolean in {$workflow}");
+            self::assertIsBool($platform['optional'] ?? null, "option \"optional\" of platform {$name} is not a boolean in {$workflow}");
             self::assertIsString($platform['runner'] ?? null, "platform {$name} has no runner in {$workflow}");
             self::assertIsString($platform['slug'] ?? null, "platform {$name} has no slug in {$workflow}");
         }
