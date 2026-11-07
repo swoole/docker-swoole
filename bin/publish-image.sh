@@ -17,7 +17,9 @@
 # provenance), so that users of that platform keep the image they had instead of losing the tag. A tag published for
 # the first time has nothing to carry over, and goes without the missing platform. Either way the script exits with a
 # non-zero status code once everything is published, so that the workflow run still fails and the missing platform
-# gets rebuilt: rerunning the failed jobs of the run publishes the complete image.
+# gets rebuilt: rerunning the failed jobs of the run, within the week its digests are kept, publishes the complete
+# image. Every tag is read before any of them is published, and a tag that can't be read (for any reason other than
+# not existing yet) stops them all, since publishing it would take the missing platform away from it.
 #
 # Environment variables:
 #     PLATFORMS          Required. The platforms every image is built for, e.g. "linux/amd64 linux/s390x".
@@ -132,43 +134,65 @@ fi
 
 missing_json="$(printf '%s\n' "${missing[@]}" | jq -R . | jq -s -c .)"
 
+# The name of the platform of a descriptor in an image index. BuildKit records linux/arm64/v8 as plain linux/arm64 (v8
+# is the default variant of arm64), so both are normalized to linux/arm64 before platforms are compared.
+JQ_PLATFORM='
+    def norm: if . == "linux/arm64/v8" then "linux/arm64" else . end;
+    def name: (.platform.os + "/" + .platform.architecture + (if .platform.variant then "/" + .platform.variant else "" end)) | norm;
+'
+
 # The images of the missing platforms differ from one tag to the next (e.g., "6.2-php8.4" may still point to an
-# older version than "6.2.5-php8.4"), so each tag is published on its own.
-carried_any=""
+# older version than "6.2.5-php8.4"), so each tag is published on its own. Every tag is read before any of them is
+# published, so that a tag that can't be read stops all of them, rather than leaving some published and others not.
 errors="$(mktemp)"
 trap 'rm -f "${errors}"' EXIT
-for tag in "${tags[@]}" ; do
+carried_by_tag=()
+for i in "${!tags[@]}" ; do
+    tag="${tags[$i]}"
     if ! current="$(docker buildx imagetools inspect --raw "${IMAGE}:${tag}" 2>"${errors}")" ; then
         if grep -q -i -E 'not found|manifest unknown' "${errors}" ; then
             current=""
         else
             # Publishing without carrying the missing platforms over would take them away from an existing tag.
             cat "${errors}" >&2
-            echo "::error::failed to read the current image of tag ${tag}, so it is not published"
+            echo "::error::failed to read the current image of tag ${tag}, so no tag is published"
             exit 1
         fi
     fi
 
     # The descriptors of the missing platforms' images in the current index, plus the attestation manifests that
-    # refer to them, each as one line of JSON. They are passed to "docker buildx imagetools create" as they are, which
-    # keeps their platforms and annotations, and resolves them in the repository the tag belongs to.
-    carried=()
+    # refer to them, one per line of JSON. They are passed to "docker buildx imagetools create" as they are, which
+    # keeps their platforms and annotations, and resolves them in the repository the tag belongs to. jq runs in a
+    # command substitution of its own, so that a failure stops the script instead of carrying nothing over.
+    selected=""
     if [[ -n "${current}" ]] ; then
-        while IFS= read -r descriptor ; do
-            [[ -n "${descriptor}" ]] && carried+=("${descriptor}")
-        done < <(jq -c --argjson missing "${missing_json}" '
-            def name: .platform.os + "/" + .platform.architecture + (if .platform.variant then "/" + .platform.variant else "" end);
-            (.manifests // []) as $all
+        if ! jq -e 'has("manifests")' <<< "${current}" > /dev/null ; then
+            echo "::error::tag ${tag} doesn't point to an image index, so no tag is published"
+            exit 1
+        fi
+        selected="$(jq -c --argjson missing "${missing_json}" "${JQ_PLATFORM}"'
+            ($missing | map(norm)) as $missing
+            | .manifests as $all
             | [$all[] | select(.platform != null and (name as $n | $missing | index($n)))] as $images
             | ($images | map(.digest)) as $digests
             | $images[], ($all[] | select(.annotations["vnd.docker.reference.type"] == "attestation-manifest"
                                          and (.annotations["vnd.docker.reference.digest"] as $d | $digests | index($d))))
-        ' <<< "${current}")
+        ' <<< "${current}")"
     fi
+    carried_by_tag[$i]="${selected}"
+done
+
+carried_any=""
+for i in "${!tags[@]}" ; do
+    tag="${tags[$i]}"
+    carried=()
+    while IFS= read -r descriptor ; do
+        [[ -n "${descriptor}" ]] && carried+=("${descriptor}")
+    done <<< "${carried_by_tag[$i]}"
 
     if [[ ${#carried[@]} -gt 0 ]] ; then
         carried_any=1
-        echo "::warning::tag ${tag}: carrying over the current image of $(jq -r -s 'map(select(.annotations["vnd.docker.reference.type"] != "attestation-manifest")) | map(.platform.os + "/" + .platform.architecture + (if .platform.variant then "/" + .platform.variant else "" end)) | join(", ")' <<< "$(printf '%s\n' "${carried[@]}")")"
+        echo "::warning::tag ${tag}: carrying over the current image of $(jq -r -s "${JQ_PLATFORM}"'map(select(.annotations["vnd.docker.reference.type"] != "attestation-manifest") | name) | join(", ")' <<< "${carried_by_tag[$i]}")"
     else
         echo "::warning::tag ${tag}: published without ${missing[*]}, which has no current image to carry over"
     fi

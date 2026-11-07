@@ -34,7 +34,7 @@ class PublishImageTest extends TestCase
         file_put_contents("{$this->dir}/bin/docker", <<<'BASH'
             #!/usr/bin/env bash
             set -eu
-            python3 -c 'import json, sys; print(json.dumps(sys.argv[1:]))' "$@" >> "${FAKE_DIR}/calls.jsonl"
+            jq -cn '$ARGS.positional' --args -- "$@" >> "${FAKE_DIR}/calls.jsonl"
             [[ "$1 $2" == "buildx imagetools" ]] || exit 99
             case "$3" in
                 create)
@@ -65,7 +65,7 @@ class PublishImageTest extends TestCase
             BASH);
         file_put_contents("{$this->dir}/bin/cosign", <<<'BASH'
             #!/usr/bin/env bash
-            python3 -c 'import json, sys; print(json.dumps(sys.argv[1:]))' cosign "$@" >> "${FAKE_DIR}/calls.jsonl"
+            jq -cn '$ARGS.positional' --args -- cosign "$@" >> "${FAKE_DIR}/calls.jsonl"
             BASH);
         chmod("{$this->dir}/bin/docker", 0755);
         chmod("{$this->dir}/bin/cosign", 0755);
@@ -87,8 +87,17 @@ class PublishImageTest extends TestCase
         self::assertCount(1, $creates);
         self::assertSame(['6.2.5-php8.4', '6.2-php8.4'], $creates[0]['tags']);
         self::assertEqualsCanonicalizing($this->refs('a1', 'b1', 'c1', 'd1'), $creates[0]['sources']);
-        self::assertContains('index:org.opencontainers.image.version=6.2.5', $creates[0]['annotations']);
-        self::assertCount(1, $this->signs($calls));
+        self::assertSame(
+            [
+                'index:org.opencontainers.image.title=Swoole',
+                'index:org.opencontainers.image.source=https://github.com/swoole/docker-swoole',
+                'index:org.opencontainers.image.revision=abc',
+                'index:org.opencontainers.image.version=6.2.5',
+                'index:org.opencontainers.image.licenses=Apache-2.0',
+            ],
+            $creates[0]['annotations'],
+        );
+        self::assertSame([['cosign', 'sign', '--yes', 'phpswoole/swoole@' . $this->createdDigest('6.2.5-php8.4')]], $this->signs($calls));
         self::assertStringNotContainsString('::error::', $output);
         self::assertSame([], $this->inspectsRaw($calls), 'nothing needs to be carried over');
     }
@@ -124,7 +133,11 @@ class PublishImageTest extends TestCase
         self::assertCount(2, $this->signs($calls), 'both indexes are signed');
     }
 
-    public function testCarriesOverAPlatformWithAVariant(): void
+    /**
+     * BuildKit records platform linux/arm64/v8 as plain linux/arm64 in the image index, so a failed arm64/v8 build must
+     * still find the arm64 image the tag has.
+     */
+    public function testCarriesOverArm64WhichTheIndexRecordsWithoutItsVariant(): void
     {
         $this->built(['linux/amd64' => 'a3', 'linux/ppc64le' => 'c3', 'linux/s390x' => 'd3']);
         $this->current('php8.4', $this->index(['linux/amd64' => 'old-a', 'linux/arm64/v8' => 'old-b', 'linux/ppc64le' => 'old-c', 'linux/s390x' => 'old-d']));
@@ -137,6 +150,87 @@ class PublishImageTest extends TestCase
             array_values(array_filter($this->creates($calls)[0]['sources'], fn (string $s): bool => str_starts_with($s, '{'))),
         );
         self::assertSame(['sha256:old-b', 'sha256:att-old-b'], array_column($descriptors, 'digest'));
+    }
+
+    public function testCarriesOverEveryMissingPlatform(): void
+    {
+        $this->built(['linux/amd64' => 'a6', 'linux/arm64/v8' => 'b6']);
+        $this->current('php8.4', $this->index(['linux/amd64' => 'old-a', 'linux/arm64/v8' => 'old-b', 'linux/ppc64le' => 'old-c', 'linux/s390x' => 'old-d']));
+
+        [$status, , $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(1, $status);
+        $digests = array_column(array_map(fn (string $d): array => json_decode($d, true), array_values(array_filter($this->creates($calls)[0]['sources'], fn (string $s): bool => str_starts_with($s, '{')))), 'digest');
+        self::assertEqualsCanonicalizing(['sha256:old-c', 'sha256:att-old-c', 'sha256:old-d', 'sha256:att-old-d'], $digests);
+    }
+
+    public function testCarriesOverFromEachTagSeparately(): void
+    {
+        $this->built(['linux/amd64' => 'a7', 'linux/arm64/v8' => 'b7', 'linux/ppc64le' => 'c7']);
+        $this->current('6.2-php8.4', $this->index(['linux/amd64' => 'x-a', 'linux/s390x' => 'x-d']));
+        $this->current('latest', $this->index(['linux/amd64' => 'y-a', 'linux/s390x' => 'y-d']));
+
+        [$status, , $calls] = $this->run_('--version', '6.2.5', '--tag', '6.2-php8.4', '--tag', 'latest');
+
+        self::assertSame(1, $status);
+        $carried = array_map(fn (array $c): array => array_column(array_map(fn (string $d): array => json_decode($d, true), array_values(array_filter($c['sources'], fn (string $s): bool => str_starts_with($s, '{')))), 'digest'), $this->creates($calls));
+        self::assertSame([['sha256:x-d', 'sha256:att-x-d'], ['sha256:y-d', 'sha256:att-y-d']], $carried);
+    }
+
+    public function testSignsTheIndexEachTagPointsTo(): void
+    {
+        $this->built(['linux/amd64' => 'a8', 'linux/arm64/v8' => 'b8', 'linux/ppc64le' => 'c8']);
+        $this->current('6.2-php8.4', $this->index(['linux/s390x' => 'old-d']));
+
+        [, , $calls] = $this->run_('--version', '6.2.5', '--tag', '6.2.5-php8.4', '--tag', '6.2-php8.4');
+
+        $expected = array_map(fn (string $t): array => ['cosign', 'sign', '--yes', 'phpswoole/swoole@' . $this->createdDigest($t)], ['6.2.5-php8.4', '6.2-php8.4']);
+        self::assertSame($expected, $this->signs($calls));
+    }
+
+    public function testSignsAnIndexSharedByTwoTagsOnce(): void
+    {
+        $this->built(['linux/amd64' => 'a9', 'linux/arm64/v8' => 'b9', 'linux/ppc64le' => 'c9']);
+
+        [, , $calls] = $this->run_('--version', '6.3.0', '--tag', '6.3.0-php8.4', '--tag', '6.3-php8.4');
+
+        self::assertCount(2, $this->creates($calls));
+        self::assertCount(1, $this->signs($calls));
+    }
+
+    public function testRejectsTwoDigestsOfOnePlatform(): void
+    {
+        $this->built(['linux/amd64' => 'aa', 'linux/arm64/v8' => 'ba']);
+        $this->built(['linux/amd64' => 'ab']);
+
+        [$status, $output, $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(1, $status);
+        self::assertStringContainsString('more than one digest was built for platform linux/amd64', $output);
+        self::assertSame([], $calls);
+    }
+
+    public function testPublishesNoTagWhenTheCurrentImageOfALaterTagCannotBeRead(): void
+    {
+        $this->built(['linux/amd64' => 'ac', 'linux/arm64/v8' => 'bc', 'linux/ppc64le' => 'cc']);
+        file_put_contents("{$this->dir}/raw/6.2-php8.4.error", "ERROR: 503 Service Unavailable\n");
+
+        [$status, , $calls] = $this->run_('--version', '6.2.5', '--tag', '6.2.5-php8.4', '--tag', '6.2-php8.4');
+
+        self::assertSame(1, $status);
+        self::assertSame([], $this->creates($calls));
+    }
+
+    public function testPublishesNoTagWhenATagDoesNotPointToAnImageIndex(): void
+    {
+        $this->built(['linux/amd64' => 'ad', 'linux/arm64/v8' => 'bd', 'linux/ppc64le' => 'cd']);
+        $this->current('php8.4', json_encode(['schemaVersion' => 2, 'mediaType' => 'application/vnd.oci.image.manifest.v1+json', 'layers' => []]));
+
+        [$status, $output, $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(1, $status);
+        self::assertStringContainsString("tag php8.4 doesn't point to an image index", $output);
+        self::assertSame([], $this->creates($calls));
     }
 
     public function testPublishesNothingWhenNoPlatformWasBuilt(): void
@@ -158,7 +252,7 @@ class PublishImageTest extends TestCase
         [$status, $output, $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
 
         self::assertSame(1, $status);
-        self::assertStringContainsString('failed to read the current image of tag php8.4', $output);
+        self::assertStringContainsString('failed to read the current image of tag php8.4, so no tag is published', $output);
         self::assertSame([], $this->creates($calls), 'publishing without carrying s390x over would drop it from the tag');
     }
 
@@ -190,7 +284,7 @@ class PublishImageTest extends TestCase
 
     /**
      * An image index as BuildKit publishes it: one image manifest per platform, each followed by its attestation
-     * manifest.
+     * manifest. Like BuildKit, it records linux/arm64/v8 as linux/arm64, without the default variant.
      *
      * @param array<string, string> $digests Platform => digest (without "sha256:").
      */
@@ -199,7 +293,7 @@ class PublishImageTest extends TestCase
         $manifests = [];
         foreach ($digests as $platform => $digest) {
             $parts    = explode('/', $platform);
-            $platform = ['os' => $parts[0], 'architecture' => $parts[1]] + (isset($parts[2]) ? ['variant' => $parts[2]] : []);
+            $platform = ['os' => $parts[0], 'architecture' => $parts[1]] + (isset($parts[2]) && $platform !== 'linux/arm64/v8' ? ['variant' => $parts[2]] : []);
 
             $manifests[] = ['mediaType' => 'application/vnd.oci.image.manifest.v1+json', 'digest' => "sha256:{$digest}", 'size' => 1000, 'platform' => $platform];
             $manifests[] = [
@@ -220,7 +314,7 @@ class PublishImageTest extends TestCase
     private function run_(string ...$args): array
     {
         $command = sprintf(
-            'cd %s && PATH=%s:"$PATH" FAKE_DIR=%s PLATFORMS=%s GITHUB_SHA=abc ./bin/publish-image.sh %s %s 2>&1',
+            'cd %s && env -u GITHUB_SERVER_URL -u GITHUB_REPOSITORY PATH=%s:"$PATH" FAKE_DIR=%s PLATFORMS=%s IMAGE=phpswoole/swoole GITHUB_SHA=abc ./bin/publish-image.sh %s %s 2>&1',
             escapeshellarg(dirname(__DIR__)),
             escapeshellarg("{$this->dir}/bin"),
             escapeshellarg($this->dir),
@@ -281,6 +375,11 @@ class PublishImageTest extends TestCase
     private function inspectsRaw(array $calls): array
     {
         return array_values(array_filter($calls, fn (array $c): bool => ($c[3] ?? null) === '--raw'));
+    }
+
+    private function createdDigest(string $tag): string
+    {
+        return trim(file_get_contents("{$this->dir}/created/{$tag}"));
     }
 
     /**

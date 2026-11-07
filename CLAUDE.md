@@ -63,7 +63,7 @@ with `bin/publish-image.sh`. A platform that fails to build doesn't hold the oth
 and for the failed platform each tag keeps the image it already had, together with its SBOM and provenance, so users
 of that platform don't lose the tag. A tag published for the first time has no such image, and goes without that
 platform. Either way the `merge` job still fails, so the run shows the missing platform; rerunning the run's failed
-jobs (within a day, while the digests of the other platforms are kept) publishes the complete image. Until then a
+jobs (within a week, while the digests of the other platforms are kept) publishes the complete image. Until then a
 floating tag (e.g. `6.2` or `php8.4`) can point to different versions on different platforms.
 
 GitHub hosts x86 and arm64 runners, so those two are built natively and the rest are emulated with QEMU. The

@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+# Runs that publish the same tags queue up instead of overlapping: the merge job reads the image a tag points to before
+# replacing it, and another run writing that tag in between would be overwritten with stale images.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   # The names of the platforms in the "platform" matrix below. The merge job publishes the images of the platforms
   # that built; for a platform that failed, bin/publish-image.sh keeps the image each tag already has, and fails the
@@ -131,7 +137,9 @@ jobs:
           path: /tmp/digests/*
           if-no-files-found: error
           overwrite: true
-          retention-days: 1
+          # Kept for a week rather than a day: rerunning the failed jobs of a run reruns every merge job, and each
+          # of them needs the digests of the platforms that built in the first attempt.
+          retention-days: 7
 
   # Joins the per-platform digests into the multi-architecture tag(s).
   merge:
@@ -156,6 +164,9 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v7
+        with:
+          # This job holds the Docker Hub credentials and can sign images; it only needs the files.
+          persist-credentials: false
 
       -
         name: Download the digests

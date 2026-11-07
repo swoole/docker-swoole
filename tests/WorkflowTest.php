@@ -60,10 +60,16 @@ class WorkflowTest extends TestCase
         self::assertStringContainsString('echo "${PLATFORM}" >', $export['run'], "{$workflow} doesn't record the platform of each digest");
         self::assertSame('${{ matrix.platform.name }}', $export['env']['PLATFORM'] ?? null, "{$workflow} doesn't pass the platform to the export step");
 
+        // Without "!cancelled()" a failed build job would skip every merge job, so nothing would be published at all.
+        self::assertStringContainsString('!cancelled()', $data['jobs']['merge']['if'] ?? '', "the merge job of {$workflow} doesn't run once a build job failed");
+
         $steps = $data['jobs']['merge']['steps'];
-        self::assertContains('actions/checkout@v7', array_column($steps, 'uses'), "the merge job of {$workflow} doesn't check out the repository");
+        self::assertNotEmpty(preg_grep('#^actions/checkout@#', array_column($steps, 'uses')), "the merge job of {$workflow} doesn't check out the repository");
+        // The run has to fail when a platform is missing, so that it gets rebuilt.
+        self::assertSame([], array_filter(array_column($steps, 'continue-on-error')), "a step of the merge job of {$workflow} ignores failures");
         $scripts = implode("\n", array_column($steps, 'run'));
-        self::assertMatchesRegularExpression('#\./bin/publish-image\.sh --version \S+ .*--tag .* /tmp/digests#', $scripts, "the merge job of {$workflow} doesn't publish with bin/publish-image.sh");
+        self::assertMatchesRegularExpression('#\./bin/publish-image\.sh --version \S+ .+ /tmp/digests#', $scripts, "the merge job of {$workflow} doesn't publish with bin/publish-image.sh");
+        self::assertStringContainsString('--tag ', $scripts, "the merge job of {$workflow} doesn't pass any tag to bin/publish-image.sh");
         self::assertStringNotContainsString('imagetools create', $scripts, "the merge job of {$workflow} publishes without bin/publish-image.sh");
     }
 
