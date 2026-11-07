@@ -15,14 +15,19 @@
 # A platform that failed to build doesn't stop the others from being published. For each tag, the image of a missing
 # platform is carried over from the image the tag currently points to, together with its attestations (SBOM and
 # provenance), so that users of that platform keep the image they had instead of losing the tag. A tag published for
-# the first time has nothing to carry over, and goes without the missing platform. Either way the script exits with a
-# non-zero status code once everything is published, so that the workflow run still fails and the missing platform
-# gets rebuilt: rerunning the failed jobs of the run, within the week its digests are kept, publishes the complete
-# image. Every tag is read before any of them is published, and a tag that can't be read (for any reason other than
-# not existing yet) stops them all, since publishing it would take the missing platform away from it.
+# the first time has nothing to carry over, and goes without the missing platform. Either way, once everything is
+# published, the script exits with a non-zero status code if a missing platform is a required one (not listed in
+# OPTIONAL_PLATFORMS), so that the workflow run fails and the platform gets rebuilt: rerunning the failed jobs of the
+# run, within the week its digests are kept, publishes the complete image. When only optional platforms are missing,
+# it exits with status code 0 after a warning; the run then ends green (their build jobs may fail), so the image is
+# completed by rerunning the failed build job of each missing platform, which reruns the merge jobs too. Every tag is
+# read before any of them is published, and a tag that can't be read (for any reason other than not existing yet)
+# stops them all, since publishing it would take the missing platform away from it.
 #
 # Environment variables:
 #     PLATFORMS          Required. The platforms every image is built for, e.g. "linux/amd64 linux/s390x".
+#     OPTIONAL_PLATFORMS The platforms among PLATFORMS whose images may go missing without failing the script, e.g.
+#                        "linux/s390x". Defaults to none.
 #     IMAGE              The repository to publish to. Defaults to "phpswoole/swoole".
 #     GITHUB_SERVER_URL  Set by GitHub Actions; used in the annotations of the image index.
 #     GITHUB_REPOSITORY  Set by GitHub Actions; used in the annotations of the image index.
@@ -33,6 +38,13 @@ set -euo pipefail
 
 IMAGE="${IMAGE:-phpswoole/swoole}"
 : "${PLATFORMS:?environment variable PLATFORMS is not set}"
+OPTIONAL_PLATFORMS="${OPTIONAL_PLATFORMS:-}"
+for platform in ${OPTIONAL_PLATFORMS} ; do
+    if [[ " ${PLATFORMS} " != *" ${platform} "* ]] ; then
+        echo "::error::optional platform ${platform} is not one of: ${PLATFORMS}"
+        exit 1
+    fi
+done
 
 usage() {
     echo "Usage: $0 --version <version> --tag <tag> [--tag <tag>...] <digests-directory>" >&2
@@ -199,5 +211,20 @@ for i in "${!tags[@]}" ; do
     publish "${tag}"
 done
 
-echo "::error::published without a new build of ${missing[*]}$([[ -n "${carried_any}" ]] && echo "; tags that already had an image of it keep that image"). Rerun the failed jobs of this workflow run to publish the complete image."
+summary="published without a new build of ${missing[*]}"
+if [[ -n "${carried_any}" ]] ; then
+    summary+="; tags that already had an image of it keep that image"
+fi
+
+required_missing=()
+for platform in "${missing[@]}" ; do
+    if [[ " ${OPTIONAL_PLATFORMS} " != *" ${platform} "* ]] ; then
+        required_missing+=("${platform}")
+    fi
+done
+if [[ ${#required_missing[@]} -eq 0 ]] ; then
+    echo "::warning::${summary}. Only optional platforms are missing, so this job doesn't fail; to publish the complete image, rerun the failed build job of each missing platform (rerunning a job reruns the merge jobs that depend on it)."
+    exit 0
+fi
+echo "::error::${summary}. Required platform(s) missing: ${required_missing[*]}; rerun the failed jobs of this workflow run to publish the complete image."
 exit 1

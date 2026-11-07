@@ -21,6 +21,9 @@ class PublishImageTest extends TestCase
 
     private string $dir;
 
+    /** Value of environment variable OPTIONAL_PLATFORMS passed to the script. */
+    private string $optional = '';
+
     protected function setUp(): void
     {
         $this->dir = sys_get_temp_dir() . '/publish-image-' . bin2hex(random_bytes(6));
@@ -233,6 +236,79 @@ class PublishImageTest extends TestCase
         self::assertSame([], $this->creates($calls));
     }
 
+    public function testPassesWhenOnlyOptionalPlatformsAreMissing(): void
+    {
+        $this->optional = 'linux/ppc64le linux/s390x';
+        $this->built(['linux/amd64' => 'ae', 'linux/arm64/v8' => 'be']);
+        $this->current('php8.4', $this->index(['linux/amd64' => 'old-a', 'linux/arm64/v8' => 'old-b', 'linux/ppc64le' => 'old-c', 'linux/s390x' => 'old-d']));
+
+        [$status, $output, $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(0, $status, $output);
+        self::assertStringContainsString('::warning::published without a new build of linux/ppc64le linux/s390x', $output);
+        self::assertStringNotContainsString('::error::', $output);
+        $creates = $this->creates($calls);
+        self::assertCount(1, $creates, 'the platforms that built are still published');
+        self::assertContains('phpswoole/swoole@sha256:ae', $creates[0]['sources']);
+        self::assertContains('phpswoole/swoole@sha256:be', $creates[0]['sources']);
+        $digests = array_column(array_map(fn (string $d): array => json_decode($d, true), array_values(array_filter($creates[0]['sources'], fn (string $s): bool => str_starts_with($s, '{')))), 'digest');
+        self::assertEqualsCanonicalizing(['sha256:old-c', 'sha256:att-old-c', 'sha256:old-d', 'sha256:att-old-d'], $digests, 'the optional platforms are carried over');
+        self::assertStringContainsString('tags that already had an image of it keep that image', $output);
+    }
+
+    public function testPassesWhenOnlyOptionalPlatformsAreMissingFromANewTag(): void
+    {
+        $this->optional = 'linux/ppc64le linux/s390x';
+        $this->built(['linux/amd64' => 'ai', 'linux/arm64/v8' => 'bi', 'linux/ppc64le' => 'ci']);
+
+        [$status, $output, $calls] = $this->run_('--version', '6.3.0', '--tag', '6.3.0-php8.4');
+
+        self::assertSame(0, $status, $output);
+        self::assertStringContainsString('::warning::published without a new build of linux/s390x.', $output);
+        self::assertStringNotContainsString('keep that image', $output);
+        $creates = $this->creates($calls);
+        self::assertCount(1, $creates);
+        self::assertSame([], array_values(array_filter($creates[0]['sources'], fn (string $s): bool => str_starts_with($s, '{'))), 'a new tag has nothing to carry over');
+    }
+
+    public function testFailsWhenARequiredPlatformIsMissing(): void
+    {
+        $this->optional = 'linux/ppc64le linux/s390x';
+        $this->built(['linux/amd64' => 'af', 'linux/ppc64le' => 'cf', 'linux/s390x' => 'df']);
+        $this->current('php8.4', $this->index(['linux/amd64' => 'old-a', 'linux/arm64/v8' => 'old-b', 'linux/ppc64le' => 'old-c', 'linux/s390x' => 'old-d']));
+
+        [$status, $output, $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(1, $status);
+        self::assertStringContainsString('::error::published without a new build of linux/arm64/v8', $output);
+        self::assertStringContainsString('Required platform(s) missing: linux/arm64/v8;', $output);
+        self::assertCount(1, $this->creates($calls), 'the platforms that built are still published');
+    }
+
+    public function testFailsWhenRequiredAndOptionalPlatformsAreMissing(): void
+    {
+        $this->optional = 'linux/ppc64le linux/s390x';
+        $this->built(['linux/amd64' => 'ag', 'linux/ppc64le' => 'cg']);
+
+        [$status, $output] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(1, $status);
+        self::assertStringContainsString('::error::published without a new build of linux/arm64/v8 linux/s390x', $output);
+        self::assertStringContainsString('Required platform(s) missing: linux/arm64/v8;', $output);
+    }
+
+    public function testRejectsAnOptionalPlatformNotInPlatforms(): void
+    {
+        $this->optional = 'linux/riscv64';
+        $this->built(['linux/amd64' => 'ah', 'linux/arm64/v8' => 'bh', 'linux/ppc64le' => 'ch', 'linux/s390x' => 'dh']);
+
+        [$status, $output, $calls] = $this->run_('--version', 'nightly', '--tag', 'php8.4');
+
+        self::assertSame(1, $status);
+        self::assertStringContainsString('optional platform linux/riscv64 is not one of', $output);
+        self::assertSame([], $calls);
+    }
+
     public function testPublishesNothingWhenNoPlatformWasBuilt(): void
     {
         rmdir("{$this->dir}/digests");
@@ -314,11 +390,12 @@ class PublishImageTest extends TestCase
     private function run_(string ...$args): array
     {
         $command = sprintf(
-            'cd %s && env -u GITHUB_SERVER_URL -u GITHUB_REPOSITORY PATH=%s:"$PATH" FAKE_DIR=%s PLATFORMS=%s IMAGE=phpswoole/swoole GITHUB_SHA=abc ./bin/publish-image.sh %s %s 2>&1',
+            'cd %s && env -u GITHUB_SERVER_URL -u GITHUB_REPOSITORY PATH=%s:"$PATH" FAKE_DIR=%s PLATFORMS=%s OPTIONAL_PLATFORMS=%s IMAGE=phpswoole/swoole GITHUB_SHA=abc ./bin/publish-image.sh %s %s 2>&1',
             escapeshellarg(dirname(__DIR__)),
             escapeshellarg("{$this->dir}/bin"),
             escapeshellarg($this->dir),
             escapeshellarg(self::PLATFORMS),
+            escapeshellarg($this->optional),
             implode(' ', array_map('escapeshellarg', $args)),
             escapeshellarg("{$this->dir}/digests"),
         );
