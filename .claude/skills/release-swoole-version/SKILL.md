@@ -21,6 +21,10 @@ Each release series is maintained on its own work branch, and its version branch
 | Nightly images, 6.3.x | `master`    | `6.3.0-rc1`, `6.3.0`, ...    |
 | 6.2.x                 | `6.2.x`     | `6.2.3`, `6.2.4`, ...        |
 | 6.1.x                 | `6.1.x`     | `6.1.10`, `6.1.11`, ...      |
+| 6.0.x, 5.1.x, 4.8.x   | `6.0.x`, `5.1.x`, `4.8.x` | e.g. `5.1.8`   |
+
+Wherever a release is made, `master`'s `CHANGELOG.md` and `README.md` list it too: `master` keeps the record of every
+series, so a release made on another work branch is added to them as well (see step 10 in that branch's copy).
 
 **This copy of the skill, on `master`, covers 6.3.x releases only.** For a 6.2.x or 6.1.x release, check out that
 series' work branch (`git checkout 6.2.x && git pull --ff-only`) and follow the copy of this skill on that branch: it
