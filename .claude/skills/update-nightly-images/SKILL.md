@@ -11,7 +11,7 @@ Bumps `image.composer.version` and each entry under `image.php_extensions` in `c
 
 ## Steps
 
-1. Read `config/nightly.yml` to see the current `composer.version` and each `php_extensions.<name>.version`.
+1. Make sure you're on `master`, the only branch nightly images are built from. Read `config/nightly.yml` to see the current `composer.version` and each `php_extensions.<name>.version`.
 2. Look up the latest stable release of each:
    - **Composer**: `https://api.github.com/repos/composer/composer/releases/latest` (`tag_name`), or https://getcomposer.org/download/.
    - **Each PECL extension** (currently `igbinary` and `redis`): `https://pecl.php.net/rest/r/<name>/allreleases.xml`
@@ -35,7 +35,7 @@ Bumps `image.composer.version` and each entry under `image.php_extensions` in `c
    of its own, so this records what it serves at the time; the build fails if a later download doesn't match.
 4. Regenerate: `./bin/generate-dockerfiles.php nightly`.
 5. Review the diff (`git diff`) — only `config/nightly.yml` and files under `dockerfiles/nightly/` should have changed.
-6. Commit on the current branch (normally `master`) — do not push. Match the repo's commit style (short, lowercase, imperative):
+6. Commit on `master` — do not push. Nightly images are only built from `master`; the other work branches (`6.2.x`, `6.1.x`) carry no nightly changes. Match the repo's commit style (short, lowercase, imperative):
    - One package bumped: `upgrade Composer to 2.10.3 in nightly images`.
    - Several bumped together: `upgrade Composer and the Redis extension in nightly images`.
 
