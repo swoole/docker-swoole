@@ -6,6 +6,7 @@ Table of Contents
    * [6.2.1](#621)
    * [6.2.0](#620)
 * [Swoole 6.1](#swoole-61)
+   * [6.1.11](#6111)
    * [6.1.10](#6110)
    * [6.1.9](#619)
    * [6.1.8](#618)
@@ -123,6 +124,11 @@ Table of Contents
 - Upgrade _Composer_ from 2.9.5 to 2.9.7.
 
 # Swoole 6.1
+
+## 6.1.11
+
+### Changed
+- Upgrade _Composer_ from 2.10.3 to 2.11.1.
 
 ## 6.1.10
 
