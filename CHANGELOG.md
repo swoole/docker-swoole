@@ -4,6 +4,7 @@ Table of Contents
 * [Swoole 6.3](#swoole-63)
    * [6.3.0-rc1](#630-rc1)
 * [Swoole 6.2](#swoole-62)
+   * [6.2.4](#624)
    * [6.2.3](#623)
    * [6.2.2](#622)
    * [6.2.1](#621)
@@ -166,6 +167,11 @@ Table of Contents
   longer worked.
 
 # Swoole 6.2
+
+## 6.2.4
+
+### Changed
+- Upgrade _Composer_ from 2.10.3 to 2.11.1.
 
 ## 6.2.3
 
