@@ -126,4 +126,192 @@ class WorkflowTest extends TestCase
 
         return $data;
     }
+
+    #[DataProvider('dataVersionedWorkflows')]
+    public function testVersionedWorkflowCanBeRunManually(string $workflow): void
+    {
+        $on = Yaml::parseFile($workflow)['on'];
+
+        self::assertArrayHasKey('workflow_dispatch', $on, "{$workflow} can't be run manually");
+        self::assertNotEmpty($on['push']['branches'] ?? null, "{$workflow} doesn't run on pushes to version branches");
+    }
+
+    /**
+     * Runs the step of each job that sets its parameters, with bin/build-mode.sh replaced by a stub, and checks what
+     * each mode makes the job do: a rebuild of a released version ("rebuild") is built, and published under its version
+     * tags only ("version"); a push of a released version ("skip") builds nothing; a failure of the script stops the job.
+     */
+    #[DataProvider('dataVersionedWorkflows')]
+    public function testJobsFollowTheBuildMode(string $workflow): void
+    {
+        $data  = Yaml::parseFile($workflow);
+        $build = $this->paramsStep($data, 'build');
+        $merge = $this->paramsStep($data, 'merge');
+        foreach (['build' => $build, 'merge' => $merge] as $job => $step) {
+            self::assertStringNotContainsString('config/', $step['run'], "the {$job} job of {$workflow} reads the configuration of the version itself instead of asking bin/build-mode.sh");
+        }
+
+        $version = ['branch_name' => '6.2.4'];
+        self::assertSame([0, $version], $this->runParams($build, 'release'), "the build job of {$workflow} doesn't build a version under development");
+        self::assertSame([0, $version], $this->runParams($build, 'rebuild'), "the build job of {$workflow} doesn't rebuild a released version");
+        self::assertSame([0, $version + ['released_already' => 'true']], $this->runParams($build, 'skip'), "the build job of {$workflow} builds a released version on push");
+        self::assertNotSame(0, $this->runParams($build, null)[0], "the build job of {$workflow} goes on when bin/build-mode.sh fails");
+
+        self::assertSame([0, $version + ['major_version' => '6.2', 'image_type' => 'latest']], $this->runParams($merge, 'release'));
+        self::assertSame([0, $version + ['major_version' => '6.2', 'image_type' => 'default']], $this->runParams($merge, 'release', php: '8.3'));
+        self::assertSame([0, ['branch_name' => '6.1.11', 'major_version' => '6.1', 'image_type' => 'major']], $this->runParams($merge, 'release', branch: '6.1.11'));
+        self::assertSame([0, $version + ['image_type' => 'version']], $this->runParams($merge, 'rebuild'), "the merge job of {$workflow} doesn't publish a rebuilt released version under its version tags only");
+        self::assertSame([0, $version + ['released_already' => 'true']], $this->runParams($merge, 'skip'), "the merge job of {$workflow} publishes a released version on push");
+        self::assertNotSame(0, $this->runParams($merge, null)[0], "the merge job of {$workflow} goes on when bin/build-mode.sh fails");
+    }
+
+    /**
+     * Runs the step of the merge job that publishes an image, with bin/publish-image.sh replaced by a stub, and checks
+     * which tags each image type gets, for every postfix. A rebuild of a released version ("version") must never take
+     * over a floating tag from the newer version that owns it.
+     */
+    #[DataProvider('dataVersionedWorkflows')]
+    public function testEachImageTypeGetsItsTags(string $workflow): void
+    {
+        $data  = Yaml::parseFile($workflow);
+        $steps = array_values(array_filter(
+            $data['jobs']['merge']['steps'],
+            fn (array $step): bool => str_contains($step['run'] ?? '', './bin/publish-image.sh'),
+        ));
+        self::assertCount(1, $steps, "{$workflow} should publish with exactly one step");
+        $step = $steps[0];
+
+        // The step must get its parameters from the step that sets them.
+        foreach (['BRANCH_NAME' => 'branch_name', 'MAJOR_VERSION' => 'major_version', 'IMAGE_TYPE' => 'image_type'] as $name => $output) {
+            self::assertSame("\${{ steps.params.outputs.{$output} }}", $step['env'][$name] ?? null, "{$workflow} doesn't pass {$output} to the publishing step");
+        }
+
+        $postfixes = $step['env']['POSTFIX'] === '${{ matrix.image.postfix }}'
+            ? array_column($data['jobs']['merge']['strategy']['matrix']['image'], 'postfix')
+            : [$step['env']['POSTFIX']];
+        foreach ($postfixes as $postfix) {
+            $suffix   = $postfix . (str_contains($workflow, '_dev_') ? '-dev' : '');
+            $expected = [
+                'version' => ["6.2.4-php8.4{$suffix}"],
+                'default' => ["6.2.4-php8.4{$suffix}", "6.2-php8.4{$suffix}"],
+                'major'   => ["6.2.4-php8.4{$suffix}", "6.2-php8.4{$suffix}", "6.2{$suffix}"],
+                'latest'  => ["6.2.4-php8.4{$suffix}", "6.2-php8.4{$suffix}", "6.2{$suffix}", "latest{$suffix}"],
+            ];
+            foreach ($expected as $type => $tags) {
+                [$status, $published, $output] = $this->publish($step, ['IMAGE_TYPE' => $type, 'POSTFIX' => $postfix]);
+                self::assertSame(0, $status, "publishing a \"{$type}\" image with postfix \"{$postfix}\" failed in {$workflow}: {$output}");
+                self::assertSame($tags, $published, "a \"{$type}\" image with postfix \"{$postfix}\" doesn't get the right tags in {$workflow}");
+            }
+
+            [$status, , $output] = $this->publish($step, ['IMAGE_TYPE' => '', 'POSTFIX' => $postfix]);
+            self::assertNotSame(0, $status, "{$workflow} publishes an image of no type");
+            self::assertStringContainsString('unknown image type', $output);
+            [$status, , $output] = $this->publish($step, ['IMAGE_TYPE' => 'default', 'MAJOR_VERSION' => '', 'POSTFIX' => $postfix]);
+            self::assertNotSame(0, $status, "{$workflow} publishes a floating tag without a minor series");
+            self::assertStringContainsString('MAJOR_VERSION', $output);
+        }
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function dataVersionedWorkflows(): array
+    {
+        return array_filter(self::dataBuildWorkflows(), fn (string $name): bool => str_starts_with($name, 'build_versioned_'), ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Runs the "run" script of a publishing step for PHP 8.4 of version 6.2.4, with bin/publish-image.sh replaced by a
+     * stub that prints its arguments.
+     *
+     * @param array<string, mixed> $step
+     * @param array<string, string> $env Overrides of the environment variables of the step.
+     * @return array{int, list<string>, string} The exit status, the tags the image was published under, and the
+     *                                          standard error of the step.
+     */
+    private function publish(array $step, array $env): array
+    {
+        $script = strtr($step['run'], [
+            '${{ matrix.php }}'      => '8.4',
+            './bin/publish-image.sh' => 'printf "%s\n"',
+        ]);
+        self::assertStringNotContainsString('${{', $script, 'unexpected expression left in the publishing step');
+
+        $env += ['BRANCH_NAME' => '6.2.4', 'MAJOR_VERSION' => '6.2'];
+        $command = 'env';
+        foreach ($env as $name => $value) {
+            $command .= ' ' . $name . '=' . escapeshellarg($value);
+        }
+        $stderr = tempnam(sys_get_temp_dir(), 'stderr-');
+        exec($command . ' bash -c ' . escapeshellarg($script) . ' 2>' . escapeshellarg($stderr), $lines, $status);
+        $output = file_get_contents($stderr);
+        unlink($stderr);
+
+        $tags = [];
+        foreach ($lines as $i => $line) {
+            if ($line === '--tag') {
+                $tags[] = $lines[$i + 1];
+            }
+        }
+
+        return [$status, $tags, $output];
+    }
+
+    /**
+     * @param array<string, mixed> $data A parsed workflow.
+     * @return array<string, mixed> The step of the given job that sets its parameters.
+     */
+    private function paramsStep(array $data, string $job): array
+    {
+        $steps = array_values(array_filter($data['jobs'][$job]['steps'], fn (array $step): bool => ($step['id'] ?? null) === 'params'));
+        self::assertCount(1, $steps, "the {$job} job should have exactly one step setting its parameters");
+
+        return $steps[0];
+    }
+
+    /**
+     * Runs the "run" script of a step setting the parameters of a job, in a directory holding the Dockerfiles of the
+     * version and a stub of bin/build-mode.sh.
+     *
+     * @param array<string, mixed> $step
+     * @param string|null $mode What the stub of bin/build-mode.sh prints, or null to make it fail.
+     * @return array{int, array<string, string>} The exit status, and the parameters the step set.
+     */
+    private function runParams(array $step, ?string $mode, string $branch = '6.2.4', string $php = '8.4'): array
+    {
+        $script = strtr($step['run'], [
+            '${{ matrix.php }}'        => $php,
+            '${{ matrix.image.type }}' => 'cli',
+        ]);
+        self::assertStringNotContainsString('${{', $script, 'unexpected expression left in the step setting the parameters');
+
+        $dir = sys_get_temp_dir() . '/params-' . bin2hex(random_bytes(6));
+        try {
+            foreach (['cli', 'alpine'] as $type) {
+                mkdir("{$dir}/dockerfiles/{$branch}/php{$php}/{$type}", 0777, true);
+                touch("{$dir}/dockerfiles/{$branch}/php{$php}/{$type}/Dockerfile");
+            }
+            mkdir("{$dir}/bin");
+            file_put_contents("{$dir}/bin/build-mode.sh", '#!/usr/bin/env bash
+' . ($mode === null ? 'exit 1
+' : "echo {$mode}
+"));
+            chmod("{$dir}/bin/build-mode.sh", 0755);
+            touch("{$dir}/output");
+
+            $command = 'cd ' . escapeshellarg($dir) . ' && env GITHUB_REF=refs/heads/' . escapeshellarg($branch)
+                . ' GITHUB_OUTPUT=' . escapeshellarg("{$dir}/output") . ' bash -c ' . escapeshellarg($script) . ' >/dev/null 2>&1';
+            exec($command, $lines, $status);
+
+            $outputs = [];
+            foreach (file("{$dir}/output", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+                [$name, $value]   = explode('=', $line, 2);
+                $outputs[$name]   = $value;
+            }
+
+            return [$status, $outputs];
+        } finally {
+            exec('rm -rf ' . escapeshellarg($dir));
+        }
+    }
 }

@@ -5,6 +5,10 @@ on:
     branches:
       - '[4-9].[0-9]+.[0-9]+'
       - '[4-9].[0-9]+.[0-9]+-?[a-zA-Z]**'
+  # Started by hand (Actions tab, or "gh workflow run <workflow> --ref <version>") on a version branch to rebuild that
+  # version. A released or end-of-life version is never rebuilt on push, and a manual rebuild only publishes its version
+  # tags (e.g. "6.2.4-php8.4"); see bin/build-mode.sh.
+  workflow_dispatch:
 
 # Runs that publish the same tags queue up instead of overlapping: the merge job reads the image a tag points to before
 # replacing it, and another run writing that tag in between would be overwritten with stale images.
@@ -88,7 +92,9 @@ jobs:
           if [ ! -f "$(pwd)/dockerfiles/${branch_name}/php${{ matrix.php }}/alpine/Dockerfile" ] ; then
             echo "dockerfile_missing=true" >> $GITHUB_OUTPUT
           fi
-          if ! egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
+          # Assigned first, so that "set -e" stops the job if the script fails (e.g. a manual run on a work branch).
+          mode="$(./bin/build-mode.sh)"
+          if [ "${mode}" = "skip" ] ; then
             echo "released_already=true" >> $GITHUB_OUTPUT
           fi
 
@@ -183,7 +189,8 @@ jobs:
           if [ ! -f "$(pwd)/dockerfiles/${branch_name}/php${{ matrix.php }}/alpine/Dockerfile" ] ; then
             echo "dockerfile_missing=true" >> $GITHUB_OUTPUT
           fi
-          if egrep -q '^status\:\s*"under development"\s*($|\#)' "$(pwd)/config/${branch_name}.yml" ; then
+          mode="$(./bin/build-mode.sh)"
+          if [ "${mode}" = "release" ] ; then
             major_version=${branch_name%.*}
             echo "major_version=${major_version}" >> $GITHUB_OUTPUT
 
@@ -196,6 +203,9 @@ jobs:
             else
               echo "image_type=default" >> $GITHUB_OUTPUT
             fi
+          elif [ "${mode}" = "rebuild" ] ; then
+            # A released version is rebuilt under its version tags only: the floating ones belong to a newer version.
+            echo "image_type=version" >> $GITHUB_OUTPUT
           else
             echo "released_already=true" >> $GITHUB_OUTPUT
           fi
@@ -224,6 +234,7 @@ jobs:
 
       # The floating tags depend on the image type: "default" images only get the two version-specific tags, "major"
       # images also get the tag for their minor series, and the "latest" image gets that plus the bare "latest" tag.
+      # A manual rebuild of a released version ("version") gets its own version tag only.
       -
         name: Push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}-alpine (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
@@ -235,16 +246,24 @@ jobs:
         run: |
           set -ex
 
-          tags=(
-              "${BRANCH_NAME}-php${{ matrix.php }}${POSTFIX}"
-              "${MAJOR_VERSION}-php${{ matrix.php }}${POSTFIX}"
-          )
-          if [ "${IMAGE_TYPE}" = 'major' ] || [ "${IMAGE_TYPE}" = 'latest' ] ; then
-              tags+=( "${MAJOR_VERSION}${POSTFIX}" )
-          fi
-          if [ "${IMAGE_TYPE}" = 'latest' ] ; then
-              tags+=( "latest${POSTFIX}" )
-          fi
+          tags=( "${BRANCH_NAME}-php${{ matrix.php }}${POSTFIX}" )
+          case "${IMAGE_TYPE}" in
+              version)
+                  ;;
+              default|major|latest)
+                  tags+=( "${MAJOR_VERSION:?}-php${{ matrix.php }}${POSTFIX}" )
+                  if [ "${IMAGE_TYPE}" != 'default' ] ; then
+                      tags+=( "${MAJOR_VERSION}${POSTFIX}" )
+                  fi
+                  if [ "${IMAGE_TYPE}" = 'latest' ] ; then
+                      tags+=( "latest${POSTFIX}" )
+                  fi
+                  ;;
+              *)
+                  echo "::error::unknown image type \"${IMAGE_TYPE}\""
+                  exit 1
+                  ;;
+          esac
 
           tag_args=()
           for tag in "${tags[@]}" ; do
