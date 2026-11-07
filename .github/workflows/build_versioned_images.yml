@@ -16,9 +16,10 @@ permissions:
   contents: read
 
 env:
-  # Number of entries in the "platform" matrix below. The merge job refuses to publish a tag unless it collected
-  # exactly that many digests, so an architecture can never go missing from a published tag.
-  EXPECTED_DIGESTS: 4
+  # The names of the platforms in the "platform" matrix below. The merge job publishes the images of the platforms
+  # that built; for a platform that failed, bin/publish-image.sh keeps the image each tag already has, and fails the
+  # job so that the run shows which platform is missing.
+  PLATFORMS: "linux/amd64 linux/arm64/v8 linux/ppc64le linux/s390x"
 
 # Each platform is built by its own job, on a runner of that architecture where GitHub offers one, and pushed to the
 # registry by digest only. A final job joins those digests into one multi-architecture tag. Building linux/amd64 on
@@ -35,8 +36,8 @@ jobs:
         php: ["8.1", "8.2", "8.3", "8.4", "8.5"]
         image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
         # Keep "emulated" an unquoted YAML boolean: the steps below negate it, and a quoted "false" would
-        # be a non-empty string, so the negation would silently turn every one of them off. Keep the number
-        # of entries in sync with EXPECTED_DIGESTS above.
+        # be a non-empty string, so the negation would silently turn every one of them off. Keep the names
+        # in sync with PLATFORMS above.
         platform:
           - {name: "linux/amd64",    slug: "amd64",   runner: "ubuntu-24.04",     emulated: false}
           - {name: "linux/arm64/v8", slug: "arm64v8", runner: "ubuntu-24.04-arm", emulated: false}
@@ -145,9 +146,10 @@ jobs:
           set -ex
           : "${DIGEST:?the build step produced no digest}"
           mkdir -p /tmp/digests
-          touch "/tmp/digests/${DIGEST#sha256:}"
+          echo "${PLATFORM}" > "/tmp/digests/${DIGEST#sha256:}"
         env:
           DIGEST: ${{ steps.docker_build.outputs.digest }}
+          PLATFORM: ${{ matrix.platform.name }}
 
       -
         name: Upload the digest
@@ -170,9 +172,9 @@ jobs:
       id-token: write
     runs-on: ubuntu-24.04
     # Without "!cancelled()" a single failed build job would skip the whole merge matrix, so one flaky
-    # emulated platform would stop every tag in the run from being published — the previous pipeline only
-    # lost the tag it belonged to. The digest count checked below is what keeps that safe: a tag is still
-    # never published from an incomplete set of platforms.
+    # emulated platform would stop every tag in the run from being published. A tag is still published when
+    # one of its platforms failed to build: bin/publish-image.sh keeps the image the tag already has for that
+    # platform, and fails the job so that the run shows the missing platform.
     if: ${{ !cancelled() && github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: false
@@ -223,22 +225,6 @@ jobs:
           pattern: digests-php${{ matrix.php }}-${{ matrix.image.type }}-*
           merge-multiple: true
 
-      # actions/download-artifact does not fail when its pattern matches only some of the expected artifacts, so
-      # completeness is checked here: without it a tag could be republished with an architecture missing. This runs
-      # before the registry login so that a short set fails cheaply, and before anything enters /tmp/digests, which
-      # does not exist at all when no artifact matched.
-      -
-        name: Verify that every platform produced a digest
-        if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
-        run: |
-          set -eu
-          shopt -s nullglob
-          digests=(/tmp/digests/*)
-          if [ "${#digests[@]}" -ne "${EXPECTED_DIGESTS}" ] ; then
-              echo "::error::expected ${EXPECTED_DIGESTS} digests, found ${#digests[@]}: ${digests[*]##*/}"
-              exit 1
-          fi
-
       -
         name: Set up Docker Buildx
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
@@ -263,7 +249,6 @@ jobs:
       -
         name: Push Docker image phpswoole/swoole:${{ steps.params.outputs.branch_name }}-php${{ matrix.php }}${{ matrix.image.postfix }} (${{ steps.params.outputs.image_type }})
         if: steps.params.outputs.released_already != 'true' && steps.params.outputs.dockerfile_missing != 'true'
-        working-directory: /tmp/digests
         env:
           BRANCH_NAME: ${{ steps.params.outputs.branch_name }}
           MAJOR_VERSION: ${{ steps.params.outputs.major_version }}
@@ -283,16 +268,4 @@ jobs:
               tags+=( "latest${POSTFIX}" )
           fi
 
-          docker buildx imagetools create \
-              --annotation "index:org.opencontainers.image.title=Swoole" \
-              --annotation "index:org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-              --annotation "index:org.opencontainers.image.revision=${{ github.sha }}" \
-              --annotation "index:org.opencontainers.image.version=${{ steps.params.outputs.branch_name }}" \
-              --annotation "index:org.opencontainers.image.licenses=Apache-2.0" \
-              $(printf -- '--tag phpswoole/swoole:%s ' "${tags[@]}") \
-              $(printf 'phpswoole/swoole@sha256:%s ' *)
-          docker buildx imagetools inspect "phpswoole/swoole:${tags[0]}"
-
-          # Sign the multi-architecture index, which all the tags above point to.
-          digest=$(docker buildx imagetools inspect "phpswoole/swoole:${tags[0]}" --format '{{ .Manifest.Digest }}')
-          cosign sign --yes "phpswoole/swoole@${digest}"
+          ./bin/publish-image.sh --version "${BRANCH_NAME}" $(printf -- '--tag %s ' "${tags[@]}") /tmp/digests
