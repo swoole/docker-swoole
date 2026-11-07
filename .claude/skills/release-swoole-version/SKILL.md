@@ -20,6 +20,10 @@ Each release series is maintained on its own work branch, and its version branch
 | Nightly images, 6.3.x | `master`    | `6.3.0-rc1`, `6.3.0`, ...    |
 | 6.2.x                 | `6.2.x`     | `6.2.3`, `6.2.4`, ...        |
 | 6.1.x                 | `6.1.x`     | `6.1.10`, `6.1.11`, ...      |
+| 6.0.x, 5.1.x, 4.8.x   | `6.0.x`, `5.1.x`, `4.8.x` | e.g. `5.1.8`   |
+
+Wherever a release is made, `master`'s `CHANGELOG.md` and `README.md` list it too: `master` keeps the record of every
+series, so a release made on another work branch is added to them as well (see step 10 in that branch's copy).
 
 **This copy of the skill, on branch `6.1.x`, covers 6.1.x releases only.** For any other series, check out that
 series' work branch (`git checkout <work-branch> && git pull --ff-only`) and follow the copy of this skill on that
@@ -51,6 +55,12 @@ release: `master` carries changes (e.g. tini as PID 1, the removed `-dev` packag
 8. **Verify**: `./bin/generate-dockerfiles.php <new>` again must leave the tree unchanged; `./vendor/bin/php-cs-fixer fix -q --dry-run` and `./vendor/bin/phpunit` must pass.
 
 9. **Create the version branch** at that commit, without pushing: `git branch <new>`. Pushing it (which triggers the versioned build/release workflows) is left for a maintainer to do deliberately — see CLAUDE.md.
+
+10. **Add the release to `master`'s copies too.** `master`'s `CHANGELOG.md` and `README.md` list the releases of every series, so they need the same changes as in step 5 and 6:
+    - `git checkout master && git pull --ff-only`.
+    - In `CHANGELOG.md`, add the same `## <new>` entry under `# Swoole 6.1`, and the same Table of Contents line. Copy the entry from `6.1.x` verbatim (`git show <new>:CHANGELOG.md`) rather than rewriting it.
+    - In `README.md`, replace `<previous>` with `<new>` in the 6.1 rows of the version table and of the link-reference footer, as in step 6, and check `git diff README.md` the same way.
+    - Change nothing else on `master` — no config, no `dockerfiles/`. Commit: `update CHANGELOG and README for Swoole <new> images`, then `git checkout 6.1.x`. Don't push.
 
 ## Re-releasing an existing version
 

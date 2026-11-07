@@ -140,7 +140,9 @@ Table of Contents
 ## 6.1.9
 
 ### Changed
-- **Swoole 6.1.x images are now built from the _master_ branch of this repository; branch _6.1.x_ is deprecated.**
+- **Swoole 6.1.9 images are built from the _master_ branch of this repository, instead of from the old branch
+  _6.1.x_.** Since October 2026, 6.1.x images are built from a new branch _6.1.x_ again, created from branch
+  _6.1.10_.
 - Support ODBC via option _--with-swoole-odbc_ when installing Swoole.
 - Reduce final image size by dropping build-only dependencies.
 - Test Docker images before publishing them.
