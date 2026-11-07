@@ -47,6 +47,9 @@ class PublishImageTest extends TestCase
                         case "$1" in
                             --annotation) shift 2 ;;
                             --tag) tags+=("${2#*:}") ; shift 2 ;;
+                            {*mediaType*)
+                                # Like buildx, which resolves such a descriptor as <repository>:latest.
+                                echo "ERROR: invalid size mismatch for a descriptor with a media type" >&2 ; exit 1 ;;
                             *) sources+=("$1") ; shift ;;
                         esac
                     done

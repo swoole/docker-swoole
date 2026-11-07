@@ -173,9 +173,11 @@ for i in "${!tags[@]}" ; do
     fi
 
     # The descriptors of the missing platforms' images in the current index, plus the attestation manifests that
-    # refer to them, one per line of JSON. They are passed to "docker buildx imagetools create" as they are, which
-    # keeps their platforms and annotations, and resolves them in the repository the tag belongs to. jq runs in a
-    # command substitution of its own, so that a failure stops the script instead of carrying nothing over.
+    # refer to them, one per line of JSON. They are passed to "docker buildx imagetools create", which keeps their
+    # platforms and annotations. Their media types are dropped: buildx resolves a descriptor that has no repository as
+    # <repository>@<digest> only when it has no media type; with one, it resolves it as <repository>:latest instead,
+    # and fails with "invalid size mismatch" unless the descriptor happens to be what tag "latest" points to. jq runs
+    # in a command substitution of its own, so that a failure stops the script instead of carrying nothing over.
     selected=""
     if [[ -n "${current}" ]] ; then
         if ! jq -e 'has("manifests")' <<< "${current}" > /dev/null ; then
@@ -187,8 +189,9 @@ for i in "${!tags[@]}" ; do
             | .manifests as $all
             | [$all[] | select(.platform != null and (name as $n | $missing | index($n)))] as $images
             | ($images | map(.digest)) as $digests
-            | $images[], ($all[] | select(.annotations["vnd.docker.reference.type"] == "attestation-manifest"
-                                         and (.annotations["vnd.docker.reference.digest"] as $d | $digests | index($d))))
+            | ($images[], ($all[] | select(.annotations["vnd.docker.reference.type"] == "attestation-manifest"
+                                          and (.annotations["vnd.docker.reference.digest"] as $d | $digests | index($d)))))
+            | del(.mediaType)
         ' <<< "${current}")"
     fi
     carried_by_tag[$i]="${selected}"
