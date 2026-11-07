@@ -75,9 +75,21 @@ git push origin 6.2.x <version>
 
 Never move a 6.2.x version branch to `master`.
 
-That re-runs the three versioned workflows and republishes every tag that version owns, floating ones included.
-Only do it while `config/<version>.yml` still says `status: "under development"`; a version marked `"released"`
-publishes nothing, which is the point of the flip.
+While `config/<version>.yml` says `status: "under development"`, that push re-runs the three versioned workflows
+and republishes every tag the version owns, floating ones included. A version marked `"released"` (or
+`"end-of-life"`) builds nothing on push. To rebuild it, wait for that push's runs to finish, then start the workflows
+by hand on the version branch:
+
+```bash
+for w in build_versioned_images build_versioned_alpine_images build_versioned_dev_images ; do
+    gh workflow run "${w}.yml" --repo swoole/docker-swoole --ref <version>
+done
+```
+
+A manual run of a released version republishes only its own tags (`<version>-php8.4`, `<version>-php8.4-alpine`,
+...), never the floating ones (`6.2-php8.4`, `6.2`, `latest`), which belong to the newer version; see
+`bin/build-mode.sh`. Its Dockerfiles stay as they are, so the rebuild picks up refreshed base images and OS packages,
+not a newer PHP.
 
 ## New minor series
 
