@@ -8,9 +8,10 @@
 #   * "under development":
 #     Under development and is actively maintained. This status is also used in GitLab Actions to identify most-recent stable releases.
 #   * "released":
-#     The tag is frozen and won't be updated any more.
+#     Superseded by a newer release. Pushes don't rebuild it, and it gets no floating tags (e.g. "6.2" or "latest"); it
+#     can still be rebuilt by starting the versioned workflows by hand, which republishes its own tags only.
 #   * "end-of-life":
-#     The tag is not actively maintained and is not suggested to be used any more.
+#     The tag is not actively maintained and is not suggested to be used any more. Treated like "released".
 status: "under development"
 php: # List of PHP versions to build for.
   - "7.1.29"
