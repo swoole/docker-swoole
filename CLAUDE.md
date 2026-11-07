@@ -59,10 +59,15 @@ Images are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and `linux
 and pushed to the registry by digest, and a final `merge` job joins those digests into one multi-architecture tag,
 with `bin/publish-image.sh`. A platform that fails to build doesn't hold the others back: they are still published,
 and for the failed platform each tag keeps the image it already had, so users of that platform don't lose the tag. A
-tag published for the first time has no such image, and goes without that platform. Either way the `merge` job still
-fails, so the run shows the missing platform; rerunning the run's failed jobs (within a week, while the digests of
-the other platforms are kept) publishes the complete image. Until then a floating tag (e.g. `6.1`) can point to
-different versions on different platforms.
+tag published for the first time has no such image, and goes without that platform. Whether the run fails depends on
+the platform: `linux/ppc64le` and `linux/s390x` are optional (marked `optional` in the `platform` matrix and listed in
+`OPTIONAL_PLATFORMS`), so a failed build of either doesn't fail the run, only a warning is left. A missing
+`linux/amd64` or `linux/arm64/v8` fails the `merge` job, so the run shows it. Either way, rerunning the failed build
+jobs (within a week, while the digests of the other platforms are kept) publishes the complete image: rerunning a job
+reruns the `merge` jobs that depend on it. When only an optional platform failed, the run is green, so rerun that
+platform's build job from the run page rather than the whole run. Until then a floating tag (e.g. `6.1`) can point to
+different versions on different platforms; for an optional platform nothing forces that rerun, so check the warnings
+of green runs too.
 
 GitHub hosts x86 and arm64 runners, so those two are built natively and the rest are emulated with QEMU. The
 functional tests in `bin/test-image.sh` run the image, so they only run on the platforms that are native to their
@@ -80,7 +85,8 @@ context-switching assembly for it. It is deliberately left out for now, for two 
 
 Neither reason is permanent — add it if riscv64 hardware becomes common enough that users ask for it, or if the
 build stops being emulated. It is one extra entry in the `platform` matrix of each build workflow, plus the matching
-entry in `PLATFORMS` (`tests/WorkflowTest.php` fails if those two disagree). Before adding one, run the
+entry in `PLATFORMS`, and in `OPTIONAL_PLATFORMS` if the entry is marked `optional: true` (as an emulated
+riscv64 would likely be); `tests/WorkflowTest.php` fails if these disagree. Before adding one, run the
 `Probe Platform Support` workflow from the Actions tab: it builds and runs a Debian and an Alpine image for the
 architecture without publishing anything, and record what it prints — an unrecorded experiment is why this question
 came up twice.

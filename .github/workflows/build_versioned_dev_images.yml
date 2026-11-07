@@ -15,8 +15,12 @@ concurrency:
 env:
   # The names of the platforms in the "platform" matrix below. The merge job publishes the images of the platforms
   # that built; for a platform that failed, bin/publish-image.sh keeps the image each tag already has, and fails the
-  # job so that the run shows which platform is missing.
+  # job if that platform is a required one, so that the run shows which platform is missing.
   PLATFORMS: "linux/amd64 linux/arm64/v8 linux/ppc64le linux/s390x"
+  # The platforms marked "optional" in the matrix below. A failed build of one of them doesn't fail the run: its build
+  # job is allowed to fail, and the merge job passes when only optional platforms are missing. These are the emulated
+  # platforms, whose builds break more often (e.g. when Debian publishes a package for them late) and are used least.
+  OPTIONAL_PLATFORMS: "linux/ppc64le linux/s390x"
 
 # Each platform is built by its own job, on a runner of that architecture where GitHub offers one, and pushed to the
 # registry by digest only. A final job joins those digests into one multi-architecture tag. Building linux/amd64 on
@@ -26,6 +30,9 @@ jobs:
   build:
     name: PHP ${{ matrix.php }} (${{ matrix.image.type }}, dev) on ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.runner }}
+    # A failed build of an optional platform doesn't fail the run; the merge job still decides whether the tags that
+    # go without it are acceptable (see OPTIONAL_PLATFORMS above).
+    continue-on-error: ${{ matrix.platform.optional }}
     if: github.repository == 'swoole/docker-swoole'
     strategy:
       fail-fast: false
@@ -34,12 +41,13 @@ jobs:
         image: [{type: "cli", postfix: ""}, {type: "zts", postfix: "-zts"}]
         # Keep "emulated" an unquoted YAML boolean: the steps below negate it, and a quoted "false" would
         # be a non-empty string, so the negation would silently turn every one of them off. Keep the names
-        # in sync with PLATFORMS above.
+        # in sync with PLATFORMS above, and the optional platforms (also an unquoted YAML boolean) in sync with
+        # OPTIONAL_PLATFORMS.
         platform:
-          - {name: "linux/amd64",    slug: "amd64",   runner: "ubuntu-24.04",     emulated: false}
-          - {name: "linux/arm64/v8", slug: "arm64v8", runner: "ubuntu-24.04-arm", emulated: false}
-          - {name: "linux/ppc64le",  slug: "ppc64le", runner: "ubuntu-24.04-arm", emulated: true}
-          - {name: "linux/s390x",    slug: "s390x",   runner: "ubuntu-24.04-arm", emulated: true}
+          - {name: "linux/amd64",    slug: "amd64",   runner: "ubuntu-24.04",     emulated: false, optional: false}
+          - {name: "linux/arm64/v8", slug: "arm64v8", runner: "ubuntu-24.04-arm", emulated: false, optional: false}
+          - {name: "linux/ppc64le",  slug: "ppc64le", runner: "ubuntu-24.04-arm", emulated: true,  optional: true}
+          - {name: "linux/s390x",    slug: "s390x",   runner: "ubuntu-24.04-arm", emulated: true,  optional: true}
 
     steps:
       -
@@ -151,7 +159,7 @@ jobs:
     # Without "!cancelled()" a single failed build job would skip the whole merge matrix, so one flaky
     # emulated platform would stop every tag in the run from being published. A tag is still published when
     # one of its platforms failed to build: bin/publish-image.sh keeps the image the tag already has for that
-    # platform, and fails the job so that the run shows the missing platform.
+    # platform, and fails the job if that platform is a required one, so that the run shows the missing platform.
     if: ${{ !cancelled() && github.repository == 'swoole/docker-swoole' }}
     strategy:
       fail-fast: false
