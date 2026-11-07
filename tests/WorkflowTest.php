@@ -11,11 +11,10 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Class WorkflowTest
  *
- * Guards the one number in the build workflows that is not derivable from anything else: each workflow declares
- * EXPECTED_DIGESTS, and its merge job refuses to publish a tag unless it collected that many digests. The number has
- * to match the size of the platform matrix in the build job, but it lives in a different job, so nothing in GitHub
- * Actions can keep the two in sync. Adding or removing a platform without updating EXPECTED_DIGESTS would otherwise
- * only surface as a failed nightly build.
+ * Guards the list of platforms each build workflow declares in PLATFORMS, which its merge job (bin/publish-image.sh)
+ * uses to tell which platforms failed to build. It has to match the platform matrix of the build job, but it lives in
+ * a different job, so nothing in GitHub Actions can keep the two in sync. A platform missing from PLATFORMS would make
+ * every merge job fail; an extra one would be reported as missing on every run.
  *
  * @internal
  * @coversNothing
@@ -23,21 +22,52 @@ use Symfony\Component\Yaml\Yaml;
 class WorkflowTest extends TestCase
 {
     #[DataProvider('dataBuildWorkflows')]
-    public function testExpectedDigestsMatchesThePlatformMatrix(string $workflow): void
+    public function testPlatformsMatchThePlatformMatrix(string $workflow): void
     {
         $data = Yaml::parseFile($workflow);
 
         $platforms = $data['jobs']['build']['strategy']['matrix']['platform'] ?? null;
         self::assertIsArray($platforms, "no platform matrix found in {$workflow}");
 
-        $expected = $data['env']['EXPECTED_DIGESTS'] ?? null;
-        self::assertIsInt($expected, "no EXPECTED_DIGESTS found in {$workflow}");
+        $declared = $data['env']['PLATFORMS'] ?? null;
+        self::assertIsString($declared, "no PLATFORMS found in {$workflow}");
 
-        self::assertCount(
-            $expected,
-            $platforms,
-            "EXPECTED_DIGESTS in {$workflow} does not match the number of entries in its platform matrix",
+        self::assertSame(
+            array_column($platforms, 'name'),
+            preg_split('/\s+/', trim($declared)),
+            "PLATFORMS in {$workflow} does not list the platforms of its platform matrix, in the same order",
         );
+    }
+
+    /**
+     * The merge job tells the platforms apart by the content of the digest files, and runs bin/publish-image.sh from
+     * a checkout of the repository.
+     */
+    #[DataProvider('dataBuildWorkflows')]
+    public function testMergeJobPublishesWithTheScript(string $workflow): void
+    {
+        $data = Yaml::parseFile($workflow);
+
+        $exports = array_filter(
+            $data['jobs']['build']['steps'],
+            fn (array $step): bool => str_contains($step['run'] ?? '', '/tmp/digests/${DIGEST#sha256:}'),
+        );
+        self::assertCount(1, $exports, "{$workflow} should export each platform's digest exactly once");
+        $export = reset($exports);
+        self::assertStringContainsString('echo "${PLATFORM}" >', $export['run'], "{$workflow} doesn't record the platform of each digest");
+        self::assertSame('${{ matrix.platform.name }}', $export['env']['PLATFORM'] ?? null, "{$workflow} doesn't pass the platform to the export step");
+
+        // Without "!cancelled()" a failed build job would skip every merge job, so nothing would be published at all.
+        self::assertStringContainsString('!cancelled()', $data['jobs']['merge']['if'] ?? '', "the merge job of {$workflow} doesn't run once a build job failed");
+
+        $steps = $data['jobs']['merge']['steps'];
+        self::assertNotEmpty(preg_grep('#^actions/checkout@#', array_column($steps, 'uses')), "the merge job of {$workflow} doesn't check out the repository");
+        // The run has to fail when a platform is missing, so that it gets rebuilt.
+        self::assertSame([], array_filter(array_column($steps, 'continue-on-error')), "a step of the merge job of {$workflow} ignores failures");
+        $scripts = implode("\n", array_column($steps, 'run'));
+        self::assertMatchesRegularExpression('#\./bin/publish-image\.sh .+ /tmp/digests#', $scripts, "the merge job of {$workflow} doesn't publish with bin/publish-image.sh");
+        self::assertStringContainsString('--tag ', $scripts, "the merge job of {$workflow} doesn't pass any tag to bin/publish-image.sh");
+        self::assertStringNotContainsString('imagetools create', $scripts, "the merge job of {$workflow} publishes without bin/publish-image.sh");
     }
 
     /**

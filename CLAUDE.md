@@ -56,9 +56,13 @@ This repository does not use git tags; Swoole versions are tracked entirely as g
 
 Images are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and `linux/s390x`. Each build workflow under
 `.github/workflows/` declares them once, as a `platform` matrix dimension: every platform is built by its own job
-and pushed to the registry by digest, and a final `merge` job joins those digests into one multi-architecture tag.
-That job refuses to publish unless it collected a digest from every platform, so a failed architecture cannot be
-silently dropped from a tag.
+and pushed to the registry by digest, and a final `merge` job joins those digests into one multi-architecture tag,
+with `bin/publish-image.sh`. A platform that fails to build doesn't hold the others back: they are still published,
+and for the failed platform each tag keeps the image it already had, so users of that platform don't lose the tag. A
+tag published for the first time has no such image, and goes without that platform. Either way the `merge` job still
+fails, so the run shows the missing platform; rerunning the run's failed jobs (within a week, while the digests of
+the other platforms are kept) publishes the complete image. Until then a floating tag (e.g. `6.1`) can point to
+different versions on different platforms.
 
 GitHub hosts x86 and arm64 runners, so those two are built natively and the rest are emulated with QEMU. The
 functional tests in `bin/test-image.sh` run the image, so they only run on the platforms that are native to their
@@ -76,7 +80,7 @@ context-switching assembly for it. It is deliberately left out for now, for two 
 
 Neither reason is permanent — add it if riscv64 hardware becomes common enough that users ask for it, or if the
 build stops being emulated. It is one extra entry in the `platform` matrix of each build workflow, plus the matching
-`EXPECTED_DIGESTS` (`tests/WorkflowTest.php` fails if those two disagree). Before adding one, run the
+entry in `PLATFORMS` (`tests/WorkflowTest.php` fails if those two disagree). Before adding one, run the
 `Probe Platform Support` workflow from the Actions tab: it builds and runs a Debian and an Alpine image for the
 architecture without publishing anything, and record what it prints — an unrecorded experiment is why this question
 came up twice.
