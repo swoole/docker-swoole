@@ -4,7 +4,7 @@
 status: "under development"
 php:
   - "8.0.30"
-  - "8.1.33"
+  - "8.1.34"
   - "8.2.35"
   - "8.3.36"
 image:
