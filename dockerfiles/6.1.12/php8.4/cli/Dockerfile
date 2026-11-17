@@ -59,7 +59,11 @@ RUN \
 # a library that is missing at runtime (rather than at link time) produces a successful build but an image
 # whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
 # be asserted explicitly; the published ppc64le and s390x Alpine images shipped broken this way.
-    php -r 'exit(extension_loaded("swoole") ? 0 : 1);'
+    php -r 'exit(extension_loaded("swoole") ? 0 : 1);' && \
+# Loading the extension doesn't prove that coroutines work: on the platforms Swoole has no context-switching assembly
+# for (e.g., ppc64le and s390x), they switch through the ucontext functions, which nothing else in the build exercises,
+# and the functional tests only run on the platforms native to their runners. So switch between two coroutines for real.
+    php -r '$ok = false; Swoole\Coroutine\run(function () use (&$ok) { $channel = new Swoole\Coroutine\Channel(1); Swoole\Coroutine::create(function () use ($channel) { Swoole\Coroutine::sleep(0.01); $channel->push(["swoole" => 1]); }); $ok = $channel->pop(10) === ["swoole" => 1]; }); exit($ok ? 0 : 1);'
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
