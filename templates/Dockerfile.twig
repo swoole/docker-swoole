@@ -47,12 +47,15 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
     mkdir -p /usr/src/swoole-src && \
     tar xzf /tmp/sources/swoole-src.tar.gz --strip-components=1 -C /usr/src/swoole-src && \
 # Development images build Swoole with debug and trace logging, and with debugging symbols (which the default compiler
-# flags of the official PHP images leave out).
+# flags of the official PHP images leave out). The other images set the flags of the C++ compiler too: the commands of
+# the official PHP images only set those of the C compiler, which leaves the C++ compiler with the default of Autoconf
+# ("-g -O2"), so that most of Swoole would be compiled with debugging symbols only to have them stripped afterwards.
     if [ "${DEV_MODE}" = "true" ] ; then \
         devOptions="--enable-debug-log --enable-trace-log" && \
         export CFLAGS="${PHP_CFLAGS} -g" CXXFLAGS="${PHP_CFLAGS} -g" ; \
     else \
-        devOptions="" ; \
+        devOptions="" && \
+        export CXXFLAGS="${PHP_CFLAGS}" ; \
     fi && \
     docker-php-ext-configure /usr/src/swoole-src ${devOptions}{% if not swoole_620_or_later %} --enable-openssl{% endif %} \
 {% if image_type == "zts" %}{{ "        --enable-swoole-thread \\\n" }}{% endif %}
