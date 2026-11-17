@@ -130,7 +130,13 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
 # whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
 # be asserted explicitly; the published ppc64le and s390x Alpine images shipped broken this way. The PECL extensions
 # are checked too, since removing the build-only packages could take a runtime library of theirs along.
-    php -r 'exit(extension_loaded("swoole") && extension_loaded("igbinary") && extension_loaded("redis") ? 0 : 1);'
+    php -r 'exit(extension_loaded("swoole") && extension_loaded("igbinary") && extension_loaded("redis") ? 0 : 1);' && \
+# Loading the extension doesn't prove that coroutines work: on the platforms Swoole has no context-switching assembly
+# for (e.g., ppc64le and s390x), they switch through the ucontext functions, which nothing else in the build exercises,
+# and the functional tests only run on the platforms native to their runners. So switch between two coroutines for
+# real, passing a value through extension igbinary on the way (s390x is the only big-endian platform, and
+# nothing else serializes anything there).
+    php -r '$ok = false; Swoole\Coroutine\run(function () use (&$ok) { $channel = new Swoole\Coroutine\Channel(1); Swoole\Coroutine::create(function () use ($channel) { Swoole\Coroutine::sleep(0.01); $channel->push(igbinary_unserialize(igbinary_serialize(["swoole" => 1]))); }); $ok = $channel->pop(10) === ["swoole" => 1]; }); exit($ok ? 0 : 1);'
 
 # Program tini runs as PID 1: it forwards signals to the entrypoint script, and reaps the zombie processes that the
 # commands started in the container leave behind.
