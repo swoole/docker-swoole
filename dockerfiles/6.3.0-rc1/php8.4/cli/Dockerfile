@@ -23,12 +23,16 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
     savedAptMark="$(apt-mark showmanual)" && \
     apt-get update && \
     apt-get install -y \
-# Package "inotify-tools" is used by the auto-reloading feature, which is supported for non-Alpine images only. For
-# details, please check script "autoreload.sh" and example "00-autoreload".
+# The packages used at runtime. Package "inotify-tools" is used by the auto-reloading feature, which is supported for
+# non-Alpine images only. For details, please check script "autoreload.sh" and example "00-autoreload".
 #
 # @see https://github.com/swoole/docker-swoole/blob/master/rootfilesystem/usr/local/bin/autoreload.sh
 # @see https://github.com/swoole/docker-swoole/tree/master/examples/00-autoreload
         inotify-tools              \
+        supervisor                 \
+        tini                       \
+        unzip                      \
+# The packages needed to build the PHP extensions only.
         libcurl4-openssl-dev       \
         libbrotli-dev              \
         libc-ares-dev              \
@@ -37,10 +41,7 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
         libssh2-1-dev              \
         libssl-dev                 \
         libzstd-dev                \
-        supervisor                 \
-        tini                       \
         unixodbc-dev               \
-        unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
 # Development images come with debugging tools. They are installed before anything is compiled, so that a package that
