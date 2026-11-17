@@ -8,7 +8,7 @@ ADD --checksum=sha256:0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51d
 
 FROM php:8.3-cli-alpine3.24
 
-COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/
+COPY --from=composer:2.11.2 /usr/bin/composer /usr/bin/
 
 RUN --mount=type=bind,from=sources,target=/tmp/sources \
     set -ex && \

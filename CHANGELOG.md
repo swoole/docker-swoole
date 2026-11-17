@@ -166,6 +166,7 @@ Table of Contents
 - **Remove scripts `install-swoole-ext.sh`, `install-phpx.sh` and `install-swoole-ext-zookeeper.sh`**, and examples 13
   to 15 that used them: the Swoole extensions and PHP-X they installed are no longer maintained, and the scripts no
   longer worked.
+- Upgrade _Composer_ from 2.10.3 to 2.11.2.
 
 # Swoole 6.2
 
