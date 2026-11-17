@@ -49,7 +49,17 @@ if ! php -m | grep -q sockets ; then
 fi
 
 if [[ "true" = "${DEV_MODE}" ]] ; then
-    apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends
+    apt-get install -y gdb git lsof strace tcpdump valgrind --no-install-recommends
+    # Package "vim" depends on the exact version of an architecture-independent package ("vim-common"), and can't be
+    # installed while the mirrors of an architecture lag behind a security update of it. That happens on the optional
+    # platforms (see OPTIONAL_PLATFORMS in the workflows), whose development images then go without the editor instead
+    # of not being built at all.
+    if ! apt-get install -y vim --no-install-recommends ; then
+        case "$(dpkg --print-architecture)" in
+            amd64|arm64) exit 1 ;;
+            *) echo "WARNING: package vim can't be installed on this platform at the moment; skipped." ;;
+        esac
+    fi
     DEV_OPTIONS="--enable-debug-log --enable-trace-log"
 else
     DEV_OPTIONS=""
