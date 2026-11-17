@@ -172,6 +172,9 @@ Table of Contents
 
 ## 6.2.5
 
+### Changed
+- Upgrade _Composer_ from 2.11.1 to 2.11.2.
+
 ## 6.2.4
 
 ### Changed
@@ -210,6 +213,9 @@ Table of Contents
 # Swoole 6.1
 
 ## 6.1.12
+
+### Changed
+- Upgrade _Composer_ from 2.11.1 to 2.11.2.
 
 ## 6.1.11
 
