@@ -6,6 +6,7 @@ Table of Contents
    * [6.2.1](#621)
    * [6.2.0](#620)
 * [Swoole 6.1](#swoole-61)
+   * [6.1.13](#6113)
    * [6.1.12](#6112)
    * [6.1.11](#6111)
    * [6.1.10](#6110)
@@ -125,6 +126,18 @@ Table of Contents
 - Upgrade _Composer_ from 2.9.5 to 2.9.7.
 
 # Swoole 6.1
+
+## 6.1.13
+
+### Changed
+- Publish the images of the other architectures when one architecture fails to build; for the failed one, each tag
+  keeps the image it already had. A failed build for _ppc64le_ or _s390x_ no longer fails the CI run.
+- Allow rebuilding the images of a released version by hand, under its own version tags only.
+- Compile the C++ code of Swoole without debugging symbols in Alpine images, and don't leave the package index of
+  _apk_ in them.
+- Build development images without _vim_ on _ppc64le_ and _s390x_ when it can't be installed there.
+- Switch between coroutines at the end of the build, so that an image whose coroutines don't work is never
+  published.
 
 ## 6.1.12
 
