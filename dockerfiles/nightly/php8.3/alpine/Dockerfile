@@ -63,8 +63,10 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
             | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )" && \
     apk add --no-cache --virtual .swoole-rundeps $runDeps && \
-    apk del .build-deps && \
-    rm -rf /tmp/pear && \
+# Option "--no-network" keeps apk from refreshing the package index, which it would otherwise leave in the image (about
+# 3 MB under /var/cache/apk).
+    apk del --no-network .build-deps && \
+    rm -rf /tmp/pear /var/cache/apk/* && \
 # Fail the build if the extension does not actually load. Swoole is compiled here for every target platform, and
 # a library that is missing at runtime (rather than at link time) produces a successful build but an image
 # whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to

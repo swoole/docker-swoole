@@ -42,8 +42,10 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
             | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
     )" && \
     apk add --no-cache --virtual .swoole-rundeps $runDeps && \
-    apk del .build-deps && \
-    rm -rf /tmp/pear && \
+# Option "--no-network" keeps apk from refreshing the package index, which it would otherwise leave in the image (about
+# 3 MB under /var/cache/apk).
+    apk del --no-network .build-deps && \
+    rm -rf /tmp/pear /var/cache/apk/* && \
 {%~ include 'partials/load-check.twig' %}
 
 WORKDIR "/var/www/"
