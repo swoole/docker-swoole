@@ -25,7 +25,11 @@ RUN \
     mkdir /usr/src/php/ext/swoole && \
     curl -sfL https://github.com/swoole/swoole-src/archive/v6.1.12.tar.gz -o swoole.tar.gz && \
     tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
-    export LDFLAGS="${LDFLAGS} -lucontext" && \
+# The commands of the official PHP images only set the flags of the C compiler, which leaves the C++ compiler with the
+# default of Autoconf ("-g -O2"): most of Swoole would be compiled with debugging symbols, only to have them stripped
+# afterwards. The linker flags start from those of the official PHP images, which the commands only use when LDFLAGS
+# isn't set.
+    export CXXFLAGS="${PHP_CFLAGS}" LDFLAGS="${PHP_LDFLAGS} -lucontext" && \
     docker-php-ext-configure swoole --enable-openssl \
         --enable-brotli \
         --enable-mysqlnd \
