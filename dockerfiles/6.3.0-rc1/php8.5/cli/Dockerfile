@@ -43,6 +43,20 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
         unzip                      \
         zlib1g-dev                 \
         --no-install-recommends && \
+# Development images come with debugging tools. They are installed before anything is compiled, so that a package that
+# can't be installed fails the build right away rather than after Swoole was configured. Package "vim" depends on the
+# exact version of an architecture-independent package ("vim-common"), and can't be installed while the mirrors of an
+# architecture lag behind a security update of it. That happens on the optional platforms (see OPTIONAL_PLATFORMS in the
+# workflows), whose development images then go without the editor instead of not being built at all.
+    if [ "${DEV_MODE}" = "true" ] ; then \
+        apt-get install -y gdb git lsof strace tcpdump valgrind --no-install-recommends && \
+        if ! apt-get install -y vim --no-install-recommends ; then \
+            case "$(dpkg --print-architecture)" in \
+                amd64|arm64) exit 1 ;; \
+                *) echo "WARNING: package vim can't be installed on this platform at the moment; skipped." ;; \
+            esac ; \
+        fi ; \
+    fi && \
 # PHP extension pdo_mysql is included since 4.8.12+ and 5.0.1+.
     docker-php-ext-install pdo_mysql && \
     MAKEFLAGS="-j$(nproc)" pecl install /tmp/sources/igbinary.tgz && \
@@ -77,9 +91,8 @@ RUN --mount=type=bind,from=sources,target=/tmp/sources \
         --with-swoole-odbc=unixODBC,/usr \
         --with-swoole-ssh2 && \
 # Command docker-php-ext-install strips debugging symbols, so development images build and install Swoole themselves,
-# and keep its source code in folder /usr/src/swoole-src, along with debugging tools.
+# and keep its source code in folder /usr/src/swoole-src.
     if [ "${DEV_MODE}" = "true" ] ; then \
-        apt-get install -y gdb git lsof strace tcpdump valgrind vim --no-install-recommends && \
         make -C /usr/src/swoole-src -j"$(nproc)" && \
         make -C /usr/src/swoole-src install && \
         make -C /usr/src/swoole-src clean && \
