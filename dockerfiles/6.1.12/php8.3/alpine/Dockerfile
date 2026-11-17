@@ -43,7 +43,10 @@ RUN \
     docker-php-ext-install -j$(nproc) swoole && \
     rm -f swoole.tar.gz && \
     docker-php-source delete && \
-    apk del .build-deps && \
+# Option "--no-network" keeps apk from refreshing the package index, which it would otherwise leave in the image (about
+# 3 MB under /var/cache/apk).
+    apk del --no-network .build-deps && \
+    rm -rf /var/cache/apk/* && \
 # Fail the build if the extension does not actually load. Swoole is compiled here for every target platform, and
 # a library that is missing at runtime (rather than at link time) produces a successful build but an image
 # whose Swoole extension cannot be loaded at all. PHP only warns about that and still exits 0, so it has to
