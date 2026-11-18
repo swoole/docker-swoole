@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [Swoole 6.3](#swoole-63)
+   * [6.3.0-rc2](#630-rc2)
    * [6.3.0-rc1](#630-rc1)
 * [Swoole 6.2](#swoole-62)
    * [6.2.6](#626)
@@ -105,6 +106,18 @@ Table of Contents
    * [4.3.6](#436)
 
 # Swoole 6.3
+
+## 6.3.0-rc2
+
+### Changed
+- Publish the images of the other architectures when one architecture fails to build; for the failed one, each tag
+  keeps the image it already had. A failed build for _ppc64le_ or _s390x_ no longer fails the CI run.
+- Allow rebuilding the images of a released version by hand, under its own version tags only.
+- Compile the C++ code of Swoole without debugging symbols in non-development images, and don't leave the package
+  index of _apk_ in Alpine images.
+- Build development images without _vim_ on _ppc64le_ and _s390x_ when it can't be installed there.
+- Switch between coroutines at the end of the build, so that an image whose coroutines don't work is never
+  published.
 
 ## 6.3.0-rc1
 
