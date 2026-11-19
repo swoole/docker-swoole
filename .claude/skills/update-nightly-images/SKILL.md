@@ -14,6 +14,12 @@ Bumps `image.composer.version` and each entry under `image.php_extensions` in `c
 1. Make sure you're on `master`, the only branch nightly images are built from. Read `config/nightly.yml` to see the current `composer.version` and each `php_extensions.<name>.version`.
 2. Look up the latest stable release of each:
    - **Composer**: `https://api.github.com/repos/composer/composer/releases/latest` (`tag_name`), or https://getcomposer.org/download/.
+     The binary is copied from Docker image `composer:<version>`, which is published after the release, one
+     architecture at a time. Before pinning a new version, run `./bin/check-base-images.sh composer:<version>`: it
+     must print `ok` (exit status 0), meaning the image exists for every architecture the nightly images are built
+     for. On `MISSING` (exit status 1), leave Composer at its current version, say so, and try again later; a
+     nightly build would otherwise fail on the missing architecture. Exit status 2 means the check itself failed:
+     run it again.
    - **Each PECL extension** (currently `igbinary` and `redis`): `https://pecl.php.net/rest/r/<name>/allreleases.xml`
      — take the newest `<v>` **whose version name carries no `RC`/`alpha`/`beta` suffix**. Do not select on the `<s>`
      stability flag, and do not use `https://pecl.php.net/rest/r/<name>/stable.txt`: PECL labels pre-releases
