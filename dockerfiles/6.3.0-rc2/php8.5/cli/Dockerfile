@@ -6,7 +6,7 @@ ADD --checksum=sha256:3065da13374105ee1fef8ecb0f8e9f7b67b0f639cc2f2676ea284c144b
 ADD --checksum=sha256:91da821443db125282a6aea039f24588dd28ff5d71e8187f6ecc41165bceafbc https://pecl.php.net/get/igbinary-3.2.17RC1.tgz /igbinary.tgz
 ADD --checksum=sha256:0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51dd7f0b5 https://pecl.php.net/get/redis-6.3.0.tgz /redis.tgz
 
-FROM php:8.5.12-cli
+FROM php:8.5.13-cli
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-color
