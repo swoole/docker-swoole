@@ -34,15 +34,57 @@ release: `master` carries changes (e.g. tini as PID 1, the removed `-dev` packag
 
 ## Steps
 
-1. **Confirm the target and the branch.** Make sure you're on `6.2.x`, up to date with `origin/6.2.x`. Find the config with `status: "under development"` in the 6.2 series (e.g. `config/6.2.3.yml`) — this is the version being superseded. The new version is its next patch number (e.g. `6.2.4`). Check that the new version is tagged in [swoole-src](https://github.com/swoole/swoole-src/releases) before going further.
+1. **Confirm the target, the branch and the base images.** Make sure you're on `6.2.x`, up to date with `origin/6.2.x`. Find the config with `status: "under development"` in the 6.2 series (e.g. `config/6.2.3.yml`) — this is the version being superseded. The new version is its next patch number (e.g. `6.2.4`). Check that the new version is tagged in [swoole-src](https://github.com/swoole/swoole-src/releases) before going further.
+
+   **Before committing anything, check that the base images are published for every architecture.** Look up the
+   versions the new config will pin, as described in step 3: the latest patch of each PHP minor the previous config
+   lists, and the latest Composer. Then check the three tags of each PHP patch — `<patch>-cli`, `<patch>-zts` and
+   `<patch>-cli-alpine<alpine>`, where `<alpine>` is the entry for that PHP minor in `ALPINE_VERSIONS` of
+   `src/Dockerfile.php` on this branch — and the Composer image:
+
+   ```bash
+   ./bin/check-base-images.sh php:8.4.28-cli php:8.4.28-zts php:8.4.28-cli-alpine3.24 composer:2.11.2
+   ```
+
+   The Dockerfiles start `FROM` those images, and are built for `linux/amd64`, `linux/arm64/v8`, `linux/ppc64le` and
+   `linux/s390x`. On the day of a PHP release the Docker images trail behind: a tag appears as soon as its first
+   architecture is built, and the others follow hours later, sometimes a day or two — and not together: `-cli` can
+   be complete while `-zts` and the Alpine tag are not. So a tag that exists is not enough; the script prints `ok`
+   only for a tag that carries all four architectures, and `MISSING` (with the architectures still missing)
+   otherwise. Its exit status decides what happens next:
+
+   - **0 — everything is complete**: continue with step 2.
+   - **1 — something is `MISSING`: the release waits.** Commit nothing, not even "mark <previous> as released",
+     and report which images lack which architectures. Then either the skill is run again later, or, when asked to
+     wait for the images, wait as described below. Never pin a patch whose images are incomplete: the build of the
+     missing architecture would fail, and for `amd64` or `arm64` that fails the whole run. Releasing right away
+     with the PHP patches of the previous version instead (their images are complete), and upgrading PHP
+     afterwards, is the maintainer's decision: ask, don't choose it yourself.
+   - **2 — the check itself failed** (Docker Hub unreachable or rate limiting, wrong usage): nothing is known
+     about the images. Don't treat it as `MISSING`, and don't go on either: try again in a few minutes, and report
+     it if it keeps failing.
+
+   An Alpine tag that "doesn't exist" while `<patch>-cli` is complete is not a matter of waiting: the PHP images
+   drop older Alpine versions over time, so that tag may never be published. Check which Alpine versions the patch
+   is published for
+   (`curl -s 'https://hub.docker.com/v2/repositories/library/php/tags?name=<patch>-cli-alpine&page_size=20' | jq -r '.results[].name'`),
+   and report that `ALPINE_VERSIONS` needs a newer Alpine version for that PHP minor; that is a change of its own,
+   to be made before the release.
+
+   When asked to wait, don't block on a foreground `sleep`: run the check in a background loop that ends once
+   everything is complete, and that gives up after two days, e.g.
+   `for i in $(seq 1 96) ; do ./bin/check-base-images.sh <the same list> ; [[ $? -ne 1 ]] && break ; sleep 1800 ; done`.
+   When it ends with exit status 0, look the versions up again before going on — a newer PHP patch or Composer may
+   have been released meanwhile, and its images need the same check. If the images are still missing after two
+   days, stop waiting and report it.
 
 2. **Commit 1 — mark the previous patch released**, on `6.2.x`:
    - In `config/<previous>.yml`, change `status: "under development"` to `status: "released"`. Nothing else in that file changes.
    - Commit alone: `mark <previous> as released`.
 
 3. **Prepare the new version's config**: copy `config/<previous>.yml` to `config/<new>.yml`, update the header comment's version references, keep `status: "under development"`, and refresh the values against upstream. Don't add extension _igbinary_: it's only in 6.3.0+ images.
-   - `php:` — for each PHP minor already listed, the latest published patch. Cross-check against Docker Hub, since `Dockerfile.twig` does `FROM php:{{ php_version }}-...` directly — pinning a patch that isn't published yet breaks the build. Check https://www.php.net/downloads for the latest patch per minor, and confirm the matching tag exists on Docker Hub (`library/php`) before pinning it — for Alpine images, the tag with the Alpine version that `ALPINE_VERSIONS` in `src/Dockerfile.php` maps that PHP minor to (e.g. `php:8.4.27-cli-alpine3.24`).
-   - `image.composer.version` and each `image.php_extensions.<name>.version` — Composer via `https://api.github.com/repos/composer/composer/releases/latest`, PECL extensions via `https://pecl.php.net/rest/r/<name>/allreleases.xml`, taking the newest version whose name has no `RC`/`alpha`/`beta` suffix (PECL labels pre-releases "stable", so `stable.txt` can't be trusted).
+   - `php:` — for each PHP minor already listed, the latest patch (`curl -s 'https://www.php.net/releases/index.php?json&version=8.4' | jq -r .version`). Never add or drop a minor; a minor that no longer gets releases keeps its patch. Only pin a patch whose images step 1 found complete on Docker Hub: the Dockerfiles do `FROM php:{{ php_version }}-...` directly, so a patch that isn't published yet for an architecture breaks the build of that architecture.
+   - `image.composer.version` and each `image.php_extensions.<name>.version` — Composer via `https://api.github.com/repos/composer/composer/releases/latest`, PECL extensions via `https://pecl.php.net/rest/r/<name>/allreleases.xml`, taking the newest version whose name has no `RC`/`alpha`/`beta` suffix (PECL labels pre-releases "stable", so `stable.txt` can't be trusted). The Composer binary is copied from image `composer:<version>`, which step 1 checked as well.
 
 4. **Regenerate**: `./bin/generate-dockerfiles.php <new>`.
 
