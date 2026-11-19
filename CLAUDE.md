@@ -14,6 +14,8 @@ composer update                                  # install dev dependencies (PHP
 ./bin/generate-dockerfiles.php 6.2.1             # regenerate Dockerfiles for a Swoole version
 ./bin/generate-dockerfiles.php nightly           # regenerate nightly Dockerfiles
 
+./bin/check-base-images.sh php:8.4.28-cli        # check that base images are on Docker Hub for every architecture
+
 ./vendor/bin/phpunit                             # run unit tests
 ./vendor/bin/phpunit --filter testGetPhpMajorVersion   # run a single test
 
@@ -88,7 +90,8 @@ context-switching assembly for it. It is deliberately left out for now, for two 
 Neither reason is permanent — add it if riscv64 hardware becomes common enough that users ask for it, or if the
 build stops being emulated. It is one extra entry in the `platform` matrix of each build workflow, plus the matching
 entry in `PLATFORMS`, and in `OPTIONAL_PLATFORMS` if the entry is marked `optional: true` (as an emulated
-riscv64 would likely be); `tests/WorkflowTest.php` fails if these disagree. Before adding one, run the
+riscv64 would likely be), and in the default architecture list of `bin/check-base-images.sh`;
+`tests/WorkflowTest.php` fails if these disagree. Before adding one, run the
 `Probe Platform Support` workflow from the Actions tab: it builds and runs a Debian and an Alpine image for the
 architecture without publishing anything, and record what it prints — an unrecorded experiment is why this question
 came up twice.

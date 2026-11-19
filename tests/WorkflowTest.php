@@ -27,6 +27,32 @@ use Symfony\Component\Yaml\Yaml;
  */
 class WorkflowTest extends TestCase
 {
+    /**
+     * bin/check-base-images.sh checks that the base images exist for every architecture the images are built for,
+     * before a new PHP patch or Composer version is pinned. Its default list has to follow the platforms of the
+     * workflows: an architecture it doesn't know about would be reported as available without being looked at.
+     */
+    #[DataProvider('dataBuildWorkflows')]
+    public function testBaseImageCheckCoversThePlatforms(string $workflow): void
+    {
+        $declared = Yaml::parseFile($workflow)['env']['PLATFORMS'] ?? null;
+        self::assertIsString($declared, "no PLATFORMS found in {$workflow}");
+        // Docker Hub names an architecture without its OS and variant: "linux/arm64/v8" is "arm64" there.
+        $expected = array_map(
+            fn (string $platform): string => explode('/', $platform)[1] ?? $platform,
+            preg_split('/\s+/', trim($declared)),
+        );
+
+        $script = file_get_contents(__DIR__ . '/../bin/check-base-images.sh');
+        self::assertSame(1, preg_match('/\$\{ARCHITECTURES:-([^}]+)\}/', $script, $matches), 'no default architecture list found in bin/check-base-images.sh');
+
+        self::assertSame(
+            $expected,
+            preg_split('/\s+/', trim($matches[1])),
+            "the default architectures of bin/check-base-images.sh differ from PLATFORMS in {$workflow}",
+        );
+    }
+
     #[DataProvider('dataBuildWorkflows')]
     public function testPlatformsMatchThePlatformMatrix(string $workflow): void
     {
